@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peer Evaluation System | Grade 10 Computer Technology</title>
+<link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="step-one">
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">G10</div>
+      <div class="brand-copy"><strong>Peer Evaluation</strong><span id="brandSub">Computer Technology</span></div>
+    </div>
+    <div class="sidebar-controls">
+      <button class="side-toggle" id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M14 5l-7 7 7 7"/></svg>
+      </button>
+    </div>
+    <div class="nav-label" id="studentLabel">Workspace</div>
+    <nav id="studentNav">
+      <button class="nav-link" type="button" data-page="home" data-label="Home" title="Home"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-text">Home</span></button>
+      <button class="nav-link active" type="button" data-page="evaluation" data-label="Peer Evaluation" aria-current="page" title="Peer Evaluation"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-text">Peer Evaluation</span></button>
+      <button class="nav-link" type="button" data-page="help" data-label="Help & Guide" title="Help & Guide"><span class="nav-icon" aria-hidden="true">?</span><span class="nav-text">Help &amp; Guide</span></button>
+    </nav>
+    <div class="nav-label hidden" id="adminLabel">Admin workspace</div>
+    <nav id="adminGroup" class="hidden" aria-label="Admin navigation">
+      <button class="nav-link active" type="button" data-aview="management" data-label="Management" title="Management"><span class="nav-icon" aria-hidden="true">▦</span><span class="nav-text">Management</span></button>
+      <button class="nav-link" type="button" data-aview="score" data-label="Score Review" title="Score Review"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-text">Score Review</span></button>
+      <button class="nav-link" type="button" data-aview="data" data-label="Data &amp; Reset" title="Data & Reset"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-text">Data &amp; Reset</span></button>
+      <button class="nav-link" type="button" data-page="evaluation" data-label="Student form" title="Student form"><span class="nav-icon" aria-hidden="true">←</span><span class="nav-text">Student form</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="admin-nav">
+        <button class="nav-link" type="button" id="adminNav" data-page="admin" data-label="Admin" title="Admin"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span class="nav-text">Admin</span></button>
+        <button class="nav-link hidden" type="button" id="logoutNav" data-label="Log out" title="Log out"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span><span class="nav-text">Log out</span></button>
+      </div>
+      <div class="profile"><div class="avatar" aria-hidden="true">CT</div><div class="profile-copy"><strong id="profileName">Grade 10 Student</strong><span>Computer Technology</span></div></div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">☰</button>
+      <div class="topbar-title"><strong id="topTitle">Peer Evaluation System</strong><span id="topSub">Evaluate fairly. Reflect. Grow together.</span></div>
+      <div class="topbar-spacer"></div><div class="secure-pill"><span aria-hidden="true">●</span> <span id="pillText">Student evaluation workspace</span></div>
+    </header>
+    <main class="page">
+
+    <!-- ================= STUDENT VIEW ================= -->
+    <div id="studentApp">
+      <section class="welcome">
+        <div><div class="eyebrow">Computer Technology · Grade 10</div><h1 id="pageTitle">Peer Evaluation</h1><p id="pageDescription">Share thoughtful feedback about your groupmates’ contributions. Your responses support teacher review and help strengthen teamwork.</p></div>
+        <div class="page-chip"><strong>4-step process</strong><br>Review your responses before submitting.</div>
+      </section>
+      <div class="stepper" aria-label="Evaluation progress">
+        <div class="step active step-navigation" id="stepPill1" role="button" tabindex="0" aria-label="Go back to Terms and Agreement" title="Click to return to this step"><div class="step-num">1</div><div><strong>Terms &amp; Agreement</strong><small>Read the rules</small></div></div>
+        <div class="step step-navigation" id="stepPill2" role="button" tabindex="0" aria-label="Go back to Student Information" title="Click to return to this step"><div class="step-num">2</div><div><strong>Student Information</strong><small>Identify your groupmate</small></div></div>
+        <div class="step step-navigation" id="stepPill3" role="button" tabindex="0" aria-label="Go back to Peer Evaluation" title="Click to return to this step"><div class="step-num">3</div><div><strong>Peer Evaluation</strong><small>Rate contributions</small></div></div>
+        <div class="step step-navigation" id="stepPill4" role="button" tabindex="0" aria-label="Go back to Review and Submit" title="Click to return to this step"><div class="step-num">4</div><div><strong>Review &amp; Submit</strong><small>Check your answers</small></div></div>
+      </div>
+      <section class="card" id="terms">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">☷</div><div><h2>Rules and Terms of Agreement</h2><p class="sub">Read these guidelines before starting your evaluation.</p></div></div>
+        <div class="rules-layout">
+          <div><h3>Evaluation guidelines</h3><div class="rule-list">
+            <article class="rule"><div class="rule-number">01</div><div><strong>Honesty and fairness</strong><p>Rate actual contributions, not friendship, popularity, assumptions, or personal disagreements.</p></div></article>
+            <article class="rule"><div class="rule-number">02</div><div><strong>Focus on observable actions</strong><p>Consider completed tasks, responsibility, cooperation, participation, and communication during the project.</p></div></article>
+            <article class="rule"><div class="rule-number">03</div><div><strong>No retaliation or score manipulation</strong><p>Do not intentionally give low ratings to punish a classmate or coordinate ratings with others.</p></div></article>
+            <article class="rule"><div class="rule-number">04</div><div><strong>Give constructive feedback</strong><p>Comments must be respectful, relevant, and based on observed behavior. Personal attacks are not acceptable.</p></div></article>
+            <article class="rule"><div class="rule-number">05</div><div><strong>Understand the grading policy</strong><p>Peer evaluation may inform a deduction of up to 2 points from the original 20-point activity score, subject to teacher review.</p></div></article>
+            <article class="rule"><div class="rule-number">06</div><div><strong>Respect privacy</strong><p>Do not share screenshots or evaluations to embarrass classmates. Complete evaluations independently.</p></div></article>
+          </div></div>
+          <aside class="aside-stack">
+            <div class="callout"><div class="callout-title"><span aria-hidden="true">⚑</span> Important grading reminder</div><p>Peer ratings are supporting evidence, not an automatic grade. The teacher reviews low ratings and supporting evidence before approving any deduction.</p></div>
+            <div class="callout integrity"><div class="callout-title"><span aria-hidden="true">✓</span> Academic integrity</div><p>I will answer honestly, evaluate actual contributions, and provide respectful feedback. I will not copy or coordinate ratings with others.</p><label class="agree"><input type="checkbox" id="acceptTerms"><span>I have read and understood the rules. I agree to complete an honest, fair, independent, and respectful evaluation.</span></label></div>
+            <div class="info-note"><strong>Rating criteria</strong><br>Task contribution · Responsibility · Cooperation · Participation and initiative · Communication and accountability</div>
+          </aside>
+        </div>
+        <div class="btn-row"><span class="help">Step 1 of 4 · Usually takes 1 minute</span><button class="btn btn-primary" id="acceptBtn" disabled type="button">Accept &amp; continue →</button></div>
+      </section>
+      <section class="card hidden" id="studentInfo">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">♙</div><div><h2>Student Information</h2><p class="sub">Enter your details and identify the groupmate you are evaluating.</p></div></div>
+        <div class="form-grid">
+          <div class="field"><label class="field-label" for="email">School email address *</label><input id="email" type="email" maxlength="120" placeholder="S1234567@dlszobel.edu.ph" autocomplete="email" required><p class="help">Use your official student email: S followed by 7 digits and @dlszobel.edu.ph (e.g., S1234567@dlszobel.edu.ph).</p></div>
+          <div class="field"><label class="field-label" for="evaluator">Your full name *</label><input id="evaluator" maxlength="80" placeholder="Enter your full name" autocomplete="name" required><p class="attempts-notice" id="attemptsNotice" role="status"><strong>Submission limit:</strong> You have up to 2 attempts to evaluate your classmates. Each classmate can be evaluated only once.</p></div>
+          <div class="field"><label class="field-label" for="campus">Your campus *</label><select id="campus" required><option value="">Select your campus</option></select></div>
+          <div class="field"><label class="field-label" for="section">Your section *</label><select id="section" required><option value="">Select your section</option></select></div>
+          <div class="field full"><label class="field-label" for="classmate">Classmate being evaluated *</label><input id="classmate" maxlength="80" placeholder="Enter your groupmate's full name" required><p class="help">Choose a groupmate from your own campus, not yourself. Spell the full name correctly.</p></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-secondary" type="button" data-back="1">← Back</button><div class="student-info-actions"><button class="btn btn-clear-info" id="clearStudentInfo" type="button">Clear all information</button><button class="btn btn-primary" id="infoContinue" type="button">Continue to evaluation →</button></div></div>
+      </section>
+      <section class="card hidden" id="evaluation">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">▤</div><div><h2>Peer Evaluation</h2><p class="sub">Choose one rating for each criterion based on what you observed during the project.</p></div></div>
+        <div id="evalTarget" class="info-note"></div>
+        <div class="criteria">
+          <div class="criterion"><div class="criterion-title">1. Task Contribution</div><small>Completes assigned tasks and contributes to the project output.</small><div class="ratings">
+            <label class="rating"><input type="radio" name="c1" value="4"><span><b>4 · Excellent</b>Consistently contributes</span></label><label class="rating"><input type="radio" name="c1" value="3"><span><b>3 · Proficient</b>Usually contributes</span></label><label class="rating"><input type="radio" name="c1" value="2"><span><b>2 · Developing</b>Some contribution</span></label><label class="rating"><input type="radio" name="c1" value="1"><span><b>1 · Beginning</b>Limited contribution</span></label>
+          </div></div>
+          <div class="criterion"><div class="criterion-title">2. Responsibility</div><small>Fulfills responsibilities, follows instructions, and meets agreed deadlines.</small><div class="ratings">
+            <label class="rating"><input type="radio" name="c2" value="4"><span><b>4 · Excellent</b>Consistently responsible</span></label><label class="rating"><input type="radio" name="c2" value="3"><span><b>3 · Proficient</b>Usually responsible</span></label><label class="rating"><input type="radio" name="c2" value="2"><span><b>2 · Developing</b>Needs reminders</span></label><label class="rating"><input type="radio" name="c2" value="1"><span><b>1 · Beginning</b>Often incomplete</span></label>
+          </div></div>
+          <div class="criterion"><div class="criterion-title">3. Cooperation</div><small>Respects groupmates, listens to ideas, and works collaboratively.</small><div class="ratings">
+            <label class="rating"><input type="radio" name="c3" value="4"><span><b>4 · Excellent</b>Supports everyone</span></label><label class="rating"><input type="radio" name="c3" value="3"><span><b>3 · Proficient</b>Works well with others</span></label><label class="rating"><input type="radio" name="c3" value="2"><span><b>2 · Developing</b>Inconsistent teamwork</span></label><label class="rating"><input type="radio" name="c3" value="1"><span><b>1 · Beginning</b>Rarely collaborates</span></label>
+          </div></div>
+          <div class="criterion"><div class="criterion-title">4. Participation and Initiative</div><small>Participates, shares ideas, helps solve problems, and offers help when appropriate.</small><div class="ratings">
+            <label class="rating"><input type="radio" name="c4" value="4"><span><b>4 · Excellent</b>Actively takes initiative</span></label><label class="rating"><input type="radio" name="c4" value="3"><span><b>3 · Proficient</b>Participates regularly</span></label><label class="rating"><input type="radio" name="c4" value="2"><span><b>2 · Developing</b>Needs encouragement</span></label><label class="rating"><input type="radio" name="c4" value="1"><span><b>1 · Beginning</b>Rarely participates</span></label>
+          </div></div>
+          <div class="criterion"><div class="criterion-title">5. Communication and Accountability</div><small>Communicates progress, accepts feedback, and takes responsibility for their work.</small><div class="ratings">
+            <label class="rating"><input type="radio" name="c5" value="4"><span><b>4 · Excellent</b>Clear and accountable</span></label><label class="rating"><input type="radio" name="c5" value="3"><span><b>3 · Proficient</b>Communicates well</span></label><label class="rating"><input type="radio" name="c5" value="2"><span><b>2 · Developing</b>Communication varies</span></label><label class="rating"><input type="radio" name="c5" value="1"><span><b>1 · Beginning</b>Rarely communicates</span></label>
+          </div></div>
+        </div>
+        <div class="feedback-grid">
+          <div class="field"><label class="field-label" for="strength">What did this classmate do well? *</label><textarea id="strength" rows="4" maxlength="800" placeholder="Describe a specific positive contribution." required></textarea></div>
+          <div class="field"><label class="field-label" for="improve">One area for improvement *</label><textarea id="improve" rows="4" maxlength="800" placeholder="Give respectful, constructive feedback." required></textarea></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-secondary" type="button" data-back="2">← Back</button><button class="btn btn-primary" id="reviewContinue" type="button">Review evaluation →</button></div>
+      </section>
+      <section class="card hidden" id="review">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">✓</div><div><h2>Review &amp; Submit</h2><p class="sub">Check your identity, ratings, and feedback carefully before submitting.</p></div></div>
+        <div class="review-layout">
+          <section class="review-column">
+            <h3 class="review-section-title">Evaluation Summary <span class="readonly-tag">Read-only</span></h3>
+            <div id="reviewSummary" class="readonly-list"></div>
+            <div class="readonly-block"><h4>What they did well</h4><div class="readonly-text" id="reviewStrength">—</div></div>
+            <div class="readonly-block"><h4>Area for improvement</h4><div class="readonly-text" id="reviewImprove">—</div></div>
+          </section>
+          <section class="review-column">
+            <h3 class="review-section-title">Detailed Criteria Scores</h3>
+            <div class="table-wrap"><table class="criteria-table"><thead><tr><th>Criterion</th><th>Rating</th></tr></thead><tbody id="criteriaScoreRows"></tbody><tfoot><tr class="total-row"><td>Total Rating</td><td id="totalRatingCell">— / 20</td></tr></tfoot></table></div>
+            <div class="rating-overview"><div class="rating-overview-top"><span>Average peer rating</span><strong id="reviewPercent">—%</strong></div><div class="progress-track" role="progressbar" aria-label="Average peer rating" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="reviewProgress"><div class="progress-fill" id="reviewProgressFill"></div></div><p class="sub">Calculated from the total rating divided by the maximum possible rating.</p></div>
+          </section>
+          <section class="review-column calculator-column">
+            <h3 class="review-section-title">Sample Score Calculation</h3>
+            <div class="calculator-panel">
+              <div class="calculator-heading"><div class="calculator-icon" aria-hidden="true">▦</div><div><h3>Score Adjustment Calculator</h3><p>Demonstration only · not an official grade</p></div></div>
+              <div class="field"><label class="field-label" for="originalScore">Original Score (out of 20)</label><input id="originalScore" type="number" min="0" max="20" step="0.5" value="20"><p class="help">Enter a score from 0 to 20.</p></div>
+              <div class="field"><label class="field-label" for="peerPercent">Peer Evaluation (%)</label><input id="peerPercent" type="number" min="0" max="100" step="0.1" value="75"><p class="help">Enter a percentage from 0 to 100.</p></div>
+              <button class="btn" id="calculateBtn" type="button">Calculate sample score</button>
+              <div class="score-result" aria-live="polite"><div class="score-result-label">Adjusted Score</div><div class="score-result-value" id="finalScore">19 <span>/ 20</span></div><div class="score-breakdown"><div><span>Original activity score</span><strong id="originalShown">20 / 20</strong></div><div><span>Peer evaluation</span><strong id="percentShown">75%</strong></div><div><span>Suggested deduction</span><strong id="deductionShown">1 point</strong></div></div><div class="sub" id="deductionMessage" style="margin-top:9px">Sample calculation only.</div></div>
+              <div id="calcNotice" class="review-alert info"><span class="alert-symbol" aria-hidden="true">ⓘ</span><span>Teacher review and supporting evidence are required before any official deduction.</span></div>
+            </div>
+          </section>
+        </div>
+        <div class="review-alert info"><span class="alert-symbol" aria-hidden="true">ⓘ</span><span><strong>Confidential:</strong> Only your teacher can see your evaluation. Once submitted, it cannot be edited, so please review it carefully.</span></div>
+        <div class="review-alert warning"><span class="alert-symbol" aria-hidden="true">⚠</span><span><strong>Sample score notice:</strong> Peer ratings are supporting evidence, not an automatic grade. The teacher must review evidence before applying any deduction.</span></div>
+        <aside class="low-rating-reminder" aria-labelledby="lowRatingReminderTitle">
+          <div class="reminder-symbol" aria-hidden="true">✉</div>
+          <div><h3 id="lowRatingReminderTitle">Important reminder for ratings of 60% or below</h3>
+            <p>If your groupmate receives a peer evaluation rating of <strong>60% or below</strong>, please email your teacher and include screenshots or other relevant evidence showing that your groupmate did not participate. Keep your report factual and respectful. The teacher will review the information before making any decision.</p>
+            <a class="btn-gmail" href="https://mail.google.com/" target="_blank" rel="noopener noreferrer">✉ Open Gmail</a>
+          </div>
+        </aside>
+        <label class="confirm-submit review-confirm-required"><input type="checkbox" id="confirmReview"><span><strong>Required before submitting: I have reviewed the information and ratings above</strong> and confirm that my evaluation is honest and based on observed contributions.</span><span class="required-flag">REQUIRED</span></label>
+        <div class="review-actions"><button class="btn btn-secondary" id="backToEdit" type="button">← Back to edit</button><button class="btn btn-primary" id="submitBtn" type="button" disabled>Confirm &amp; submit ✓</button></div>
+      </section>
+      <section class="card done-card hidden" id="done">
+        <div class="done-icon" aria-hidden="true">✓</div>
+        <h2>Evaluation submitted</h2>
+        <p>Thank you. Your evaluation of <strong id="doneName"></strong> was recorded and will be reviewed by your teacher.</p>
+        <p>Do you have another groupmate to evaluate?</p>
+        <div class="btn-group"><button class="btn btn-primary" id="doneAnother" type="button">Evaluate another groupmate</button><button class="btn btn-secondary" id="doneFinish" type="button">I'm finished</button></div>
+      </section>
+    </div>
+
+    <!-- ================= ADMIN VIEW ================= -->
+    <div id="adminApp" class="hidden">
+
+      <!-- Management -->
+      <section id="viewManagement">
+        <section class="welcome">
+          <div><div class="eyebrow">Overview</div><h1>Management</h1><p>Select a campus to see the peer evaluations received by its students. Open a student to read the comments and individual ratings.</p></div>
+          <div class="admin-actions no-print">
+            <button class="btn btn-secondary" type="button" id="refreshBtn">↻ Refresh</button>
+            <button class="btn btn-secondary" type="button" id="csvBtn">⬇ Export CSV</button>
+            <button class="btn btn-secondary" type="button" id="printBtn">⎙ Print</button>
+          </div>
+        </section>
+        <div id="modeBanner" class="review-alert warning hidden"><span class="alert-symbol" aria-hidden="true">⚠</span><span><strong>Local test mode.</strong> Submissions are saved only in this browser, so students on other devices will NOT appear here. Connect Firebase (see the CONFIG block at the top of the script) before using this with your class.</span></div>
+        <div class="campus-grid no-print" id="campusGrid" style="margin-top:14px"></div>
+        <div class="stat-grid" id="stats"></div>
+        <section class="card">
+          <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">One row per student. Suggested deductions are advice only; the teacher decides.</p></div></div>
+          <div class="toolbar no-print">
+            <div class="grow"><input type="search" id="adminSearch" placeholder="Search student name…" aria-label="Search student"></div>
+            <select id="adminSection" aria-label="Filter by section"><option value="">All sections</option></select>
+            <select id="adminStatus" aria-label="Filter by status"><option value="">All statuses</option><option value="pending">Pending: fewer evaluations than expected</option><option value="complete">Complete</option><option value="review">Needs review</option><option value="duplicate">Duplicate submission</option></select>
+            <select id="adminSort" aria-label="Sort"><option value="lowest">Lowest rating first</option><option value="highest">Highest rating first</option><option value="name">Name A–Z</option><option value="newest">Newest first</option></select>
+            <label class="check"><input type="checkbox" id="adminAnon"> Hide evaluator names</label>
+            <button class="btn btn-secondary btn-sm" type="button" id="clearFilters">Clear filters</button>
+          </div>
+          <div id="adminTable"><div class="loading">Loading…</div></div>
+          <div class="table-foot"><span id="rowCount"></span><span>Comments are private to authorized admins.</span></div>
+        </section>
+      </section>
+
+      <!-- Score review -->
+      <section id="viewScore" class="hidden">
+        <section class="welcome"><div><div class="eyebrow">Teacher workflow</div><h1>Score Review</h1><p>Review the suggested adjustment before recording any official grade.</p></div></section>
+        <div class="review-alert warning" style="margin-top:0;margin-bottom:15px"><span class="alert-symbol" aria-hidden="true">⚠</span><span>Peer ratings are supporting evidence. A teacher must review the evidence and approve any deduction.</span></div>
+        <section class="card">
+          <div class="panel-head"><div><h2>Suggested deduction policy</h2><p class="sub">20-point activity · maximum deduction 2 points</p></div></div>
+          <div class="data-wrap"><table class="data-table policy-table"><thead><tr><th>Average peer evaluation</th><th>Suggested deduction</th><th>Action</th></tr></thead><tbody>
+            <tr><td>90–100%</td><td>0 points</td><td>No deduction</td></tr>
+            <tr><td>80–89.9%</td><td>0.5 point</td><td>Evidence and teacher review</td></tr>
+            <tr><td>70–79.9%</td><td>1 point</td><td>Evidence and teacher review</td></tr>
+            <tr><td>60–69.9%</td><td>1.5 points</td><td>Evidence and teacher review</td></tr>
+            <tr><td>Below 60%</td><td>No automatic deduction</td><td>Investigate first</td></tr>
+          </tbody></table></div>
+        </section>
+        <section class="card">
+          <div class="panel-head"><div><h2>Score adjustment calculator</h2><p class="sub">Pick a student to use their real average, or type a percentage. Not an official grade record.</p></div></div>
+          <div class="calc-row">
+            <div class="field"><label class="field-label" for="calcStudent">Student</label><select id="calcStudent"><option value="">Enter percentage manually</option></select></div>
+            <div class="field"><label class="field-label" for="calcOriginal">Original score (out of 20)</label><input id="calcOriginal" type="number" min="0" max="20" step="0.5" value="20"></div>
+            <div class="field"><label class="field-label" for="calcPercent">Average peer evaluation (%)</label><input id="calcPercent" type="number" min="0" max="100" step="0.1" value="75"></div>
+          </div>
+          <div class="calc-result" id="calcOut" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <!-- Data & reset -->
+      <section id="viewData" class="hidden">
+        <section class="welcome"><div><div class="eyebrow">System</div><h1>Data &amp; Reset</h1><p>Back up the evaluations, or clear them when you are done with a term or after test submissions.</p></div></section>
+        <section class="card">
+          <div class="panel-head"><div><h2>Back up your data</h2><p class="sub"><span id="storedCount">0</span> evaluations are currently stored. Export a CSV before you reset anything.</p></div><button class="btn btn-secondary" type="button" id="csvBtn2">⬇ Export CSV</button></div>
+        </section>
+        <section class="card danger-card">
+          <div class="panel-head"><div><h2>Danger zone: reset data</h2><p class="sub">Permanently deletes every submitted evaluation. This cannot be undone.</p></div><span class="danger-tag">DESTRUCTIVE ACTION</span></div>
+          <p class="sub" style="margin-bottom:14px">To prevent accidents you must re-enter the admin password and type RESET DATA.</p>
+          <button class="btn btn-danger" type="button" id="openReset">Reset data…</button>
+        </section>
+      </section>
+    </div>
+
+      <footer style="text-align:center;color:var(--muted);font-size:11px;padding:5px 10px 14px">Peer Evaluation System · Grade 10 Computer Technology · Student-centered, fair, and respectful feedback</footer>
+    </main>
+  </div>
+</div>
+
+<!-- Admin login -->
+<dialog id="loginDialog" class="narrow" aria-labelledby="loginTitle">
+  <form id="loginForm" autocomplete="on">
+    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2 id="loginTitle">Admin sign in</h2><p class="sub">Authorized teacher access only.</p></div><button type="button" class="icon-btn" data-close="loginDialog" aria-label="Close">✕</button></div>
+    <div class="dlg-body">
+      <div class="field"><label class="field-label" for="loginUser">Username</label><input id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+      <div class="field"><label class="field-label" for="loginPass">Password</label><input id="loginPass" name="password" type="password" autocomplete="current-password" required></div>
+      <p class="form-error" id="loginError" role="alert"></p>
+      <div class="btn-group" style="justify-content:flex-end"><button type="button" class="btn btn-secondary" data-close="loginDialog">Cancel</button><button type="submit" class="btn btn-primary" id="loginBtn">Sign in</button></div>
+    </div>
+  </form>
+</dialog>
+
+<!-- Reset confirmation -->
+<dialog id="resetDialog" class="narrow" aria-labelledby="resetTitle">
+  <form id="resetForm" autocomplete="off">
+    <div class="dlg-head"><div><div class="lock-badge danger" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></div><h2 id="resetTitle" style="color:var(--red)">Confirm data reset</h2><p class="sub">This deletes all evaluations permanently.</p></div><button type="button" class="icon-btn" data-close="resetDialog" aria-label="Close">✕</button></div>
+    <div class="dlg-body">
+      <div class="field"><label class="field-label" for="resetUser">Admin username</label><input id="resetUser" autocomplete="off" autocapitalize="none" spellcheck="false" required></div>
+      <div class="field"><label class="field-label" for="resetPass">Admin password</label><input id="resetPass" type="password" autocomplete="new-password" required></div>
+      <div class="field"><label class="field-label" for="resetPhrase">Type RESET DATA to confirm</label><input id="resetPhrase" placeholder="RESET DATA" autocomplete="off" required></div>
+      <p class="form-error" id="resetError" role="alert"></p>
+      <div class="btn-group" style="justify-content:flex-end"><button type="button" class="btn btn-secondary" data-close="resetDialog">Cancel</button><button type="submit" class="btn btn-danger-solid" id="resetBtn">Delete everything</button></div>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+<script>
+/* =====================================================================
+   CONFIG  — edit this block before deploying
+   ---------------------------------------------------------------------
+   firebase        Paste your Firebase web-app config here. While it is
+                   null the site runs in LOCAL TEST MODE (data stays in the
+                   browser that submitted it, so the teacher will not get it).
+   adminUsername   Username typed on the Admin login. In Firebase mode the
+                   Auth user must be <adminUsername>@<adminEmailDomain>.
+   localAdmin      Used ONLY in local test mode. Never use for real data.
+   campuses        Campus cards on the dashboard + the student dropdown.
+   sections        Section dropdowns (student form + admin filter).
+   expectedPerStudent  How many evaluations each student should receive.
+   maxSubmissions  How many evaluations one student may submit; more is
+                   flagged "Duplicate submission" on the dashboard.
+   reviewBelow     Average (%) under which a student is flagged "Needs review".
+   ===================================================================== */
+const CONFIG = {
+  firebase: null,
+  /* firebase: { apiKey:"...", authDomain:"...", projectId:"...", appId:"..." }, */
+  adminUsername: 'admin',
+  adminEmailDomain: 'peer-eval.app',
+  localAdmin: { username: 'admin', password: 'ChangeMe!2026' },
+  collection: 'evaluations',
+  campuses: ['Day School (Alabang)', 'Day School (Vermosa)', 'BrafeNHS'],
+  sections: Array.from({length: 15}, (_, i) => '10' + String.fromCharCode(65 + i)),
+  expectedPerStudent: 2,
+  maxSubmissions: 2,
+  reviewBelow: 80
+};
+
+const $ = id => document.getElementById(id);
+const CRITERIA = ['Task Contribution','Responsibility','Cooperation','Participation and Initiative','Communication and Accountability'];
+const CRIT_SHORT = ['Task','Responsibility','Cooperation','Participation','Communication'];
+
+/* ---------- tiny DOM helper (text only, so nothing a student types can run as code) ---------- */
+function el(tag, props, ...kids){
+  const n = document.createElement(tag);
+  if (props) for (const [k,v] of Object.entries(props)){
+    if (k==='class') n.className = v;
+    else if (k==='text') n.textContent = v;
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v);
+  }
+  kids.flat().forEach(c => { if (c==null||c===false) return; n.append(c.nodeType ? c : document.createTextNode(String(c))); });
+  return n;
+}
+const norm = s => String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
+const cleanName = s => String(s||'').trim().replace(/\s+/g,' ');
+function similarName(a,b){
+  const x=norm(a).replace(/[^a-z0-9]/g,''), y=norm(b).replace(/[^a-z0-9]/g,'');
+  if(!x||!y)return 0;
+  if(x===y)return 1;
+  const prev=Array.from({length:y.length+1},(_,i)=>i);
+  for(let i=1;i<=x.length;i++){
+    let diagonal=prev[0]; prev[0]=i;
+    for(let j=1;j<=y.length;j++){
+      const above=prev[j];
+      prev[j]=Math.min(prev[j]+1,prev[j-1]+1,diagonal+(x[i-1]===y[j-1]?0:1));
+      diagonal=above;
+    }
+  }
+  return 1-Math.max(0,prev[y.length])/Math.max(x.length,y.length);
+}
+const fmtPct = p => (Math.round(p*10)/10).toString()+'%';
+const fmtNum = n => Number.isInteger(n) ? String(n) : (Math.round(n*100)/100).toString();
+const fmtDate = iso => { const d=new Date(iso); return isNaN(d)?'—':d.toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}); };
+const initials = n => n.split(' ').filter(Boolean).map(x=>x[0]).slice(0,2).join('').toUpperCase()||'?';
+function deductionFor(pct){
+  if (pct>=90) return {d:0,review:false};
+  if (pct>=80) return {d:.5,review:false};
+  if (pct>=70) return {d:1,review:false};
+  if (pct>=60) return {d:1.5,review:false};
+  return {d:0,review:true};
+}
+function fillSelect(sel, items){ items.forEach(v => sel.append(el('option',{value:v,text:v}))); }
+fillSelect($('campus'), CONFIG.campuses);
+fillSelect($('section'), CONFIG.sections);
+fillSelect($('adminSection'), CONFIG.sections);
+
+/* =====================================================================
+   STORAGE  (Firebase when configured, otherwise browser-only test mode)
+   ===================================================================== */
+const Store = {
+  mode: (CONFIG.firebase && CONFIG.firebase.apiKey) ? 'cloud' : 'local',
+  fb: null,
+  adminEmail(){ return (CONFIG.adminUsername+'@'+CONFIG.adminEmailDomain).toLowerCase(); },
+  makeId(rec){
+    const k = norm(rec.email)+'|'+norm(rec.classmate);
+    return btoa(unescape(encodeURIComponent(k))).replace(/[+/=]/g, c => ({'+':'-','/':'_','=':''}[c]));
+  },
+  async init(){
+    if (this.mode!=='cloud' || this.fb) return;
+    const base = 'https://www.gstatic.com/firebasejs/10.12.2/';
+    const [app, fs, auth] = await Promise.all([import(base+'firebase-app.js'), import(base+'firebase-firestore.js'), import(base+'firebase-auth.js')]);
+    const a = app.initializeApp(CONFIG.firebase);
+    this.fb = { fs, auth, db: fs.getFirestore(a), au: auth.getAuth(a) };
+    try { await auth.setPersistence(this.fb.au, auth.browserSessionPersistence); } catch(e){}
+  },
+  localRead(){ try{ return JSON.parse(localStorage.getItem('pe_evaluations')||'[]'); }catch(e){ return []; } },
+  localWrite(rows){ localStorage.setItem('pe_evaluations', JSON.stringify(rows)); },
+  async add(rec){
+    const id = this.makeId(rec);
+    if (this.mode==='local'){
+      const rows = this.localRead();
+      const email = norm(rec.email);
+      const sameEvaluator = rows.filter(r => norm(r.email) === email);
+      if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
+      if (rows.some(r => r.id === id)) throw new Error('duplicate');
+      if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
+      rows.push({id, ...rec}); this.localWrite(rows); return;
+    }
+    await this.init();
+    // Apply the same attempt and near-duplicate checks in local and Firebase modes.
+    // This is a client-side safeguard; production Firestore rules should also enforce limits.
+    const existing = await this.list();
+    const email = norm(rec.email);
+    const sameEvaluator = existing.filter(r => norm(r.email) === email);
+    if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
+    if (existing.some(r => r.id === id || (norm(r.email) === email && norm(r.classmate) === norm(rec.classmate)))) throw new Error('duplicate');
+    if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
+    const {fs, db} = this.fb;
+    try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), rec); }
+    catch(e){ if (e && e.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
+  },
+  async list(){
+    if (this.mode==='local') return this.localRead();
+    await this.init();
+    const {fs, db} = this.fb;
+    const snap = await fs.getDocs(fs.query(fs.collection(db, CONFIG.collection), fs.orderBy('createdAt','desc')));
+    return snap.docs.map(d => ({id:d.id, ...d.data()}));
+  },
+  async remove(id){
+    if (this.mode==='local'){ this.localWrite(this.localRead().filter(r=>r.id!==id)); return; }
+    await this.init();
+    const {fs, db} = this.fb;
+    await fs.deleteDoc(fs.doc(db, CONFIG.collection, id));
+  },
+  async isAdmin(){
+    if (this.mode==='local') return sessionStorage.getItem('pe_admin')==='1';
+    await this.init();
+    const au = this.fb.au;
+    if (au.authStateReady) await au.authStateReady();
+    return !!(au.currentUser && (au.currentUser.email||'').toLowerCase()===this.adminEmail());
+  },
+  async login(username, password){
+    if (this.mode==='local'){
+      const a = CONFIG.localAdmin;
+      if (username===a.username && password===a.password){ sessionStorage.setItem('pe_admin','1'); return; }
+      throw new Error('bad-credentials');
+    }
+    await this.init();
+    if (username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase()) throw new Error('bad-credentials');
+    try { await this.fb.auth.signInWithEmailAndPassword(this.fb.au, this.adminEmail(), password); }
+    catch(e){ if (e && e.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
+  },
+  async logout(){
+    sessionStorage.removeItem('pe_admin');
+    if (this.mode==='cloud' && this.fb){ try{ await this.fb.auth.signOut(this.fb.au); }catch(e){} }
+  },
+  /* Re-checks the admin password, then deletes every evaluation. */
+  async wipe(username, password){
+    if (this.mode==='local'){
+      const a = CONFIG.localAdmin;
+      if (username!==a.username || password!==a.password) throw new Error('bad-credentials');
+      localStorage.removeItem('pe_evaluations'); return;
+    }
+    await this.init();
+    if (username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase()) throw new Error('bad-credentials');
+    const {fs, auth, db, au} = this.fb;
+    try { await auth.reauthenticateWithCredential(au.currentUser, auth.EmailAuthProvider.credential(this.adminEmail(), password)); }
+    catch(e){ if (e && e.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
+    const snap = await fs.getDocs(fs.collection(db, CONFIG.collection));
+    const docs = snap.docs;
+    for (let i=0;i<docs.length;i+=400){
+      const batch = fs.writeBatch(db);
+      docs.slice(i,i+400).forEach(d => batch.delete(d.ref));
+      await batch.commit();
+    }
+  }
+};
+
+/* =====================================================================
+   STUDENT FLOW
+   ===================================================================== */
+const accept = $('acceptTerms');
+accept.addEventListener('change',()=> $('acceptBtn').disabled = !accept.checked);
+$('acceptBtn').addEventListener('click',()=>goStep(2));
+document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>goStep(Number(btn.dataset.back))));
+let currentStep = 1;
+document.querySelectorAll('.step-navigation').forEach((pill,index)=>{
+  const target=index+1;
+  const goBack=()=>{
+    if(target>=currentStep || !$('done').classList.contains('hidden'))return;
+    if(target>1 && !$('acceptTerms').checked){showToast('Please accept the rules before continuing.');return;}
+    goStep(target);
+  };
+  pill.addEventListener('click',goBack);
+  pill.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();goBack();}});
+});
+$('infoContinue').addEventListener('click',validateInfo);
+$('clearStudentInfo').addEventListener('click',async()=>{
+ if(!window.confirm('Clear the student information entered in this form? This will clear the email, your name, campus, section, and classmate name. It will not delete any submitted evaluations.'))return;
+ ['email','evaluator','classmate'].forEach(id=>$(id).value='');
+ $('campus').value='';$('section').value='';
+ await updateAttemptsNotice();
+ $('email').focus();
+ showToast('Student information cleared. Submitted evaluations were not affected.');
+});
+async function updateAttemptsNotice(){
+  const notice=$('attemptsNotice');
+  if(!notice)return;
+  const email=$('email').value.trim().toLowerCase();
+  if(!email){
+    notice.innerHTML='<strong>You have 2 evaluation attempts.</strong> Each classmate can be evaluated only once. Enter your school email to check how many attempts remain.';
+    notice.classList.remove('attempts-exhausted');
+    return;
+  }
+  try{
+    const rows=Store.mode==='local'?Store.localRead():await Store.list();
+    const used=rows.filter(r=>norm(r.email)===norm(email)).length;
+    const remaining=Math.max(0,CONFIG.maxSubmissions-used);
+    notice.innerHTML='<strong>Attempts remaining: '+remaining+' of '+CONFIG.maxSubmissions+'.</strong> You may submit up to 2 evaluations total, and each classmate can be evaluated only once.';
+    notice.classList.toggle('attempts-exhausted',remaining===0);
+  }catch(e){
+    notice.innerHTML='<strong>You have up to 2 evaluation attempts.</strong> Each classmate can be evaluated only once. Your remaining attempts could not be checked right now.';
+    notice.classList.remove('attempts-exhausted');
+  }
+}
+$('email').addEventListener('input',updateAttemptsNotice);
+$('email').addEventListener('change',updateAttemptsNotice);
+$('reviewContinue').addEventListener('click',prepareReview);
+$('backToEdit').addEventListener('click',()=>goStep(3));
+$('calculateBtn').addEventListener('click',calculateAdjustment);
+$('originalScore').addEventListener('input',calculateAdjustment);
+$('peerPercent').addEventListener('input',calculateAdjustment);
+$('confirmReview').addEventListener('change',()=> $('submitBtn').disabled = !$('confirmReview').checked);
+$('submitBtn').addEventListener('click',submitEvaluation);
+$('doneAnother').addEventListener('click',()=>{resetEvaluation();updateAttemptsNotice();goStep(2);$('classmate').focus()});
+$('doneFinish').addEventListener('click',()=>{resetEvaluation();goStep(1)});
+
+const sidebarToggle=$('sidebarToggle'),mobileMenu=$('mobileMenu');
+let lastMobileTrigger=null;
+function syncSidebarToggle(){
+ const collapsed=document.body.classList.contains('sidebar-collapsed');
+ sidebarToggle.setAttribute('aria-label',collapsed?'Expand sidebar':'Collapse sidebar');
+ sidebarToggle.title=collapsed?'Expand sidebar':'Collapse sidebar';
+ sidebarToggle.setAttribute('aria-expanded',String(!collapsed));
+ sidebarToggle.innerHTML=collapsed
+  ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>'
+  : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 5l-7 7 7 7"/></svg>';
+}
+sidebarToggle.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');syncSidebarToggle()});
+mobileMenu.addEventListener('click',()=>{
+ lastMobileTrigger=mobileMenu;document.body.classList.add('mobile-sidebar-open');
+ mobileMenu.setAttribute('aria-expanded','true');
+ const first=document.querySelector('.sidebar .nav-link:not(.hidden)');if(first)first.focus();
+});
+$('sidebarOverlay').addEventListener('click',()=>closeMobileSidebar());
+function closeMobileSidebar(returnFocus=false){
+ document.body.classList.remove('mobile-sidebar-open');mobileMenu.setAttribute('aria-expanded','false');
+ if(returnFocus&&lastMobileTrigger)lastMobileTrigger.focus();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('mobile-sidebar-open'))closeMobileSidebar(true)});
+function hasEvaluationProgress(){
+ return !!document.querySelector('input[name^="c"]:checked')||['email','evaluator','classmate','strength','improve'].some(id=>$(id).value.trim());
+}
+function setActiveNav(btn){
+ document.querySelectorAll('.nav-link[data-page]').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-current','false')});
+ if(btn){btn.classList.add('active');btn.setAttribute('aria-current','page')}
+}
+document.querySelectorAll('.nav-link[data-page]').forEach(btn=>btn.addEventListener('click',async()=>{
+ const page=btn.dataset.page;
+ const inAdmin=!$('adminApp').classList.contains('hidden');
+ const leaveMsg='You have evaluation information in progress. Leave this step? Your entries remain while the page is open, but have not been submitted.';
+ if(page==='admin'){
+  if(inAdmin){closeMobileSidebar();return}
+  if(hasEvaluationProgress()&&!confirm(leaveMsg)){closeMobileSidebar();return}
+  closeMobileSidebar();await openAdmin();return;
+ }
+ if(!inAdmin&&page!=='evaluation'&&hasEvaluationProgress()){
+  if(!confirm(leaveMsg)){closeMobileSidebar();return}
+ }
+ if(inAdmin)setMode(false);
+ setActiveNav(document.querySelector('#studentNav .nav-link[data-page="'+page+'"]')||btn);closeMobileSidebar();
+ if(page==='evaluation'){goStep(1);return}
+ showToast(page==='help'?'Help & Guide: read the rules, rate observed contributions fairly, and submit respectful feedback.':'Welcome to the Grade 10 Peer Evaluation System.');
+}));
+let toastTimer;
+function showToast(message){const t=$('toast');t.textContent=message;t.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),4200)}
+function goStep(n){
+ currentStep=n;
+ document.body.classList.toggle('step-one',n===1);document.body.classList.toggle('step-four',n===4);
+ const ids=['terms','studentInfo','evaluation','review'];
+ ids.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n-1));
+ $('done').classList.add('hidden');
+ for(let i=1;i<=4;i++){
+  const p=$('stepPill'+i);p.classList.toggle('active',i===n);p.classList.toggle('done',i<n);
+  p.querySelector('.step-num').textContent=i<n?'✓':String(i);
+ }
+ $('pageTitle').textContent=n===1?'Peer Evaluation':n===2?'Student Information':n===3?'Peer Evaluation':'Review & Submit';
+ $('pageDescription').textContent=n===1?'Share thoughtful feedback about your groupmates’ contributions. Your responses support teacher review and help strengthen teamwork.':n===2?'Confirm your details and identify the groupmate you are evaluating.':n===3?'Rate observable contributions and provide respectful, constructive feedback.':'Check your identity, ratings, and feedback carefully before submitting.';
+ if(n===3)$('evalTarget').textContent='You are evaluating: '+$('classmate').value;
+ closeMobileSidebar();window.scrollTo({top:0,behavior:'smooth'});
+}
+function validateInfo(){
+ const email=$('email').value.trim(),name=$('evaluator').value.trim(),campus=$('campus').value,section=$('section').value,classmate=$('classmate').value.trim();
+ if(!/^S\d{7}@dlszobel\.edu\.ph$/i.test(email)){alert('Please use your official student email in this format: S1234567@dlszobel.edu.ph (S followed by 7 digits).');$('email').focus();return}
+ if(!name||!campus||!section||!classmate){alert('Please complete all required student information fields.');return}
+ if(norm(name)===norm(classmate)){alert('Please select a classmate other than yourself.');$('classmate').focus();return}
+ goStep(3);
+}
+function getRatings(){return [1,2,3,4,5].map(n=>{const el=document.querySelector('input[name="c'+n+'"]:checked');return el?Number(el.value):null})}
+function prepareReview(){
+ const ratings=getRatings();
+ if(ratings.some(v=>v===null)){alert('Please rate all five criteria before continuing.');return}
+ const strength=$('strength').value.trim(),improve=$('improve').value.trim();
+ if(!strength||!improve){alert('Please complete both written feedback fields.');return}
+ const total=ratings.reduce((a,b)=>a+b,0),pct=total/20*100;
+ const entries=[['Evaluator',$('evaluator').value],['School Email',$('email').value],['Campus',$('campus').value],['Section',$('section').value],['Classmate Evaluated',$('classmate').value]];
+ const box=$('reviewSummary');box.replaceChildren();
+ entries.forEach(([label,value])=>{const item=document.createElement('div');item.className='readonly-row';const l=document.createElement('span');l.textContent=label;const v=document.createElement('strong');v.textContent=value;item.append(l,v);box.append(item)});
+ $('reviewStrength').textContent=strength;$('reviewImprove').textContent=improve;
+ const rows=$('criteriaScoreRows');rows.replaceChildren();
+ CRITERIA.forEach((name,i)=>{const tr=document.createElement('tr'),tdName=document.createElement('td'),tdRating=document.createElement('td'),pill=document.createElement('span');tdName.textContent=name;pill.className='rating-pill';pill.textContent=ratings[i]+' / 4';tdRating.append(pill);tr.append(tdName,tdRating);rows.append(tr)});
+ $('totalRatingCell').textContent=total+' / 20';$('reviewPercent').textContent=pct.toFixed(1).replace(/\.0$/,'')+'%';
+ $('reviewProgressFill').style.width=Math.max(0,Math.min(100,pct))+'%';$('reviewProgress').setAttribute('aria-valuenow',String(pct));
+ $('confirmReview').checked=false;$('submitBtn').disabled=true;
+ goStep(4);calculateAdjustment();
+}
+function resetEvaluation(){
+ document.querySelectorAll('input[name^="c"]').forEach(r=>r.checked=false);
+ ['classmate','strength','improve'].forEach(id=>$(id).value='');
+ $('confirmReview').checked=false;$('submitBtn').disabled=true;
+}
+function showDone(name){
+ ['terms','studentInfo','evaluation','review'].forEach(id=>$(id).classList.add('hidden'));
+ $('done').classList.remove('hidden');$('doneName').textContent=name;
+ for(let i=1;i<=4;i++){const p=$('stepPill'+i);p.classList.remove('active');p.classList.add('done');p.querySelector('.step-num').textContent='✓'}
+ $('pageTitle').textContent='Submitted';$('pageDescription').textContent='Your evaluation has been recorded. Thank you for giving fair and thoughtful feedback.';
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+async function submitEvaluation(){
+ if(!$('confirmReview').checked){alert('Please confirm that you reviewed your evaluation.');return}
+ const ratings=getRatings();
+ if(ratings.some(v=>v===null))return;
+ const total=ratings.reduce((a,b)=>a+b,0);
+ const rec={
+  evaluator:cleanName($('evaluator').value),email:$('email').value.trim().toLowerCase(),campus:$('campus').value,section:$('section').value,
+  classmate:cleanName($('classmate').value),ratings,total,percent:total/20*100,
+  strength:$('strength').value.trim(),improve:$('improve').value.trim(),createdAt:new Date().toISOString()
+ };
+ const btn=$('submitBtn'),label=btn.textContent;
+ btn.disabled=true;btn.textContent='Submitting…';
+ try{
+  await Store.add(rec);
+  showDone(rec.classmate);
+ }catch(err){
+  const msg=err&&err.message;
+  showToast(msg==='attempt-limit'
+   ?'You have used both evaluation attempts. You cannot submit another evaluation.'
+   :msg==='duplicate-similar'
+   ?'This looks like a duplicate evaluation for a classmate in your section. Please check the name and ask your teacher if you believe this is an error.'
+   :msg==='duplicate'||msg==='duplicate-or-denied'
+   ?'This evaluation was not saved. You may have already evaluated this groupmate. Ask your teacher if this is a mistake.'
+   :'Could not submit. Please check your internet connection and try again.');
+  await updateAttemptsNotice();
+  btn.disabled=false;
+ }finally{btn.textContent=label}
+}
+function calculateAdjustment(){
+ const originalRaw=$('originalScore').value,pctRaw=$('peerPercent').value,original=Number(originalRaw),pct=Number(pctRaw);
+ const fmt=n=>Number.isInteger(n)?String(n):n.toFixed(1);
+ const final=$('finalScore'),msg=$('deductionMessage'),shown=$('deductionShown'),pshown=$('percentShown'),note=$('calcNotice'),originalShown=$('originalShown');
+ if(originalRaw===''||pctRaw===''||!Number.isFinite(original)||!Number.isFinite(pct)||original<0||original>20||pct<0||pct>100){
+  final.textContent='Check inputs';originalShown.textContent='—';msg.textContent='Enter an original score from 0 to 20 and a peer percentage from 0 to 100.';
+  shown.textContent='—';pshown.textContent='—';note.className='review-alert warning';note.innerHTML='<span class="alert-symbol" aria-hidden="true">⚠</span><span>Please correct the sample values before calculating.</span>';return;
+ }
+ let deduction=0,review=false;
+ if(pct>=90)deduction=0;else if(pct>=80)deduction=.5;else if(pct>=70)deduction=1;else if(pct>=60)deduction=1.5;else review=true;
+ const adjusted=Math.max(0,original-deduction);
+ final.innerHTML=fmt(adjusted)+' <span>/ 20</span>';originalShown.textContent=fmt(original)+' / 20';
+ msg.textContent=review?'No automatic deduction is recommended. Teacher review is required because the sample rating is below 60%.':'Sample calculation: '+fmt(original)+' − '+fmt(deduction)+' point'+(deduction===1?'':'s')+' = '+fmt(adjusted)+'.';
+ shown.textContent=review?'Review first':fmt(deduction)+' point'+(deduction===1?'':'s');pshown.textContent=fmt(pct)+'%';
+ note.className='review-alert '+(review?'warning':'info');
+ note.innerHTML=review?'<span class="alert-symbol" aria-hidden="true">⚠</span><span><strong>Teacher review required.</strong> Below 60%: review ratings and supporting evidence before considering any deduction.</span>':'<span class="alert-symbol" aria-hidden="true">ⓘ</span><span><strong>Sample only.</strong> Teacher review and supporting evidence are required before any official deduction. Maximum deduction in this guide: 2 points.</span>';
+}
+
+/* =====================================================================
+   ADMIN
+   ===================================================================== */
+const A = { rows:[], loaded:false, campus:'all', open:new Set(), view:'management' };
+const ADMIN_TITLES = { management:['Management','Teacher workspace · Confidential'], score:['Score Review','Review suggested adjustments'], data:['Data & Reset','Back up or clear evaluations'] };
+
+function setMode(admin){
+ $('studentApp').classList.toggle('hidden',admin);
+ $('adminApp').classList.toggle('hidden',!admin);
+ $('studentNav').classList.toggle('hidden',admin);$('studentLabel').classList.toggle('hidden',admin);
+ $('adminGroup').classList.toggle('hidden',!admin);$('adminLabel').classList.toggle('hidden',!admin);
+ $('adminNav').classList.toggle('hidden',admin);$('logoutNav').classList.toggle('hidden',!admin);
+ $('pillText').textContent=admin?'Admin session':'Student evaluation workspace';
+ $('profileName').textContent=admin?'Administrator':'Grade 10 Student';
+ $('brandSub').textContent=admin?'Admin workspace':'Computer Technology';
+ if(!admin){$('topTitle').textContent='Peer Evaluation System';$('topSub').textContent='Evaluate fairly. Reflect. Grow together.'}
+ document.title=admin?'Admin | Peer Evaluation System':'Peer Evaluation System | Grade 10 Computer Technology';
+ window.scrollTo({top:0});
+}
+function adminView(v){
+ A.view=v;
+ ['management','score','data'].forEach(k=>$('view'+k[0].toUpperCase()+k.slice(1)).classList.toggle('hidden',k!==v));
+ document.querySelectorAll('[data-aview]').forEach(b=>{const on=b.dataset.aview===v;b.classList.toggle('active',on);b.setAttribute('aria-current',on?'page':'false')});
+ $('topTitle').textContent=ADMIN_TITLES[v][0];$('topSub').textContent=ADMIN_TITLES[v][1];
+ window.scrollTo({top:0});
+}
+document.querySelectorAll('[data-aview]').forEach(b=>b.addEventListener('click',()=>{adminView(b.dataset.aview);closeMobileSidebar()}));
+
+async function openAdmin(){
+ try{
+  if(await Store.isAdmin()){await enterAdmin();return}
+ }catch(err){showToast('Could not reach the database. Check your internet connection and try again.');return}
+ openLogin();
+}
+async function enterAdmin(){
+ setMode(true);setActiveNav(null);adminView('management');
+ $('modeBanner').classList.toggle('hidden',Store.mode!=='local');
+ await loadAdmin();
+}
+function openLogin(){
+ $('loginError').textContent='';$('loginForm').reset();
+ $('loginDialog').showModal();$('loginUser').focus();
+}
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
+['loginDialog','resetDialog'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target===$(id))$(id).close()}));
+
+let fails=0,lockUntil=0;
+$('loginForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const err=$('loginError');
+ if(Date.now()<lockUntil){err.textContent='Too many attempts. Please wait '+Math.ceil((lockUntil-Date.now())/1000)+' seconds.';return}
+ const btn=$('loginBtn');btn.disabled=true;btn.textContent='Signing in…';err.textContent='';
+ try{
+  await Store.login($('loginUser').value.trim(),$('loginPass').value);
+  fails=0;$('loginDialog').close();$('loginForm').reset();
+  await enterAdmin();
+ }catch(ex){
+  if(ex.message==='network'){err.textContent='Cannot reach the server. Check your internet connection.'}
+  else{fails++;if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Too many attempts. Please wait 30 seconds.'}else err.textContent='Incorrect username or password.'}
+  $('loginPass').value='';$('loginPass').focus();
+ }finally{btn.disabled=false;btn.textContent='Sign in'}
+});
+$('logoutNav').addEventListener('click',async()=>{
+ await Store.logout();A.rows=[];A.loaded=false;A.open.clear();
+ setMode(false);setActiveNav(document.querySelector('#studentNav .nav-link[data-page="evaluation"]'));
+ goStep(1);closeMobileSidebar();showToast('You have been signed out.');
+});
+$('refreshBtn').addEventListener('click',()=>loadAdmin(true));
+$('printBtn').addEventListener('click',()=>window.print());
+$('csvBtn').addEventListener('click',exportCsv);
+$('csvBtn2').addEventListener('click',exportCsv);
+['adminSearch','adminSection','adminStatus','adminSort','adminAnon'].forEach(id=>$(id).addEventListener('input',renderAdmin));
+$('clearFilters').addEventListener('click',()=>{$('adminSearch').value='';$('adminSection').value='';$('adminStatus').value='';renderAdmin()});
+
+async function loadAdmin(manual){
+ $('adminTable').replaceChildren(el('div',{class:'loading',text:'Loading evaluations…'}));
+ try{
+  A.rows=await Store.list();A.loaded=true;renderAdmin();
+  if(manual)showToast('Updated. '+A.rows.length+' evaluation'+(A.rows.length===1?'':'s')+' loaded.');
+ }catch(err){
+  $('adminTable').replaceChildren(el('div',{class:'empty'},el('strong',{text:'Could not load evaluations'}),'Check your internet connection and your Firestore security rules, then press Refresh.'));
+  $('stats').replaceChildren();
+ }
+}
+
+/* One entry per student per campus. A student appears if they were evaluated OR submitted. */
+function buildStudents(rows){
+ const map=new Map();
+ // Group near-identical names as one student record only when campus and section match.
+ // Original evaluation rows are preserved; this only prevents duplicate-looking student entries in the admin summary.
+ const get=(campus,name,section)=>{
+  const cKey=norm(campus), secKey=norm(section);
+  for(const student of map.values()){
+   if(norm(student.campus)===cKey && norm(student.sectionKey)===secKey && similarName(student.name,name)>=0.88) return student;
+  }
+  const k=cKey+'|'+secKey+'|'+norm(name);
+  if(!map.has(k))map.set(k,{key:k,campus,name:cleanName(name),sectionKey:section||'',received:[],submitted:[],secCount:{},ownSection:''});
+  return map.get(k);
+ };
+ rows.forEach(r=>{
+  const c=r.campus||'Unspecified';
+  const g=get(c,r.classmate,r.section);g.received.push(r);g.secCount[r.section]=(g.secCount[r.section]||0)+1;
+  const s=get(c,r.evaluator,r.section);s.submitted.push(r);s.ownSection=r.section;
+ });
+ return [...map.values()].map(s=>{
+  s.rc=s.received.length;s.sc=s.submitted.length;
+  s.pct=s.rc?s.received.reduce((a,e)=>a+e.percent,0)/s.rc:null;
+  s.section=s.ownSection||Object.entries(s.secCount).sort((a,b)=>b[1]-a[1]).map(x=>x[0])[0]||'—';
+  s.latest=[...s.received,...s.submitted].reduce((a,e)=>e.createdAt>a?e.createdAt:a,'');
+  s.crit=CRITERIA.map((_,i)=>s.rc?s.received.reduce((a,e)=>a+(e.ratings[i]||0),0)/s.rc:0);
+  s.pending=s.rc<CONFIG.expectedPerStudent;
+  s.review=s.rc>0&&s.pct<CONFIG.reviewBelow;
+  s.dup=s.sc>CONFIG.maxSubmissions;
+  return s;
+ });
+}
+function campusList(){
+ const set=[...CONFIG.campuses];
+ if(A.rows.some(r=>!r.campus))set.push('Unspecified');
+ return set;
+}
+function renderCampuses(){
+ const grid=$('campusGrid');
+ const make=(key,label,symbol)=>{
+  const rows=key==='all'?A.rows:A.rows.filter(r=>(r.campus||'Unspecified')===key);
+  const n=buildStudents(rows).length;
+  return el('button',{class:'campus-card',type:'button','aria-pressed':String(A.campus===key),onclick:()=>{A.campus=key;renderAdmin()}},
+   el('div',{class:'campus-symbol','aria-hidden':'true',text:symbol}),el('strong',{text:label}),el('small',{text:n+' student'+(n===1?'':'s')+' · '+rows.length+' evaluation'+(rows.length===1?'':'s')}));
+ };
+ grid.replaceChildren(make('all','All campuses','∑'),...campusList().map(c=>make(c,c,c[0].toUpperCase())));
+}
+function statusChips(s){
+ const out=[el('span',{class:'chip '+(s.pending?'warn':'ok'),text:s.pending?'Pending':'Complete'})];
+ if(s.review)out.push(el('span',{class:'chip bad',text:'Review'}));
+ if(s.dup)out.push(el('span',{class:'chip bad',text:'Duplicate'}));
+ return out;
+}
+function dedChip(s){
+ if(s.pct===null)return el('span',{class:'chip mute',text:'—'});
+ const r=deductionFor(s.pct);
+ if(r.review)return el('span',{class:'chip bad',text:'Investigate'});
+ if(r.d===0)return el('span',{class:'chip ok',text:'None'});
+ return el('span',{class:'chip warn',text:'−'+fmtNum(r.d)+' pt'});
+}
+
+function renderAdmin(){
+ if(!A.loaded)return;
+ renderCampuses();
+ const scope=A.campus==='all'?A.rows:A.rows.filter(r=>(r.campus||'Unspecified')===A.campus);
+ const all=buildStudents(scope);
+ const evaluated=all.filter(s=>s.rc>0);
+ const overall=scope.length?scope.reduce((a,r)=>a+r.percent,0)/scope.length:null;
+ const needs=all.filter(s=>s.review).length;
+ $('stats').replaceChildren(
+  el('div',{class:'stat'},el('span',{text:'Students evaluated'}),el('strong',{text:String(evaluated.length)}),el('small',{text:'with received feedback'})),
+  el('div',{class:'stat'},el('span',{text:'Evaluations received'}),el('strong',{text:String(scope.length)}),el('small',{text:'total peer submissions'})),
+  el('div',{class:'stat'},el('span',{text:'Average peer rating'}),el('strong',{text:overall===null?'—':fmtPct(overall)}),el('small',{text:'across this view'})),
+  el('div',{class:'stat'+(needs?' alert':'')},el('span',{text:'Needs review'}),el('strong',{text:String(needs)}),el('small',{text:'average below '+CONFIG.reviewBelow+'%'}))
+ );
+ $('tableTitle').textContent='Received evaluations — '+(A.campus==='all'?'All campuses':A.campus);
+ $('storedCount').textContent=String(A.rows.length);
+ refreshCalcPicker();
+
+ const q=norm($('adminSearch').value),sec=$('adminSection').value,st=$('adminStatus').value;
+ let list=all.filter(s=>(!q||norm(s.name).includes(q))&&(!sec||s.section===sec)&&
+  (!st||(st==='pending'&&s.pending)||(st==='complete'&&!s.pending)||(st==='review'&&s.review)||(st==='duplicate'&&s.dup)));
+ const sortKey=$('adminSort').value;
+ const pctOf=(s,dflt)=>s.pct===null?dflt:s.pct;
+ const sorters={lowest:(a,b)=>pctOf(a,999)-pctOf(b,999),highest:(a,b)=>pctOf(b,-1)-pctOf(a,-1),name:(a,b)=>a.name.localeCompare(b.name),newest:(a,b)=>b.latest.localeCompare(a.latest)};
+ list.sort(sorters[sortKey]);
+ $('rowCount').textContent='Showing '+list.length+' of '+all.length+' student'+(all.length===1?'':'s');
+
+ const holder=$('adminTable');
+ if(!A.rows.length){holder.replaceChildren(el('div',{class:'empty'},el('strong',{text:'No evaluations yet'}),'Submitted peer evaluations will appear here.'));return}
+ if(!list.length){holder.replaceChildren(el('div',{class:'empty'},el('strong',{text:'No students match your filters'}),'Try clearing the filters or choosing another campus.'));return}
+
+ const body=el('tbody');
+ list.forEach(s=>{
+  const open=A.open.has(s.key);
+  const btn=el('button',{class:'btn btn-secondary btn-sm',type:'button','aria-expanded':String(open),text:open?'Hide details ↑':'View details ↓'});
+  const detail=el('tr',{class:'detail-row'+(open?'':' hidden')},el('td',{colspan:'8'},detailBody(s)));
+  btn.addEventListener('click',()=>{
+   const nowOpen=detail.classList.toggle('hidden')===false;
+   if(nowOpen)A.open.add(s.key);else A.open.delete(s.key);
+   btn.textContent=nowOpen?'Hide details ↑':'View details ↓';btn.setAttribute('aria-expanded',String(nowOpen));
+  });
+  body.append(el('tr',null,
+   el('td',null,el('div',{class:'person'},el('div',{class:'person-avatar','aria-hidden':'true',text:initials(s.name)}),el('div',null,el('div',{class:'cell-main',text:s.name}),el('div',{class:'cell-sub',text:A.campus==='all'?s.campus:'Student'})))),
+   el('td',null,el('span',{class:'sec-tag',text:s.section})),
+   el('td',{class:'num'},el('strong',{text:s.pct===null?'—':fmtPct(s.pct)})),
+   el('td',null,dedChip(s)),
+   el('td',{class:'num',text:s.rc+'/'+CONFIG.expectedPerStudent}),
+   el('td',{class:'num'},el('span',{class:'chip '+(s.dup?'bad':'mute'),text:s.sc+'/'+CONFIG.maxSubmissions})),
+   el('td',null,statusChips(s)),
+   el('td',{class:'actions no-print'},btn)
+  ),detail);
+ });
+ holder.replaceChildren(el('div',{class:'data-wrap'},el('table',{class:'data-table'},
+  el('thead',null,el('tr',null,el('th',{text:'Student'}),el('th',{text:'Section'}),el('th',{class:'num',text:'Peer evaluation'}),el('th',{text:'Suggested deduction'}),el('th',{class:'num',text:'Received'}),el('th',{class:'num',text:'Submitted'}),el('th',{text:'Status'}),el('th',{class:'no-print'}))),
+  body)));
+}
+
+function detailBody(s){
+ const anon=$('adminAnon').checked;
+ const ev=[...s.received].sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
+ const who=(r,i)=>anon?'Classmate '+(i+1):r.evaluator;
+ const list=(key)=>ev.length?el('ul',null,ev.map((r,i)=>el('li',null,el('span',{text:who(r,i)+': '}),r[key]))):el('p',{class:'sub',text:'No feedback received yet.'});
+ const ded=s.pct===null?null:deductionFor(s.pct);
+ const check=s.dup?'Duplicate detected: this student submitted '+s.sc+' evaluations but only '+CONFIG.maxSubmissions+' are allowed.'
+  :s.sc===0?'This student has not submitted an evaluation yet.':s.sc+' evaluation'+(s.sc===1?'':'s')+' submitted by this student.';
+ return el('div',{class:'detail-inside'},
+  el('h3',{text:'Feedback received by '+s.name+' · '+s.rc+'/'+CONFIG.expectedPerStudent+' evaluations'}),
+  ded&&ded.review?el('div',{class:'review-alert warning',style:'margin:0 0 12px'},el('span',{class:'alert-symbol','aria-hidden':'true',text:'⚠'}),el('span',null,el('strong',{text:'Investigate first. '}),'Average is below 60%. Read the comments and look for supporting evidence before considering any deduction.')):null,
+  el('div',{class:'comment-grid'},
+   el('div',{class:'comment-box'},el('h4',{text:'What did this classmate do well?'}),list('strength')),
+   el('div',{class:'comment-box'},el('h4',{text:'One area for improvement'}),list('improve'))),
+  s.rc?el('p',{class:'sub',style:'margin-top:12px'},'Average per criterion: '+CRIT_SHORT.map((n,i)=>n+' '+s.crit[i].toFixed(1)).join(' · ')):null,
+  el('details',{class:'indiv'},el('summary',{text:'View individual evaluations ('+s.rc+')'}),
+   s.rc?ev.map((r,i)=>evalCard(r,who(r,i),anon)):el('p',{class:'sub',text:'No evaluations submitted.'})),
+  el('div',{class:'cell-sub',style:'margin-top:12px;border-top:1px solid var(--line);padding-top:10px'},el('strong',{text:'Submission check: '}),check)
+ );
+}
+function evalCard(r,label,anon){
+ return el('div',{class:'eval-card'},
+  el('div',{class:'eval-card-head'},
+   el('div',null,el('div',{class:'cell-main',text:label+(anon?'':' · '+r.section)}),el('div',{class:'cell-sub',text:(anon?'':r.email+' · ')+fmtDate(r.createdAt)})),
+   el('div',{class:'btn-group'},el('span',{class:'chip ok',text:r.total+' / 20 · '+fmtPct(r.percent)}),el('button',{class:'btn btn-danger btn-sm no-print',type:'button',onclick:()=>deleteEval(r.id),text:'Delete'}))),
+  el('div',{class:'crit-grid'},CRIT_SHORT.map((n,i)=>el('div',null,el('b',{text:(r.ratings[i]||0)+' / 4'}),n))),
+  el('p',{class:'eval-text'},el('span',{text:'Did well: '}),r.strength),
+  el('p',{class:'eval-text'},el('span',{text:'Improvement: '}),r.improve));
+}
+async function deleteEval(id){
+ const r=A.rows.find(x=>x.id===id);if(!r)return;
+ if(!confirm('Permanently delete the evaluation by '+r.evaluator+' for '+r.classmate+'? This cannot be undone.'))return;
+ try{await Store.remove(id);await loadAdmin();showToast('Evaluation deleted.')}
+ catch(err){showToast('Could not delete. Please try again.')}
+}
+
+/* ---------- Score review ---------- */
+function refreshCalcPicker(){
+ const sel=$('calcStudent'),keep=sel.value;
+ const students=buildStudents(A.rows).filter(s=>s.rc>0).sort((a,b)=>a.name.localeCompare(b.name));
+ sel.replaceChildren(el('option',{value:'',text:'Enter percentage manually'}),...students.map(s=>el('option',{value:s.pct.toFixed(1),text:s.name+' — '+s.campus+' ('+fmtPct(s.pct)+')'})));
+ if([...sel.options].some(o=>o.value===keep))sel.value=keep;
+ runCalc();
+}
+function runCalc(){
+ const oRaw=$('calcOriginal').value,pRaw=$('calcPercent').value,o=Number(oRaw),p=Number(pRaw),out=$('calcOut');
+ if(oRaw===''||pRaw===''||!Number.isFinite(o)||!Number.isFinite(p)||o<0||o>20||p<0||p>100){out.replaceChildren(el('div',{text:'Enter a score from 0–20 and a percentage from 0–100.'}));return}
+ const r=deductionFor(p),adj=Math.max(0,o-r.d);
+ out.replaceChildren(el('div',{class:'sub',text:'Suggested adjusted score'}),el('div',{class:'big',text:fmtNum(adj)+' / 20'}),
+  el('p',{class:'sub',text:(r.review?'Below 60%: no automatic deduction; investigate and review evidence first.':'Suggested deduction: '+fmtNum(r.d)+' point'+(r.d===1?'':'s')+'.')+' Teacher review is required before any official deduction.'}));
+}
+$('calcStudent').addEventListener('change',()=>{if($('calcStudent').value!=='')$('calcPercent').value=$('calcStudent').value;runCalc()});
+$('calcOriginal').addEventListener('input',runCalc);
+$('calcPercent').addEventListener('input',()=>{$('calcStudent').value='';runCalc()});
+
+/* ---------- CSV ---------- */
+function exportCsv(){
+ if(!A.rows.length){showToast('There are no evaluations to export yet.');return}
+ const safe=v=>{let s=String(v==null?'':v);if(/^[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+ const head=['Campus','Submitted','Evaluator','Email','Section','Groupmate',...CRITERIA,'Total (/20)','Percent','Did well','Area for improvement'];
+ const lines=[head.map(safe).join(',')];
+ [...A.rows].sort((a,b)=>(a.campus||'').localeCompare(b.campus||'')||norm(a.classmate).localeCompare(norm(b.classmate))||a.createdAt.localeCompare(b.createdAt)).forEach(r=>{
+  lines.push([r.campus||'',fmtDate(r.createdAt),r.evaluator,r.email,r.section,r.classmate,...r.ratings,r.total,fmtPct(r.percent),r.strength,r.improve].map(safe).join(','));
+ });
+ const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+ const a=el('a',{href:URL.createObjectURL(blob),download:'peer-evaluations-'+new Date().toISOString().slice(0,10)+'.csv'});
+ document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---------- Reset data ---------- */
+$('openReset').addEventListener('click',()=>{$('resetError').textContent='';$('resetForm').reset();$('resetDialog').showModal();$('resetUser').focus()});
+$('resetForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const err=$('resetError'),btn=$('resetBtn');err.textContent='';
+ if($('resetPhrase').value.trim()!=='RESET DATA'){err.textContent='Type RESET DATA exactly to confirm.';return}
+ btn.disabled=true;btn.textContent='Deleting…';
+ try{
+  await Store.wipe($('resetUser').value.trim(),$('resetPass').value);
+  $('resetDialog').close();$('resetForm').reset();A.open.clear();
+  await loadAdmin();showToast('All evaluations were deleted.');
+ }catch(ex){
+  err.textContent=ex.message==='network'?'Cannot reach the server. Nothing was deleted.':ex.message==='bad-credentials'?'Incorrect username or password. Nothing was deleted.':'Something went wrong. Some evaluations may remain; press Refresh to check.';
+  $('resetPass').value='';
+ }finally{btn.disabled=false;btn.textContent='Delete everything'}
+});
+
+/* ---------- init ---------- */
+document.body.classList.add('step-one');syncSidebarToggle();calculateAdjustment();runCalc();
+if(Store.mode==='local')console.warn('Peer Evaluation: running in LOCAL TEST MODE. Add your Firebase config to CONFIG before deploying.');
+
+/* =====================================================================
+   FIRESTORE SECURITY RULES (paste in Firebase Console > Firestore > Rules)
+   Replace admin@peer-eval.app if you changed adminUsername / adminEmailDomain.
+
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /evaluations/{id} {
+         allow create: if request.resource.data.keys().hasOnly(
+             ['evaluator','email','campus','section','classmate','ratings','total','percent','strength','improve','createdAt'])
+           && request.resource.data.ratings.size() == 5
+           && request.resource.data.total >= 5 && request.resource.data.total <= 20
+           && request.resource.data.campus.size() <= 60
+           && request.resource.data.strength.size() <= 1000
+           && request.resource.data.improve.size() <= 1000;
+         allow read, delete: if request.auth != null
+           && request.auth.token.email == 'admin@peer-eval.app';
+         allow update: if false;
+       }
+     }
+   }
+   ===================================================================== */
+</script>
+</body>
+</html>
