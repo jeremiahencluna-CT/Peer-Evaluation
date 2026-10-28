@@ -4,13 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Peer Evaluation System | Grade 10 Computer Technology</title>
+<link rel="icon" type="image/png" href="./images/favicon.png">
 <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="step-one">
 <div class="app">
   <aside class="sidebar" id="sidebar" aria-label="Main navigation">
     <div class="brand">
-      <div class="brand-mark" aria-hidden="true">G10</div>
+      <div class="brand-mark"><img src="./images/peer-icon.png" alt="" width="43" height="43"></div>
       <div class="brand-copy"><strong>Peer Evaluation</strong><span id="brandSub">Computer Technology</span></div>
     </div>
     <div class="sidebar-controls">
@@ -50,7 +51,7 @@
 
     <!-- ================= STUDENT VIEW ================= -->
     <div id="studentApp">
-      <section class="welcome">
+      <section class="welcome evaluation-welcome">
         <div><div class="eyebrow">Computer Technology · Grade 10</div><h1 id="pageTitle">Peer Evaluation</h1><p id="pageDescription">Share thoughtful feedback about your groupmates’ contributions. Your responses support teacher review and help strengthen teamwork.</p></div>
         <div class="page-chip"><strong>4-step process</strong><br>Review your responses before submitting.</div>
       </section>
@@ -155,7 +156,7 @@
         <div class="review-actions"><button class="btn btn-secondary" id="backToEdit" type="button">← Back to edit</button><button class="btn btn-primary" id="submitBtn" type="button" disabled>Confirm &amp; submit ✓</button></div>
       </section>
       <section class="card done-card hidden" id="done">
-        <div class="done-icon" aria-hidden="true">✓</div>
+        <img class="done-illustration" src="./images/evaluation-success.png" alt="Checklist with a success checkmark" width="220" height="120">
         <h2>Evaluation submitted</h2>
         <p>Thank you. Your evaluation of <strong id="doneName"></strong> was recorded and will be reviewed by your teacher.</p>
         <p>Do you have another groupmate to evaluate?</p>
@@ -734,7 +735,7 @@ async function loadAdmin(manual){
   A.rows=await Store.list();A.loaded=true;renderAdmin();
   if(manual)showToast('Updated. '+A.rows.length+' evaluation'+(A.rows.length===1?'':'s')+' loaded.');
  }catch(err){
-  $('adminTable').replaceChildren(el('div',{class:'empty'},el('strong',{text:'Could not load evaluations'}),'Check your internet connection and your Firestore security rules, then press Refresh.'));
+  $('adminTable').replaceChildren(el('div',{class:'empty error-empty'},el('strong',{text:'Could not load evaluations'}),'Check your internet connection and your Firestore security rules, then press Refresh.'));
   $('stats').replaceChildren();
  }
 }
