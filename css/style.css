@@ -1010,3 +1010,98 @@ hr, .divider, .card-divider { border-color: #DCE4DD; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+
+
+/* ============================================================
+   IMAGE ASSETS — peer evaluation website
+   All image URLs are relative to css/style.css.
+   ============================================================ */
+
+/* Peer icon in the existing brand mark */
+.brand-mark {
+  overflow: hidden;
+  padding: 0;
+  background: #FFFFFF;
+  border: 1px solid rgba(213,183,121,.38);
+}
+.brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* Campus illustration in the student evaluation welcome banner */
+.evaluation-welcome {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #DCE4DD;
+  border-radius: 18px;
+  padding: clamp(20px, 3vw, 30px);
+  background-color: #FFFFFF;
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.99) 0%, rgba(255,255,255,.96) 42%, rgba(255,255,255,.40) 100%),
+    url("../images/school-illustration.png");
+  background-repeat: no-repeat;
+  background-position: center, right center;
+  background-size: cover, auto 125%;
+  box-shadow: 0 12px 30px rgba(18,76,56,.055);
+}
+.evaluation-welcome > div:first-child {
+  position: relative;
+  z-index: 1;
+  max-width: min(690px, 78%);
+}
+.evaluation-welcome .page-chip {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,.92);
+  border-color: rgba(220,228,221,.9);
+}
+
+/* Submission success artwork */
+.done-illustration {
+  display: block;
+  width: min(240px, 72%);
+  height: 126px;
+  object-fit: contain;
+  margin: 0 auto 12px;
+  border-radius: 14px;
+}
+.done-card .done-icon { display: none; }
+
+/* Empty and error states use the generated illustrations */
+.empty::before {
+  content: "";
+  display: block;
+  width: min(190px, 70%);
+  height: 100px;
+  margin: 0 auto 12px;
+  background: url("../images/empty-state.png") center / contain no-repeat;
+}
+.empty.error-empty::before {
+  background-image: url("../images/error-illustration.png");
+}
+.empty.error-empty strong { color: #B42332; }
+
+/* Keep images responsive and accessible on smaller screens */
+@media (max-width: 760px) {
+  .evaluation-welcome {
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,.97) 0%, rgba(255,255,255,.90) 100%),
+      url("../images/school-illustration.png");
+    background-size: cover, auto 100%;
+    background-position: center, right center;
+  }
+  .evaluation-welcome > div:first-child { max-width: 100%; }
+  .evaluation-welcome .page-chip { white-space: normal; }
+  .done-illustration { height: 108px; }
+}
+@media (max-width: 480px) {
+  .evaluation-welcome { padding: 18px; }
+  .done-illustration { height: 92px; }
+  .empty::before { height: 78px; }
+}
