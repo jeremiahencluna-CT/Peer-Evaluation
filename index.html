@@ -179,7 +179,7 @@
       <!-- Management -->
       <section id="viewManagement">
         <section class="welcome">
-          <div><div class="eyebrow">Overview</div><h1>Management</h1><p>Select a campus to see the peer evaluations received by its students. Open a student to read the comments and individual ratings.</p></div>
+          <div><div class="eyebrow">Overview</div><h1>Management</h1><p>Select a campus to review peer evaluations and approve suggested score adjustments. Open a student to read comments and individual ratings.</p></div>
           <div class="admin-actions no-print">
             <button class="btn btn-secondary" type="button" id="refreshBtn">↻ Refresh</button>
             <button class="btn btn-secondary" type="button" id="csvBtn">⬇ Export CSV</button>
@@ -189,8 +189,12 @@
         <div id="modeBanner" class="review-alert warning hidden"><span class="alert-symbol" aria-hidden="true">⚠</span><span><strong>Local test mode.</strong> Submissions are saved only in this browser, so students on other devices will NOT appear here. Connect Firebase (see the CONFIG block at the top of the script) before using this with your class.</span></div>
         <div class="campus-grid no-print" id="campusGrid" style="margin-top:14px"></div>
         <div class="stat-grid" id="stats"></div>
+        <section class="card no-print">
+          <div class="panel-head"><div><h2>Teacher review queue</h2><p class="sub">Review priority is shown here. Use the approval checkbox in the Suggested deduction column below. Below 60% requires investigation first; approval only marks the review complete and does not apply a deduction.</p></div></div>
+          <div id="teacherReviewQueue"><div class="empty">Review items will appear here when evaluations are loaded.</div></div>
+        </section>
         <section class="card">
-          <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">One row per student. Suggested deductions are advice only; the teacher decides.</p></div></div>
+          <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">One row per student. Use the mini checkbox in Suggested deduction to approve the adjustment or mark an urgent review complete.</p></div></div>
           <div class="toolbar no-print">
             <div class="grow"><input type="search" id="adminSearch" placeholder="Search student name…" aria-label="Search student"></div>
             <select id="adminSection" aria-label="Filter by section"><option value="">All sections</option></select>
@@ -219,18 +223,13 @@
           </tbody></table></div>
         </section>
         <section class="card">
-          <div class="panel-head"><div><h2>Score adjustment calculator</h2><p class="sub">Pick a student to use their real average, or type a percentage. Not an official grade record.</p></div></div>
+          <div class="panel-head"><div><h2>Score adjustment calculator</h2><p class="sub">Manual what-if calculator only; individual student adjustments and approval are managed in the Management tab.</p></div></div>
           <div class="calc-row">
-            <div class="field"><label class="field-label" for="calcStudent">Student</label><select id="calcStudent"><option value="">Enter percentage manually</option></select></div>
             <div class="field"><label class="field-label" for="calcTotal">Total possible score</label><input id="calcTotal" type="number" min="0.5" step="any" value="20"><p class="help">Policy deductions are scaled from the 20-point reference.</p><div class="total-score-presets" aria-label="Choose total possible score"><button type="button" data-admin-total="10">Out of 10</button><button type="button" data-admin-total="20">Out of 20</button><button type="button" data-admin-total="25">Out of 25</button><button type="button" data-admin-total="50">Out of 50</button></div></div>
             <div class="field"><label class="field-label" for="calcOriginal">Original score</label><input id="calcOriginal" type="number" min="0" max="20" step="0.5" value="20"></div>
             <div class="field"><label class="field-label" for="calcPercent">Average peer evaluation (%)</label><input id="calcPercent" type="number" min="0" max="100" step="0.1" value="75"></div>
           </div>
           <div class="calc-result" id="calcOut" aria-live="polite"></div>
-        </section>
-        <section class="card">
-          <div class="panel-head"><div><h2>Teacher review queue</h2><p class="sub">Below 60% is urgent. Evaluations below 90%, including those with a suggested deduction, are also listed for routine review.</p></div></div>
-          <div id="teacherReviewQueue"><div class="empty">Review items will appear here when evaluations are loaded.</div></div>
         </section>
       </section>
 
@@ -846,7 +845,7 @@ function buildStudents(rows){
   s.pending=s.rc<CONFIG.expectedPerStudent;
   s.review=s.rc>0&&s.pct<CONFIG.reviewBelow;
   s.dup=s.sc>CONFIG.maxSubmissions;
-  s.deductionImplemented=s.rc>0&&s.received.every(r=>r.deductionImplemented===true);
+  s.adjustmentApproved=s.rc>0&&s.received.every(r=>r.adjustmentApproved===true);
   return s;
  });
 }
@@ -869,7 +868,18 @@ function statusChips(s){
  const out=[el('span',{class:'chip '+(s.pending?'warn':'ok'),text:s.pending?'Pending':'Complete'})];
  if(s.review)out.push(el('span',{class:'chip bad',text:'Review'}));
  if(s.dup)out.push(el('span',{class:'chip bad',text:'Duplicate'}));
+ if(s.rc>0&&s.pct<90)out.push(el('span',{class:'chip '+(s.adjustmentApproved?'ok':'warn'),text:s.adjustmentApproved?(s.pct<60?'Review complete':'Approved'):'Pending approval'}));
  return out;
+}
+async function saveAdjustmentApproval(s,next,checkbox){
+ checkbox.disabled=true;
+ try{
+  const patch={adjustmentApproved:next,adjustmentApprovedAt:next?new Date().toISOString():null};
+  await Promise.all(s.received.map(r=>Store.patch(r.id,patch)));
+  A.rows=await Store.list();renderAdmin();
+  showToast(next?(s.pct<60?'Review marked complete. No deduction was applied.':'Adjustment approved.'):'Approval status cleared.');
+ }catch(err){checkbox.checked=!next;showToast('Could not save approval status. Please try again.');}
+ finally{checkbox.disabled=false;}
 }
 function dedChip(s){
  if(s.pct===null)return el('span',{class:'chip mute',text:'—'});
@@ -895,7 +905,6 @@ function renderAdmin(){
  );
  $('tableTitle').textContent='Received evaluations — '+(A.campus==='all'?'All campuses':A.campus);
  $('storedCount').textContent=String(A.rows.length);
- refreshCalcPicker();
  renderTeacherReviewQueue(all);
 
  const q=norm($('adminSearch').value),sec=$('adminSection').value,st=$('adminStatus').value;
@@ -925,7 +934,16 @@ function renderAdmin(){
    el('td',null,el('div',{class:'person'},el('div',{class:'person-avatar','aria-hidden':'true',text:initials(s.name)}),el('div',null,el('div',{class:'cell-main',text:s.name}),el('div',{class:'cell-sub',text:A.campus==='all'?s.campus:'Student'})))),
    el('td',null,el('span',{class:'sec-tag',text:s.section})),
    el('td',{class:'num'},el('strong',{text:s.pct===null?'—':fmtPct(s.pct)})),
-   el('td',null,dedChip(s)),
+   el('td',null,(()=>{
+    const cell=el('div',{style:'display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:120px'},dedChip(s));
+    if(s.rc>0&&s.pct<90){
+     const urgent=s.pct<60;
+     const check=el('input',{type:'checkbox',checked:s.adjustmentApproved,'aria-label':(urgent?'Mark review complete for ':'Approve adjustment for ')+s.name,style:'width:14px;height:14px;accent-color:var(--green);margin:0'});
+     check.addEventListener('change',()=>saveAdjustmentApproval(s,check.checked,check));
+     cell.append(el('label',{class:'check',style:'font-size:12px;gap:6px;align-items:center'},check,el('span',{text:urgent?'Review complete':'Approve adjustment'})));
+    }
+    return cell;
+   })()),
    el('td',{class:'num',text:s.rc+'/'+CONFIG.expectedPerStudent}),
    el('td',{class:'num'},el('span',{class:'chip '+(s.dup?'bad':'mute'),text:s.sc+'/'+CONFIG.maxSubmissions})),
    el('td',null,statusChips(s)),
@@ -973,7 +991,7 @@ async function deleteEval(id){
  catch(err){showToast('Could not delete. Please try again.')}
 }
 
-/* ---------- Teacher review queue and deduction tracking ---------- */
+/* ---------- Management review queue, approval, and deduction tracking ---------- */
 function renderTeacherReviewQueue(students){
  const host=$('teacherReviewQueue');
  const items=students.filter(s=>s.rc>0&&s.pct<90).sort((a,b)=>((a.pct<60)?0:1)-((b.pct<60)?0:1)||a.pct-b.pct||a.name.localeCompare(b.name));
@@ -981,32 +999,19 @@ function renderTeacherReviewQueue(students){
  const list=el('div',{class:'review-queue-list'});
  items.forEach(s=>{
   const urgent=s.pct<60;
-  const check=el('input',{type:'checkbox',checked:String(s.deductionImplemented), 'aria-label':'Mark deduction implemented for '+s.name});
-  check.addEventListener('change',async()=>{
-   check.disabled=true;
-   try{
-    const patch={deductionImplemented:check.checked,deductionImplementedAt:check.checked?new Date().toISOString():null};
-    await Promise.all(s.received.map(r=>Store.patch(r.id,patch)));
-    A.rows=await Store.list(); renderAdmin(); showToast(check.checked?'Deduction marked as implemented.':'Deduction implementation mark cleared.');
-   }catch(err){check.checked=!check.checked;showToast('Could not save the deduction status. Please try again.');}
-   finally{check.disabled=false;}
-  });
+  const status=s.adjustmentApproved
+    ?el('span',{class:'chip ok',text:urgent?'Review complete':'Approved'})
+    :el('span',{class:'chip warn',text:'Pending approval'});
   const box=el('div',{class:'review-queue-item',style:'display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap'},
-   el('div',{style:'min-width:220px;flex:1'},el('div',{class:'btn-group',style:'margin-bottom:6px'},el('strong',{text:s.name}),el('span',{class:'chip '+(urgent?'bad':'warn'),text:urgent?'URGENT · Below 60%':'Routine review'})),el('div',{class:'sub',text:(s.campus||'Unspecified')+' · '+s.section+' · Average '+fmtPct(s.pct)}),el('div',{class:'sub',text:urgent?'Investigate comments and supporting evidence before considering a deduction.':'Review evidence and decide whether the suggested deduction is appropriate.'})),
-   el('label',{class:'check',style:'max-width:260px;align-items:flex-start'},check,el('span',{text:'Deduction implemented by teacher'})));
+   el('div',{style:'min-width:220px;flex:1'},el('div',{class:'btn-group',style:'margin-bottom:6px'},el('strong',{text:s.name}),el('span',{class:'chip '+(urgent?'bad':'warn'),text:urgent?'URGENT · Below 60%':'Routine review'}),status),el('div',{class:'sub',text:(s.campus||'Unspecified')+' · '+s.section+' · Average '+fmtPct(s.pct)}),el('div',{class:'sub',text:urgent?'Investigate comments and supporting evidence first. No automatic deduction is recommended.':'Review evidence before approving the suggested score adjustment.'})),
+   el('div',{style:'display:flex;flex-direction:column;gap:10px;min-width:235px'},
+    el('div',{class:'sub',text:'Use the approval checkbox in the Suggested deduction column in the table below.'})));
   list.append(box);
  });
  host.replaceChildren(list);
 }
 
 /* ---------- Score review ---------- */
-function refreshCalcPicker(){
- const sel=$('calcStudent'),keep=sel.value;
- const students=buildStudents(A.rows).filter(s=>s.rc>0).sort((a,b)=>a.name.localeCompare(b.name));
- sel.replaceChildren(el('option',{value:'',text:'Enter percentage manually'}),...students.map(s=>el('option',{value:s.pct.toFixed(1),text:s.name+' — '+s.campus+' ('+fmtPct(s.pct)+')'})));
- if([...sel.options].some(o=>o.value===keep))sel.value=keep;
- runCalc();
-}
 function runCalc(){
  const totalRaw=$('calcTotal').value,oRaw=$('calcOriginal').value,pRaw=$('calcPercent').value,total=Number(totalRaw),o=Number(oRaw),p=Number(pRaw),out=$('calcOut');
  $('calcOriginal').max=total>0?String(total):'20';
@@ -1015,11 +1020,10 @@ function runCalc(){
  out.replaceChildren(el('div',{class:'sub',text:'Suggested adjusted score'}),el('div',{class:'big',text:fmtNum(adj)+' / '+fmtNum(total)}),
   el('p',{class:'sub',text:(r.review?'Below 60%: urgent investigation; no automatic deduction.': 'Suggested deduction: '+fmtNum(scaledDeduction)+' point'+(scaledDeduction===1?'':'s')+'.')+' Policy reference is a 20-point activity, scaled proportionally for this total. Teacher review is required before any official deduction.'}));
 }
-$('calcStudent').addEventListener('change',()=>{if($('calcStudent').value!=='')$('calcPercent').value=$('calcStudent').value;runCalc()});
 $('calcOriginal').addEventListener('input',runCalc);
 $('calcTotal').addEventListener('input',runCalc);
 document.querySelectorAll('[data-admin-total]').forEach(button=>button.addEventListener('click',()=>{ $('calcTotal').value=button.dataset.adminTotal; if(Number($('calcOriginal').value)>Number(button.dataset.adminTotal)) $('calcOriginal').value=button.dataset.adminTotal; runCalc(); }));
-$('calcPercent').addEventListener('input',()=>{$('calcStudent').value='';runCalc()});
+$('calcPercent').addEventListener('input',runCalc);
 
 /* ---------- CSV ---------- */
 function exportCsv(){
