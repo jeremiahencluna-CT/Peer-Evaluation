@@ -5,13 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Peer Evaluation System | Grade 10 Computer Technology</title>
 <link rel="icon" type="image/png" href="./images/favicon.png">
+
+
+
 <link rel="stylesheet" href="./css/style.css">
-<style>
-.total-score-presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.total-score-presets button{border:1px solid #d9e6dc;background:#f3f8f4;color:#124c38;border-radius:999px;padding:9px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
-.total-score-presets button:hover,.total-score-presets button:focus-visible{background:#e6f1e9;border-color:#b8d3c0;outline:none}
-.total-score-presets button:active{transform:scale(.98)}
-</style>
+
+
 
 </head>
 <body class="step-one">
@@ -211,18 +210,7 @@
           </div>
         </section>
 
-        <div class="dashboard-lower-grid">
-          <section class="card campus-breakdown-card">
-            <div class="panel-head"><div><h2>Campus Breakdown</h2><p class="sub">Compare evaluation activity across campuses.</p></div></div>
-            <div class="data-wrap"><table class="data-table campus-breakdown-table"><thead><tr><th>Campus</th><th class="num">Students evaluated</th><th class="num">Evaluations received</th><th class="num">Needs review</th><th class="num">Average rating</th></tr></thead><tbody id="campusBreakdown"><tr><td colspan="5" class="loading">Loading campus summary…</td></tr></tbody></table></div>
-          </section>
-          <section class="card progress-card">
-            <div class="panel-head"><div><h2>Evaluation Activity</h2><p class="sub">A snapshot of recorded evaluation activity.</p></div></div>
-            <div class="activity-summary"><div class="activity-number"><strong id="activityEvaluations">0</strong><span>evaluations received</span></div><div class="activity-number"><strong id="activityStudents">0</strong><span>students with feedback</span></div></div>
-            <div class="activity-track" role="progressbar" aria-label="Evaluations relative to recorded student records" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="activityProgress"><div class="activity-fill" id="activityProgressFill"></div></div>
-            <p class="sub activity-note" id="activityNote">This summary reflects recorded evaluations, not a complete class roster.</p>
-          </section>
-        </div>
+
 
         <section class="card received-evaluations-card">
           <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">Pending approvals appear first. Use the checkbox to approve a suggested adjustment or mark an urgent review complete. Scores of 90% or higher need no deduction and are completed automatically.</p></div></div>
@@ -945,30 +933,6 @@ function renderAdmin(){
   el('article',{class:'stat stat-submissions'},el('div',{class:'stat-icon','aria-hidden':'true'},'▤'),el('span',{text:'Evaluations received'}),el('strong',{text:String(scope.length)}),el('small',{text:'total peer submissions'})),
   el('article',{class:'stat stat-rating'},el('div',{class:'stat-icon','aria-hidden':'true'},'★'),el('span',{text:'Average peer rating'}),el('strong',{text:overall===null?'—':fmtPct(overall)}),el('small',{text:'across this view'}))
  );
- // Campus breakdown always shows each campus, while the top metrics follow the selected campus.
- const campusRows=[['all','All Campuses',A.rows],...campusList().map(c=>[c,c,A.rows.filter(r=>(r.campus||'Unspecified')===c)])];
- $('campusBreakdown').replaceChildren(...campusRows.map(([key,label,rows])=>{
-  const students=buildStudents(rows),withFeedback=students.filter(s=>s.rc>0),urgent=students.filter(s=>s.review).length;
-  const avg=rows.length?rows.reduce((sum,r)=>sum+r.percent,0)/rows.length:null;
-  const tr=el('tr',{class:(A.campus===key?'selected-campus-row':'')});
-  const nameCell=el('td');
-  nameCell.append(el('button',{class:'campus-table-select',type:'button','aria-pressed':String(A.campus===key),onclick:()=>{A.campus=key;renderAdmin();},text:label}));
-  tr.append(nameCell,
-   el('td',{class:'num',text:String(withFeedback.length)}),
-   el('td',{class:'num',text:String(rows.length)}),
-   el('td',{class:'num '+(urgent?'urgent-number':'clear-number'),text:String(urgent)}),
-   el('td',{class:'num',text:avg===null?'—':fmtPct(avg)})
-  );
-  return tr;
- }));
- $('activityEvaluations').textContent=String(scope.length);
- $('activityStudents').textContent=String(evaluated.length);
- const activityPct=all.length?Math.round(evaluated.length/all.length*100):0;
- $('activityProgressFill').style.width=activityPct+'%';
- $('activityProgress').setAttribute('aria-valuenow',String(activityPct));
- $('activityNote').textContent=all.length
-  ? activityPct+'% of student records in this view have received feedback. This is based on submitted records, not a complete class roster.'
-  : 'No evaluation records are available for this selection yet.';
  $('tableTitle').textContent='Received evaluations — '+(A.campus==='all'?'All campuses':A.campus);
  $('storedCount').textContent=String(A.rows.length);
 
