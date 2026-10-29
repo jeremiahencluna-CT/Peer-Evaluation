@@ -562,15 +562,25 @@ $('calculateBtn').addEventListener('click',calculateAdjustment);
 $('originalScore').addEventListener('input',calculateAdjustment);
 $('totalPossibleScore').addEventListener('input',calculateAdjustment);
 $('peerPercent').addEventListener('input',calculateAdjustment);
+function syncScorePresetButtons(selector, value){
+ document.querySelectorAll(selector).forEach(button=>{
+  const selected=Number(button.dataset.totalScore ?? button.dataset.adminTotal)===Number(value);
+  button.classList.toggle('is-selected',selected);
+  button.setAttribute('aria-pressed',String(selected));
+ });
+}
 document.querySelectorAll('[data-total-score]').forEach(button=>{
  button.addEventListener('click',()=>{
   const total=Number(button.dataset.totalScore);
   $('totalPossibleScore').value=total;
   $('originalScore').max=total;
   if(Number($('originalScore').value)>total)$('originalScore').value=total;
+  syncScorePresetButtons('[data-total-score]',total);
   calculateAdjustment();
  });
 });
+$('totalPossibleScore').addEventListener('input',()=>syncScorePresetButtons('[data-total-score]',$('totalPossibleScore').value));
+syncScorePresetButtons('[data-total-score]',$('totalPossibleScore').value);
 $('confirmReview').addEventListener('change',()=> $('submitBtn').disabled = !$('confirmReview').checked);
 $('submitBtn').addEventListener('click',submitEvaluation);
 $('doneAnother').addEventListener('click',()=>{resetEvaluation();updateAttemptsNotice();goStep(2);$('classmate').focus()});
@@ -920,7 +930,7 @@ function renderAdmin(){
  const all=buildStudents(scope);
  const evaluated=all.filter(s=>s.rc>0);
  const overall=scope.length?scope.reduce((a,r)=>a+r.percent,0)/scope.length:null;
- const needs=all.filter(s=>s.review).length;
+ const needs=all.filter(s=>s.review&&!s.adjustmentApproved).length;
  const campusLabel=A.campus==='all'?'All Campuses':A.campus;
  $('summaryCampusName').textContent=campusLabel;
  $('needsReviewCount').textContent=String(needs);
@@ -1035,7 +1045,15 @@ function runCalc(){
 }
 $('calcOriginal').addEventListener('input',runCalc);
 $('calcTotal').addEventListener('input',runCalc);
-document.querySelectorAll('[data-admin-total]').forEach(button=>button.addEventListener('click',()=>{ $('calcTotal').value=button.dataset.adminTotal; if(Number($('calcOriginal').value)>Number(button.dataset.adminTotal)) $('calcOriginal').value=button.dataset.adminTotal; runCalc(); }));
+document.querySelectorAll('[data-admin-total]').forEach(button=>button.addEventListener('click',()=>{
+ const total=Number(button.dataset.adminTotal);
+ $('calcTotal').value=total;
+ if(Number($('calcOriginal').value)>total)$('calcOriginal').value=total;
+ syncScorePresetButtons('[data-admin-total]',total);
+ runCalc();
+}));
+$('calcTotal').addEventListener('input',()=>syncScorePresetButtons('[data-admin-total]',$('calcTotal').value));
+syncScorePresetButtons('[data-admin-total]',$('calcTotal').value);
 $('calcPercent').addEventListener('input',runCalc);
 
 /* ---------- CSV ---------- */
