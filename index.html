@@ -190,11 +190,11 @@
         <div class="campus-grid no-print" id="campusGrid" style="margin-top:14px"></div>
         <div class="stat-grid" id="stats"></div>
         <section class="card">
-          <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">One row per student. Use the mini checkbox in Suggested deduction to approve the adjustment or mark an urgent review complete.</p></div></div>
+          <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">Pending approvals appear first. Use the checkbox to approve a suggested adjustment or mark an urgent review complete. Scores of 90% or higher need no deduction and are completed automatically.</p></div></div>
           <div class="toolbar no-print">
             <div class="grow"><input type="search" id="adminSearch" placeholder="Search student name…" aria-label="Search student"></div>
             <select id="adminSection" aria-label="Filter by section"><option value="">All sections</option></select>
-            <select id="adminStatus" aria-label="Filter by status"><option value="">All statuses</option><option value="pending">Pending: fewer evaluations than expected</option><option value="complete">Complete</option><option value="review">Needs review</option><option value="duplicate">Duplicate submission</option></select>
+            <select id="adminStatus" aria-label="Filter by review status"><option value="">All review statuses</option><option value="urgent">Urgent Review — below 60%</option><option value="approval">Pending Approval — 60–89.9%</option><option value="complete">Complete — no deduction or approved</option><option value="missing">Incomplete submissions</option><option value="duplicate">Duplicate submissions</option></select>
             <select id="adminSort" aria-label="Sort"><option value="lowest">Lowest rating first</option><option value="highest">Highest rating first</option><option value="name">Name A–Z</option><option value="newest">Newest first</option></select>
             <label class="check"><input type="checkbox" id="adminAnon"> Hide evaluator names</label>
             <button class="btn btn-secondary btn-sm" type="button" id="clearFilters">Clear filters</button>
@@ -397,36 +397,23 @@ const Store = {
     if (this.mode==='local'){
       const rows = this.localRead();
       const email = norm(rec.email);
-      const existingIndex = rows.findIndex(r => r.id === id);
-      const existingRecord = existingIndex >= 0 ? rows[existingIndex] : null;
-      if (existingRecord && existingRecord.resubmitAllowed === true) {
-        const history = [...(existingRecord.revisionHistory || []), {...existingRecord, resubmitAllowed:false, archivedAt:new Date().toISOString()}];
-        rows[existingIndex] = {...rec, id, resubmitAllowed:false, adjustmentApproved:false, adjustmentApprovedAt:null, revisionHistory:history};
-        this.localWrite(rows); return {resubmitted:true};
-      }
       const sameEvaluator = rows.filter(r => norm(r.email) === email);
       if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
-      if (existingRecord) throw new Error('duplicate');
+      if (rows.some(r => r.id === id)) throw new Error('duplicate');
       if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
-      rows.push({id, ...rec, resubmitAllowed:false, revisionHistory:[]}); this.localWrite(rows); return {resubmitted:false};
+      rows.push({id, ...rec}); this.localWrite(rows); return;
     }
     await this.init();
-    // Admin-authorized replacement is allowed only for the exact evaluation ID.
-    // This client-side check should be reinforced with authenticated Firestore rules.
+    // Apply the same attempt and near-duplicate checks in local and Firebase modes.
+    // This is a client-side safeguard; production Firestore rules should also enforce limits.
     const existing = await this.list();
     const email = norm(rec.email);
-    const existingRecord = existing.find(r => r.id === id);
-    const {fs, db} = this.fb;
-    if (existingRecord && existingRecord.resubmitAllowed === true) {
-      const history = [...(existingRecord.revisionHistory || []), {...existingRecord, resubmitAllowed:false, archivedAt:new Date().toISOString()}];
-      try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), {...rec, resubmitAllowed:false, adjustmentApproved:false, adjustmentApprovedAt:null, revisionHistory:history}); return {resubmitted:true}; }
-      catch(e){ if (e && e.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
-    }
     const sameEvaluator = existing.filter(r => norm(r.email) === email);
     if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
-    if (existingRecord || existing.some(r => norm(r.email) === email && norm(r.classmate) === norm(rec.classmate))) throw new Error('duplicate');
+    if (existing.some(r => r.id === id || (norm(r.email) === email && norm(r.classmate) === norm(rec.classmate)))) throw new Error('duplicate');
     if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
-    try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), {...rec, resubmitAllowed:false, revisionHistory:[]}); return {resubmitted:false}; }
+    const {fs, db} = this.fb;
+    try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), rec); }
     catch(e){ if (e && e.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
   },
   async list(){
@@ -705,8 +692,8 @@ async function submitEvaluation(){
   // submission uses the final allowed attempt, clear all student-entered data.
   const rowsBefore=Store.mode==='local'?Store.localRead():await Store.list();
   const usedBefore=rowsBefore.filter(r=>norm(r.email)===norm(rec.email)).length;
-  const saveResult=await Store.add(rec);
-  const finalAttempt=!saveResult?.resubmitted && (usedBefore+1)>=CONFIG.maxSubmissions;
+  await Store.add(rec);
+  const finalAttempt=(usedBefore+1)>=CONFIG.maxSubmissions;
   if(finalAttempt)resetAllStudentData();
   showDone(rec.classmate,finalAttempt);
  }catch(err){
@@ -856,6 +843,8 @@ function buildStudents(rows){
   s.review=s.rc>0&&s.pct<CONFIG.reviewBelow;
   s.dup=s.sc>CONFIG.maxSubmissions;
   s.adjustmentApproved=s.rc>0&&s.received.every(r=>r.adjustmentApproved===true);
+  s.noDeduction=s.rc>0&&s.pct>=90;
+  s.workflowStatus=s.rc===0?'missing':s.pct<60?(s.adjustmentApproved?'complete':'urgent'):(s.pct<90?(s.adjustmentApproved?'complete':'approval'):'complete');
   return s;
  });
 }
@@ -875,10 +864,11 @@ function renderCampuses(){
  grid.replaceChildren(make('all','All campuses','∑'),...campusList().map(c=>make(c,c,c[0].toUpperCase())));
 }
 function statusChips(s){
- const out=[el('span',{class:'chip '+(s.pending?'warn':'ok'),text:s.pending?'Pending':'Complete'})];
- if(s.review)out.push(el('span',{class:'chip bad',text:'Review'}));
- if(s.dup)out.push(el('span',{class:'chip bad',text:'Duplicate'}));
- if(s.rc>0&&s.pct<90)out.push(el('span',{class:'chip '+(s.adjustmentApproved?'ok':'warn'),text:s.adjustmentApproved?(s.pct<60?'Review complete':'Approved'):'Pending approval'}));
+ const labels={urgent:['bad','Urgent review'],approval:['warn','Pending approval'],complete:['ok','Complete'],missing:['mute','No evaluations received']};
+ const item=labels[s.workflowStatus]||labels.missing;
+ const out=[el('span',{class:'chip '+item[0],text:item[1]})];
+ if(s.pending)out.push(el('span',{class:'chip mute',text:'Missing expected feedback'}));
+ if(s.dup)out.push(el('span',{class:'chip bad',text:'Duplicate submission'}));
  return out;
 }
 async function saveAdjustmentApproval(s,next,checkbox){
@@ -918,11 +908,12 @@ function renderAdmin(){
 
  const q=norm($('adminSearch').value),sec=$('adminSection').value,st=$('adminStatus').value;
  let list=all.filter(s=>(!q||norm(s.name).includes(q))&&(!sec||s.section===sec)&&
-  (!st||(st==='pending'&&s.pending)||(st==='complete'&&!s.pending)||(st==='review'&&s.review)||(st==='duplicate'&&s.dup)));
+  (!st||(st===s.workflowStatus)||(st==='missing'&&s.pending)||(st==='duplicate'&&s.dup)));
  const sortKey=$('adminSort').value;
  const pctOf=(s,dflt)=>s.pct===null?dflt:s.pct;
  const sorters={lowest:(a,b)=>pctOf(a,999)-pctOf(b,999),highest:(a,b)=>pctOf(b,-1)-pctOf(a,-1),name:(a,b)=>a.name.localeCompare(b.name),newest:(a,b)=>b.latest.localeCompare(a.latest)};
- list.sort(sorters[sortKey]);
+ const priority={approval:0,urgent:1,complete:2,missing:3};
+ list.sort((a,b)=>(priority[a.workflowStatus]??4)-(priority[b.workflowStatus]??4)||sorters[sortKey](a,b));
  $('rowCount').textContent='Showing '+list.length+' of '+all.length+' student'+(all.length===1?'':'s');
 
  const holder=$('adminTable');
@@ -947,10 +938,12 @@ function renderAdmin(){
     const cell=el('div',{style:'display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:120px'},dedChip(s));
     if(s.rc>0&&s.pct<90){
      const urgent=s.pct<60;
-     const check=el('input',{type:'checkbox',checked:s.adjustmentApproved===true,'aria-label':(urgent?'Mark review complete for ':'Approve adjustment for ')+s.name,style:'width:14px;height:14px;accent-color:var(--green);margin:0'});
+     const check=el('input',{type:'checkbox',checked:s.adjustmentApproved===true,'aria-label':(urgent?'Mark urgent review complete for ':'Approve adjustment for ')+s.name,style:'width:14px;height:14px;accent-color:var(--green);margin:0'});
      check.checked = s.adjustmentApproved === true;
      check.addEventListener('change',()=>saveAdjustmentApproval(s,check.checked,check));
-     cell.append(el('label',{class:'check',style:'font-size:12px;gap:6px;align-items:center'},check,el('span',{text:urgent?'Review complete':'Approve adjustment'})));
+     cell.append(el('label',{class:'check',style:'font-size:12px;gap:6px;align-items:center'},check,el('span',{text:urgent?'Mark review complete':'Approve adjustment'})));
+    }else if(s.noDeduction){
+     cell.append(el('span',{class:'chip ok',text:'No deduction needed'}));
     }
     return cell;
    })()),
@@ -986,35 +979,18 @@ function detailBody(s){
  );
 }
 function evalCard(r,label,anon){
- const allowBtn=el('button',{class:'btn btn-secondary btn-sm no-print',type:'button',text:r.resubmitAllowed?'Resubmission allowed':'Allow resubmission'});
- allowBtn.addEventListener('click',()=>toggleResubmission(r,allowBtn));
  return el('div',{class:'eval-card'},
   el('div',{class:'eval-card-head'},
    el('div',null,el('div',{class:'cell-main',text:label+(anon?'':' · '+r.section)}),el('div',{class:'cell-sub',text:(anon?'':r.email+' · ')+fmtDate(r.createdAt)})),
-   el('div',{class:'btn-group'},el('span',{class:'chip ok',text:r.total+' / 20 · '+fmtPct(r.percent)}),allowBtn,el('button',{class:'btn btn-danger btn-sm no-print',type:'button',onclick:()=>deleteEval(r.id),text:'Remove evaluation'}))),
-  r.resubmitAllowed?el('div',{class:'review-alert info',style:'margin:10px 0 0'},el('span',{class:'alert-symbol','aria-hidden':'true',text:'↻'}),el('span',null,el('strong',{text:'Resubmission enabled. '}),'The student can submit a replacement for this specific evaluation. The permission closes automatically after the replacement is submitted.')):null,
+   el('div',{class:'btn-group'},el('span',{class:'chip ok',text:r.total+' / 20 · '+fmtPct(r.percent)}),el('button',{class:'btn btn-danger btn-sm no-print',type:'button',onclick:()=>deleteEval(r.id),text:'Delete'}))),
   el('div',{class:'crit-grid'},CRIT_SHORT.map((n,i)=>el('div',null,el('b',{text:(r.ratings[i]||0)+' / 4'}),n))),
   el('p',{class:'eval-text'},el('span',{text:'Did well: '}),r.strength),
   el('p',{class:'eval-text'},el('span',{text:'Improvement: '}),r.improve));
 }
-
-async function toggleResubmission(r,button){
- const next=r.resubmitAllowed!==true;
- if(next && !confirm('Allow '+r.evaluator+' ('+r.email+') to resubmit the evaluation for '+r.classmate+'? The current evaluation remains active until a replacement is submitted.'))return;
- if(!next && !confirm('Cancel resubmission permission for this evaluation?'))return;
- button.disabled=true;
- try{
-  await Store.patch(r.id,{resubmitAllowed:next,resubmitAllowedAt:next?new Date().toISOString():null});
-  await loadAdmin();
-  showToast(next?'Resubmission allowed for this evaluation.':'Resubmission permission cancelled.');
- }catch(err){showToast('Could not update resubmission permission. Please try again.');}
- finally{button.disabled=false;}
-}
-
 async function deleteEval(id){
  const r=A.rows.find(x=>x.id===id);if(!r)return;
- if(!confirm('Remove the evaluation by '+r.evaluator+' for '+r.classmate+' from active results? This cannot be undone.'))return;
- try{await Store.remove(id);await loadAdmin();showToast('Evaluation removed from active results.')}
+ if(!confirm('Permanently delete the evaluation by '+r.evaluator+' for '+r.classmate+'? This cannot be undone.'))return;
+ try{await Store.remove(id);await loadAdmin();showToast('Evaluation deleted.')}
  catch(err){showToast('Could not delete. Please try again.')}
 }
 
