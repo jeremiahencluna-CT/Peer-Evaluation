@@ -6,6 +6,13 @@
 <title>Peer Evaluation System | Grade 10 Computer Technology</title>
 <link rel="icon" type="image/png" href="./images/favicon.png">
 <link rel="stylesheet" href="./css/style.css">
+<style>
+.total-score-presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.total-score-presets button{border:1px solid #d9e6dc;background:#f3f8f4;color:#124c38;border-radius:999px;padding:9px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.total-score-presets button:hover,.total-score-presets button:focus-visible{background:#e6f1e9;border-color:#b8d3c0;outline:none}
+.total-score-presets button:active{transform:scale(.98)}
+</style>
+
 </head>
 <body class="step-one">
 <div class="app">
@@ -83,7 +90,7 @@
       <section class="card hidden" id="studentInfo">
         <div class="card-head"><div class="head-icon" aria-hidden="true">♙</div><div><h2>Student Information</h2><p class="sub">Enter your details and identify the groupmate you are evaluating.</p></div></div>
         <div class="form-grid">
-          <div class="field"><label class="field-label" for="email">School email address *</label><input id="email" type="email" maxlength="120" placeholder="S1234567@dlszobel.edu.ph" autocomplete="email" required><p class="help">Use your official student email: S followed by 7 digits and @dlszobel.edu.ph (e.g., S1234567@dlszobel.edu.ph).</p></div>
+          <div class="field"><label class="field-label" for="email">School email address *</label><input id="email" type="email" maxlength="120" placeholder="s*******@dlszobel.edu.ph" autocomplete="email" required><p class="help">Use your official student email: s followed by 7 digits and @dlszobel.edu.ph (e.g., s*******@dlszobel.edu.ph).</p></div>
           <div class="field"><label class="field-label" for="evaluator">Your full name *</label><input id="evaluator" maxlength="80" placeholder="Enter your full name" autocomplete="name" required><p class="attempts-notice" id="attemptsNotice" role="status"><strong>Submission limit:</strong> You have up to 2 attempts to evaluate your classmates. Each classmate can be evaluated only once.</p></div>
           <div class="field"><label class="field-label" for="campus">Your campus *</label><select id="campus" required><option value="">Select your campus</option></select></div>
           <div class="field"><label class="field-label" for="section">Your section *</label><select id="section" required><option value="">Select your section</option></select></div>
@@ -135,8 +142,9 @@
             <h3 class="review-section-title">Sample Score Calculation</h3>
             <div class="calculator-panel">
               <div class="calculator-heading"><div class="calculator-icon" aria-hidden="true">▦</div><div><h3>Score Adjustment Calculator</h3><p>Demonstration only · not an official grade</p></div></div>
-              <div class="field"><label class="field-label" for="originalScore">Original Score (out of 20)</label><input id="originalScore" type="number" min="0" max="20" step="0.5" value="20"><p class="help">Enter a score from 0 to 20.</p></div>
-              <div class="field"><label class="field-label" for="peerPercent">Peer Evaluation (%)</label><input id="peerPercent" type="number" min="0" max="100" step="0.1" value="75"><p class="help">Enter a percentage from 0 to 100.</p></div>
+              <div class="field"><label class="field-label" for="originalScore">Original Score</label><input id="originalScore" type="number" min="0" max="20" step="0.5" value="20"><p class="help">Enter the points earned.</p></div>
+              <div class="field total-score-field"><label class="field-label" for="totalPossibleScore">Total possible score</label><input id="totalPossibleScore" type="number" min="0.5" step="any" value="20"><p class="help">The maximum number of points available.</p><div class="total-score-presets" aria-label="Choose total possible score"><button type="button" data-total-score="10">Out of 10</button><button type="button" data-total-score="20">Out of 20</button><button type="button" data-total-score="25">Out of 25</button><button type="button" data-total-score="50">Out of 50</button></div></div>
+              <div class="field"><label class="field-label" for="peerPercent">Peer Evaluation (%)</label><input id="peerPercent" type="number" min="0" max="100" step="0.1" value="75"><p class="help">Automatically filled with this evaluation’s percentage. You can change it to try other values.</p></div>
               <button class="btn" id="calculateBtn" type="button">Calculate sample score</button>
               <div class="score-result" aria-live="polite"><div class="score-result-label">Adjusted Score</div><div class="score-result-value" id="finalScore">19 <span>/ 20</span></div><div class="score-breakdown"><div><span>Original activity score</span><strong id="originalShown">20 / 20</strong></div><div><span>Peer evaluation</span><strong id="percentShown">75%</strong></div><div><span>Suggested deduction</span><strong id="deductionShown">1 point</strong></div></div><div class="sub" id="deductionMessage" style="margin-top:9px">Sample calculation only.</div></div>
               <div id="calcNotice" class="review-alert info"><span class="alert-symbol" aria-hidden="true">ⓘ</span><span>Teacher review and supporting evidence are required before any official deduction.</span></div>
@@ -157,10 +165,11 @@
       </section>
       <section class="card done-card hidden" id="done">
         <img class="done-illustration" src="./images/evaluation-success.png" alt="Checklist with a success checkmark" width="220" height="120">
-        <h2>Evaluation submitted</h2>
-        <p>Thank you. Your evaluation of <strong id="doneName"></strong> was recorded and will be reviewed by your teacher.</p>
-        <p>Do you have another groupmate to evaluate?</p>
-        <div class="btn-group"><button class="btn btn-primary" id="doneAnother" type="button">Evaluate another groupmate</button><button class="btn btn-secondary" id="doneFinish" type="button">I'm finished</button></div>
+        <h2 id="doneTitle">Evaluation submitted successfully.</h2>
+        <p id="doneMessage">Thank you. Your evaluation of <strong id="doneName"></strong> was recorded and will be reviewed by your teacher.</p>
+        <p id="doneQuestion">Do you have another groupmate to evaluate?</p>
+        <div class="btn-group" id="doneChoiceActions"><button class="btn btn-primary" id="doneAnother" type="button">Submit another response</button><button class="btn btn-secondary" id="doneFinish" type="button">I'm finished</button></div>
+        <div class="btn-group hidden" id="doneFinalActions"><button class="btn btn-primary" id="doneContinue" type="button">Continue</button></div>
       </section>
     </div>
 
@@ -213,10 +222,15 @@
           <div class="panel-head"><div><h2>Score adjustment calculator</h2><p class="sub">Pick a student to use their real average, or type a percentage. Not an official grade record.</p></div></div>
           <div class="calc-row">
             <div class="field"><label class="field-label" for="calcStudent">Student</label><select id="calcStudent"><option value="">Enter percentage manually</option></select></div>
-            <div class="field"><label class="field-label" for="calcOriginal">Original score (out of 20)</label><input id="calcOriginal" type="number" min="0" max="20" step="0.5" value="20"></div>
+            <div class="field"><label class="field-label" for="calcTotal">Total possible score</label><input id="calcTotal" type="number" min="0.5" step="any" value="20"><p class="help">Policy deductions are scaled from the 20-point reference.</p><div class="total-score-presets" aria-label="Choose total possible score"><button type="button" data-admin-total="10">Out of 10</button><button type="button" data-admin-total="20">Out of 20</button><button type="button" data-admin-total="25">Out of 25</button><button type="button" data-admin-total="50">Out of 50</button></div></div>
+            <div class="field"><label class="field-label" for="calcOriginal">Original score</label><input id="calcOriginal" type="number" min="0" max="20" step="0.5" value="20"></div>
             <div class="field"><label class="field-label" for="calcPercent">Average peer evaluation (%)</label><input id="calcPercent" type="number" min="0" max="100" step="0.1" value="75"></div>
           </div>
           <div class="calc-result" id="calcOut" aria-live="polite"></div>
+        </section>
+        <section class="card">
+          <div class="panel-head"><div><h2>Teacher review queue</h2><p class="sub">Below 60% is urgent. Evaluations below 90%, including those with a suggested deduction, are also listed for routine review.</p></div></div>
+          <div id="teacherReviewQueue"><div class="empty">Review items will appear here when evaluations are loaded.</div></div>
         </section>
       </section>
 
@@ -289,13 +303,18 @@ const CONFIG = {
   /* firebase: { apiKey:"...", authDomain:"...", projectId:"...", appId:"..." }, */
   adminUsername: 'admin',
   adminEmailDomain: 'peer-eval.app',
-  localAdmin: { username: 'admin', password: 'ChangeMe!2026' },
+  localAdmin: { username: 'admin', password: 'admin12345!' },
   collection: 'evaluations',
   campuses: ['Day School (Alabang)', 'Day School (Vermosa)', 'BrafeNHS'],
-  sections: Array.from({length: 15}, (_, i) => '10' + String.fromCharCode(65 + i)),
+  sections: Array.from({length: 14}, (_, i) => '10' + String.fromCharCode(65 + i)),
+  sectionsByCampus: {
+    'Day School (Alabang)': Array.from({length: 8}, (_, i) => '10' + String.fromCharCode(65 + i)),
+    'Day School (Vermosa)': Array.from({length: 4}, (_, i) => '10' + String.fromCharCode(73 + i)),
+    'BrafeNHS': ['10M', '10N']
+  },
   expectedPerStudent: 2,
   maxSubmissions: 2,
-  reviewBelow: 80
+  reviewBelow: 60
 };
 
 const $ = id => document.getElementById(id);
@@ -344,8 +363,17 @@ function deductionFor(pct){
 }
 function fillSelect(sel, items){ items.forEach(v => sel.append(el('option',{value:v,text:v}))); }
 fillSelect($('campus'), CONFIG.campuses);
-fillSelect($('section'), CONFIG.sections);
 fillSelect($('adminSection'), CONFIG.sections);
+function updateSectionsForCampus(){
+  const sectionSelect = $('section');
+  const previousSection = sectionSelect.value;
+  sectionSelect.replaceChildren(el('option', {value:'', text:'Select your section'}));
+  const sections = CONFIG.sectionsByCampus[$('campus').value] || [];
+  fillSelect(sectionSelect, sections);
+  sectionSelect.value = sections.includes(previousSection) ? previousSection : '';
+}
+$('campus').addEventListener('change', updateSectionsForCampus);
+updateSectionsForCampus();
 
 /* =====================================================================
    STORAGE  (Firebase when configured, otherwise browser-only test mode)
@@ -398,6 +426,17 @@ const Store = {
     const {fs, db} = this.fb;
     const snap = await fs.getDocs(fs.query(fs.collection(db, CONFIG.collection), fs.orderBy('createdAt','desc')));
     return snap.docs.map(d => ({id:d.id, ...d.data()}));
+  },
+  async patch(id, patch){
+    if (this.mode==='local'){
+      const rows=this.localRead();
+      const index=rows.findIndex(r=>r.id===id);
+      if(index<0) throw new Error('not-found');
+      rows[index]={...rows[index],...patch}; this.localWrite(rows); return;
+    }
+    await this.init();
+    const {fs,db}=this.fb;
+    await fs.setDoc(fs.doc(db,CONFIG.collection,id),patch,{merge:true});
   },
   async remove(id){
     if (this.mode==='local'){ this.localWrite(this.localRead().filter(r=>r.id!==id)); return; }
@@ -502,11 +541,22 @@ $('reviewContinue').addEventListener('click',prepareReview);
 $('backToEdit').addEventListener('click',()=>goStep(3));
 $('calculateBtn').addEventListener('click',calculateAdjustment);
 $('originalScore').addEventListener('input',calculateAdjustment);
+$('totalPossibleScore').addEventListener('input',calculateAdjustment);
 $('peerPercent').addEventListener('input',calculateAdjustment);
+document.querySelectorAll('[data-total-score]').forEach(button=>{
+ button.addEventListener('click',()=>{
+  const total=Number(button.dataset.totalScore);
+  $('totalPossibleScore').value=total;
+  $('originalScore').max=total;
+  if(Number($('originalScore').value)>total)$('originalScore').value=total;
+  calculateAdjustment();
+ });
+});
 $('confirmReview').addEventListener('change',()=> $('submitBtn').disabled = !$('confirmReview').checked);
 $('submitBtn').addEventListener('click',submitEvaluation);
 $('doneAnother').addEventListener('click',()=>{resetEvaluation();updateAttemptsNotice();goStep(2);$('classmate').focus()});
-$('doneFinish').addEventListener('click',()=>{resetEvaluation();goStep(1)});
+$('doneFinish').addEventListener('click',()=>{resetAllStudentData();goStep(1)});
+$('doneContinue').addEventListener('click',()=>{goStep(1);$('acceptTerms').focus()});
 
 const sidebarToggle=$('sidebarToggle'),mobileMenu=$('mobileMenu');
 let lastMobileTrigger=null;
@@ -559,6 +609,8 @@ let toastTimer;
 function showToast(message){const t=$('toast');t.textContent=message;t.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),4200)}
 function goStep(n){
  currentStep=n;
+ // Require fresh acceptance every time the Terms & Agreement screen is entered.
+ if(n===1){$('acceptTerms').checked=false;$('acceptBtn').disabled=true;}
  document.body.classList.toggle('step-one',n===1);document.body.classList.toggle('step-four',n===4);
  const ids=['terms','studentInfo','evaluation','review'];
  ids.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n-1));
@@ -574,7 +626,7 @@ function goStep(n){
 }
 function validateInfo(){
  const email=$('email').value.trim(),name=$('evaluator').value.trim(),campus=$('campus').value,section=$('section').value,classmate=$('classmate').value.trim();
- if(!/^S\d{7}@dlszobel\.edu\.ph$/i.test(email)){alert('Please use your official student email in this format: S1234567@dlszobel.edu.ph (S followed by 7 digits).');$('email').focus();return}
+ if(!/^S\d{7}@dlszobel\.edu\.ph$/i.test(email)){alert('Please use your official student email: s followed by 7 digits and @dlszobel.edu.ph (for example, s*******@dlszobel.edu.ph).');$('email').focus();return}
  if(!name||!campus||!section||!classmate){alert('Please complete all required student information fields.');return}
  if(norm(name)===norm(classmate)){alert('Please select a classmate other than yourself.');$('classmate').focus();return}
  goStep(3);
@@ -593,6 +645,9 @@ function prepareReview(){
  const rows=$('criteriaScoreRows');rows.replaceChildren();
  CRITERIA.forEach((name,i)=>{const tr=document.createElement('tr'),tdName=document.createElement('td'),tdRating=document.createElement('td'),pill=document.createElement('span');tdName.textContent=name;pill.className='rating-pill';pill.textContent=ratings[i]+' / 4';tdRating.append(pill);tr.append(tdName,tdRating);rows.append(tr)});
  $('totalRatingCell').textContent=total+' / 20';$('reviewPercent').textContent=pct.toFixed(1).replace(/\.0$/,'')+'%';
+ // Automatically populate the sample calculator with this evaluation's actual percentage.
+ // Keep the field editable so the student can experiment with other percentages if desired.
+ $('peerPercent').value=pct.toFixed(1).replace(/\.0$/,'');
  $('reviewProgressFill').style.width=Math.max(0,Math.min(100,pct))+'%';$('reviewProgress').setAttribute('aria-valuenow',String(pct));
  $('confirmReview').checked=false;$('submitBtn').disabled=true;
  goStep(4);calculateAdjustment();
@@ -602,11 +657,26 @@ function resetEvaluation(){
  ['classmate','strength','improve'].forEach(id=>$(id).value='');
  $('confirmReview').checked=false;$('submitBtn').disabled=true;
 }
-function showDone(name){
+function resetAllStudentData(){
+ resetEvaluation();
+ ['email','evaluator'].forEach(id=>$(id).value='');
+ $('campus').value='';$('section').value='';$('acceptTerms').checked=false;$('acceptBtn').disabled=true;
+ updateAttemptsNotice();
+}
+function showDone(name, finalAttempt=false){
  ['terms','studentInfo','evaluation','review'].forEach(id=>$(id).classList.add('hidden'));
  $('done').classList.remove('hidden');$('doneName').textContent=name;
+ $('doneTitle').textContent='Evaluation submitted successfully.';
+ $('doneChoiceActions').classList.toggle('hidden',finalAttempt);
+ $('doneFinalActions').classList.toggle('hidden',!finalAttempt);
+ $('doneQuestion').classList.toggle('hidden',finalAttempt);
+ $('doneMessage').innerHTML=finalAttempt
+  ? 'Your final evaluation for this student email has been recorded. The form information has been cleared.'
+  : 'Thank you. Your evaluation of <strong id="doneName"></strong> was recorded and will be reviewed by your teacher.';
+ // Re-apply the submitted classmate name after setting the message markup.
+ if(!finalAttempt)$('doneName').textContent=name;
  for(let i=1;i<=4;i++){const p=$('stepPill'+i);p.classList.remove('active');p.classList.add('done');p.querySelector('.step-num').textContent='✓'}
- $('pageTitle').textContent='Submitted';$('pageDescription').textContent='Your evaluation has been recorded. Thank you for giving fair and thoughtful feedback.';
+ $('pageTitle').textContent='Submitted';$('pageDescription').textContent='Evaluation submitted successfully.';
  window.scrollTo({top:0,behavior:'smooth'});
 }
 async function submitEvaluation(){
@@ -622,8 +692,14 @@ async function submitEvaluation(){
  const btn=$('submitBtn'),label=btn.textContent;
  btn.disabled=true;btn.textContent='Submitting…';
  try{
+  // Count the evaluator's prior submissions before saving this one. If this
+  // submission uses the final allowed attempt, clear all student-entered data.
+  const rowsBefore=Store.mode==='local'?Store.localRead():await Store.list();
+  const usedBefore=rowsBefore.filter(r=>norm(r.email)===norm(rec.email)).length;
   await Store.add(rec);
-  showDone(rec.classmate);
+  const finalAttempt=(usedBefore+1)>=CONFIG.maxSubmissions;
+  if(finalAttempt)resetAllStudentData();
+  showDone(rec.classmate,finalAttempt);
  }catch(err){
   const msg=err&&err.message;
   showToast(msg==='attempt-limit'
@@ -638,18 +714,20 @@ async function submitEvaluation(){
  }finally{btn.textContent=label}
 }
 function calculateAdjustment(){
- const originalRaw=$('originalScore').value,pctRaw=$('peerPercent').value,original=Number(originalRaw),pct=Number(pctRaw);
+ const originalRaw=$('originalScore').value,totalRaw=$('totalPossibleScore').value,pctRaw=$('peerPercent').value;
+ const original=Number(originalRaw),total=Number(totalRaw),pct=Number(pctRaw);
  const fmt=n=>Number.isInteger(n)?String(n):n.toFixed(1);
  const final=$('finalScore'),msg=$('deductionMessage'),shown=$('deductionShown'),pshown=$('percentShown'),note=$('calcNotice'),originalShown=$('originalShown');
- if(originalRaw===''||pctRaw===''||!Number.isFinite(original)||!Number.isFinite(pct)||original<0||original>20||pct<0||pct>100){
-  final.textContent='Check inputs';originalShown.textContent='—';msg.textContent='Enter an original score from 0 to 20 and a peer percentage from 0 to 100.';
+ $('originalScore').max=Number.isFinite(total)&&total>0?total:'';
+ if(originalRaw===''||totalRaw===''||pctRaw===''||!Number.isFinite(original)||!Number.isFinite(total)||!Number.isFinite(pct)||total<=0||original<0||original>total||pct<0||pct>100){
+  final.textContent='Check inputs';originalShown.textContent='—';msg.textContent='Enter a score earned that is between 0 and the total possible score, and a peer percentage from 0 to 100.';
   shown.textContent='—';pshown.textContent='—';note.className='review-alert warning';note.innerHTML='<span class="alert-symbol" aria-hidden="true">⚠</span><span>Please correct the sample values before calculating.</span>';return;
  }
  let deduction=0,review=false;
  if(pct>=90)deduction=0;else if(pct>=80)deduction=.5;else if(pct>=70)deduction=1;else if(pct>=60)deduction=1.5;else review=true;
  const adjusted=Math.max(0,original-deduction);
- final.innerHTML=fmt(adjusted)+' <span>/ 20</span>';originalShown.textContent=fmt(original)+' / 20';
- msg.textContent=review?'No automatic deduction is recommended. Teacher review is required because the sample rating is below 60%.':'Sample calculation: '+fmt(original)+' − '+fmt(deduction)+' point'+(deduction===1?'':'s')+' = '+fmt(adjusted)+'.';
+ final.innerHTML=fmt(adjusted)+' <span>/ '+fmt(total)+'</span>';originalShown.textContent=fmt(original)+' / '+fmt(total);
+ msg.textContent=review?'No automatic deduction is recommended. Teacher review is required because the sample rating is below 60%.':'Sample calculation: '+fmt(original)+' − '+fmt(deduction)+' point'+(deduction===1?'':'s')+' = '+fmt(adjusted)+' out of '+fmt(total)+'.';
  shown.textContent=review?'Review first':fmt(deduction)+' point'+(deduction===1?'':'s');pshown.textContent=fmt(pct)+'%';
  note.className='review-alert '+(review?'warning':'info');
  note.innerHTML=review?'<span class="alert-symbol" aria-hidden="true">⚠</span><span><strong>Teacher review required.</strong> Below 60%: review ratings and supporting evidence before considering any deduction.</span>':'<span class="alert-symbol" aria-hidden="true">ⓘ</span><span><strong>Sample only.</strong> Teacher review and supporting evidence are required before any official deduction. Maximum deduction in this guide: 2 points.</span>';
@@ -768,6 +846,7 @@ function buildStudents(rows){
   s.pending=s.rc<CONFIG.expectedPerStudent;
   s.review=s.rc>0&&s.pct<CONFIG.reviewBelow;
   s.dup=s.sc>CONFIG.maxSubmissions;
+  s.deductionImplemented=s.rc>0&&s.received.every(r=>r.deductionImplemented===true);
   return s;
  });
 }
@@ -817,6 +896,7 @@ function renderAdmin(){
  $('tableTitle').textContent='Received evaluations — '+(A.campus==='all'?'All campuses':A.campus);
  $('storedCount').textContent=String(A.rows.length);
  refreshCalcPicker();
+ renderTeacherReviewQueue(all);
 
  const q=norm($('adminSearch').value),sec=$('adminSection').value,st=$('adminStatus').value;
  let list=all.filter(s=>(!q||norm(s.name).includes(q))&&(!sec||s.section===sec)&&
@@ -893,6 +973,32 @@ async function deleteEval(id){
  catch(err){showToast('Could not delete. Please try again.')}
 }
 
+/* ---------- Teacher review queue and deduction tracking ---------- */
+function renderTeacherReviewQueue(students){
+ const host=$('teacherReviewQueue');
+ const items=students.filter(s=>s.rc>0&&s.pct<90).sort((a,b)=>((a.pct<60)?0:1)-((b.pct<60)?0:1)||a.pct-b.pct||a.name.localeCompare(b.name));
+ if(!items.length){host.replaceChildren(el('div',{class:'empty'},el('strong',{text:'No review items'}),'Students with an average below 90% will appear here.'));return;}
+ const list=el('div',{class:'review-queue-list'});
+ items.forEach(s=>{
+  const urgent=s.pct<60;
+  const check=el('input',{type:'checkbox',checked:String(s.deductionImplemented), 'aria-label':'Mark deduction implemented for '+s.name});
+  check.addEventListener('change',async()=>{
+   check.disabled=true;
+   try{
+    const patch={deductionImplemented:check.checked,deductionImplementedAt:check.checked?new Date().toISOString():null};
+    await Promise.all(s.received.map(r=>Store.patch(r.id,patch)));
+    A.rows=await Store.list(); renderAdmin(); showToast(check.checked?'Deduction marked as implemented.':'Deduction implementation mark cleared.');
+   }catch(err){check.checked=!check.checked;showToast('Could not save the deduction status. Please try again.');}
+   finally{check.disabled=false;}
+  });
+  const box=el('div',{class:'review-queue-item',style:'display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap'},
+   el('div',{style:'min-width:220px;flex:1'},el('div',{class:'btn-group',style:'margin-bottom:6px'},el('strong',{text:s.name}),el('span',{class:'chip '+(urgent?'bad':'warn'),text:urgent?'URGENT · Below 60%':'Routine review'})),el('div',{class:'sub',text:(s.campus||'Unspecified')+' · '+s.section+' · Average '+fmtPct(s.pct)}),el('div',{class:'sub',text:urgent?'Investigate comments and supporting evidence before considering a deduction.':'Review evidence and decide whether the suggested deduction is appropriate.'})),
+   el('label',{class:'check',style:'max-width:260px;align-items:flex-start'},check,el('span',{text:'Deduction implemented by teacher'})));
+  list.append(box);
+ });
+ host.replaceChildren(list);
+}
+
 /* ---------- Score review ---------- */
 function refreshCalcPicker(){
  const sel=$('calcStudent'),keep=sel.value;
@@ -902,14 +1008,17 @@ function refreshCalcPicker(){
  runCalc();
 }
 function runCalc(){
- const oRaw=$('calcOriginal').value,pRaw=$('calcPercent').value,o=Number(oRaw),p=Number(pRaw),out=$('calcOut');
- if(oRaw===''||pRaw===''||!Number.isFinite(o)||!Number.isFinite(p)||o<0||o>20||p<0||p>100){out.replaceChildren(el('div',{text:'Enter a score from 0–20 and a percentage from 0–100.'}));return}
- const r=deductionFor(p),adj=Math.max(0,o-r.d);
- out.replaceChildren(el('div',{class:'sub',text:'Suggested adjusted score'}),el('div',{class:'big',text:fmtNum(adj)+' / 20'}),
-  el('p',{class:'sub',text:(r.review?'Below 60%: no automatic deduction; investigate and review evidence first.':'Suggested deduction: '+fmtNum(r.d)+' point'+(r.d===1?'':'s')+'.')+' Teacher review is required before any official deduction.'}));
+ const totalRaw=$('calcTotal').value,oRaw=$('calcOriginal').value,pRaw=$('calcPercent').value,total=Number(totalRaw),o=Number(oRaw),p=Number(pRaw),out=$('calcOut');
+ $('calcOriginal').max=total>0?String(total):'20';
+ if(totalRaw===''||oRaw===''||pRaw===''||!Number.isFinite(total)||!Number.isFinite(o)||!Number.isFinite(p)||total<=0||o<0||o>total||p<0||p>100){out.replaceChildren(el('div',{text:'Enter a valid total score, an original score within that total, and a percentage from 0–100.'}));return}
+ const r=deductionFor(p),scaledDeduction=r.d*(total/20),adj=Math.max(0,o-scaledDeduction);
+ out.replaceChildren(el('div',{class:'sub',text:'Suggested adjusted score'}),el('div',{class:'big',text:fmtNum(adj)+' / '+fmtNum(total)}),
+  el('p',{class:'sub',text:(r.review?'Below 60%: urgent investigation; no automatic deduction.': 'Suggested deduction: '+fmtNum(scaledDeduction)+' point'+(scaledDeduction===1?'':'s')+'.')+' Policy reference is a 20-point activity, scaled proportionally for this total. Teacher review is required before any official deduction.'}));
 }
 $('calcStudent').addEventListener('change',()=>{if($('calcStudent').value!=='')$('calcPercent').value=$('calcStudent').value;runCalc()});
 $('calcOriginal').addEventListener('input',runCalc);
+$('calcTotal').addEventListener('input',runCalc);
+document.querySelectorAll('[data-admin-total]').forEach(button=>button.addEventListener('click',()=>{ $('calcTotal').value=button.dataset.adminTotal; if(Number($('calcOriginal').value)>Number(button.dataset.adminTotal)) $('calcOriginal').value=button.dataset.adminTotal; runCalc(); }));
 $('calcPercent').addEventListener('input',()=>{$('calcStudent').value='';runCalc()});
 
 /* ---------- CSV ---------- */
