@@ -189,10 +189,6 @@
         <div id="modeBanner" class="review-alert warning hidden"><span class="alert-symbol" aria-hidden="true">⚠</span><span><strong>Local test mode.</strong> Submissions are saved only in this browser, so students on other devices will NOT appear here. Connect Firebase (see the CONFIG block at the top of the script) before using this with your class.</span></div>
         <div class="campus-grid no-print" id="campusGrid" style="margin-top:14px"></div>
         <div class="stat-grid" id="stats"></div>
-        <section class="card no-print">
-          <div class="panel-head"><div><h2>Teacher review queue</h2><p class="sub">Review priority is shown here. Use the approval checkbox in the Suggested deduction column below. Below 60% requires investigation first; approval only marks the review complete and does not apply a deduction.</p></div></div>
-          <div id="teacherReviewQueue"><div class="empty">Review items will appear here when evaluations are loaded.</div></div>
-        </section>
         <section class="card">
           <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">One row per student. Use the mini checkbox in Suggested deduction to approve the adjustment or mark an urgent review complete.</p></div></div>
           <div class="toolbar no-print">
@@ -327,6 +323,7 @@ function el(tag, props, ...kids){
     if (k==='class') n.className = v;
     else if (k==='text') n.textContent = v;
     else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else if (['checked','disabled','selected','multiple','required','readOnly','hidden'].includes(k)) n[k] = Boolean(v);
     else n.setAttribute(k, v);
   }
   kids.flat().forEach(c => { if (c==null||c===false) return; n.append(c.nodeType ? c : document.createTextNode(String(c))); });
@@ -400,23 +397,36 @@ const Store = {
     if (this.mode==='local'){
       const rows = this.localRead();
       const email = norm(rec.email);
+      const existingIndex = rows.findIndex(r => r.id === id);
+      const existingRecord = existingIndex >= 0 ? rows[existingIndex] : null;
+      if (existingRecord && existingRecord.resubmitAllowed === true) {
+        const history = [...(existingRecord.revisionHistory || []), {...existingRecord, resubmitAllowed:false, archivedAt:new Date().toISOString()}];
+        rows[existingIndex] = {...rec, id, resubmitAllowed:false, adjustmentApproved:false, adjustmentApprovedAt:null, revisionHistory:history};
+        this.localWrite(rows); return {resubmitted:true};
+      }
       const sameEvaluator = rows.filter(r => norm(r.email) === email);
       if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
-      if (rows.some(r => r.id === id)) throw new Error('duplicate');
+      if (existingRecord) throw new Error('duplicate');
       if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
-      rows.push({id, ...rec}); this.localWrite(rows); return;
+      rows.push({id, ...rec, resubmitAllowed:false, revisionHistory:[]}); this.localWrite(rows); return {resubmitted:false};
     }
     await this.init();
-    // Apply the same attempt and near-duplicate checks in local and Firebase modes.
-    // This is a client-side safeguard; production Firestore rules should also enforce limits.
+    // Admin-authorized replacement is allowed only for the exact evaluation ID.
+    // This client-side check should be reinforced with authenticated Firestore rules.
     const existing = await this.list();
     const email = norm(rec.email);
+    const existingRecord = existing.find(r => r.id === id);
+    const {fs, db} = this.fb;
+    if (existingRecord && existingRecord.resubmitAllowed === true) {
+      const history = [...(existingRecord.revisionHistory || []), {...existingRecord, resubmitAllowed:false, archivedAt:new Date().toISOString()}];
+      try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), {...rec, resubmitAllowed:false, adjustmentApproved:false, adjustmentApprovedAt:null, revisionHistory:history}); return {resubmitted:true}; }
+      catch(e){ if (e && e.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
+    }
     const sameEvaluator = existing.filter(r => norm(r.email) === email);
     if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
-    if (existing.some(r => r.id === id || (norm(r.email) === email && norm(r.classmate) === norm(rec.classmate)))) throw new Error('duplicate');
+    if (existingRecord || existing.some(r => norm(r.email) === email && norm(r.classmate) === norm(rec.classmate))) throw new Error('duplicate');
     if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
-    const {fs, db} = this.fb;
-    try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), rec); }
+    try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), {...rec, resubmitAllowed:false, revisionHistory:[]}); return {resubmitted:false}; }
     catch(e){ if (e && e.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
   },
   async list(){
@@ -695,8 +705,8 @@ async function submitEvaluation(){
   // submission uses the final allowed attempt, clear all student-entered data.
   const rowsBefore=Store.mode==='local'?Store.localRead():await Store.list();
   const usedBefore=rowsBefore.filter(r=>norm(r.email)===norm(rec.email)).length;
-  await Store.add(rec);
-  const finalAttempt=(usedBefore+1)>=CONFIG.maxSubmissions;
+  const saveResult=await Store.add(rec);
+  const finalAttempt=!saveResult?.resubmitted && (usedBefore+1)>=CONFIG.maxSubmissions;
   if(finalAttempt)resetAllStudentData();
   showDone(rec.classmate,finalAttempt);
  }catch(err){
@@ -905,7 +915,6 @@ function renderAdmin(){
  );
  $('tableTitle').textContent='Received evaluations — '+(A.campus==='all'?'All campuses':A.campus);
  $('storedCount').textContent=String(A.rows.length);
- renderTeacherReviewQueue(all);
 
  const q=norm($('adminSearch').value),sec=$('adminSection').value,st=$('adminStatus').value;
  let list=all.filter(s=>(!q||norm(s.name).includes(q))&&(!sec||s.section===sec)&&
@@ -938,7 +947,8 @@ function renderAdmin(){
     const cell=el('div',{style:'display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:120px'},dedChip(s));
     if(s.rc>0&&s.pct<90){
      const urgent=s.pct<60;
-     const check=el('input',{type:'checkbox',checked:s.adjustmentApproved,'aria-label':(urgent?'Mark review complete for ':'Approve adjustment for ')+s.name,style:'width:14px;height:14px;accent-color:var(--green);margin:0'});
+     const check=el('input',{type:'checkbox',checked:s.adjustmentApproved===true,'aria-label':(urgent?'Mark review complete for ':'Approve adjustment for ')+s.name,style:'width:14px;height:14px;accent-color:var(--green);margin:0'});
+     check.checked = s.adjustmentApproved === true;
      check.addEventListener('change',()=>saveAdjustmentApproval(s,check.checked,check));
      cell.append(el('label',{class:'check',style:'font-size:12px;gap:6px;align-items:center'},check,el('span',{text:urgent?'Review complete':'Approve adjustment'})));
     }
@@ -976,39 +986,36 @@ function detailBody(s){
  );
 }
 function evalCard(r,label,anon){
+ const allowBtn=el('button',{class:'btn btn-secondary btn-sm no-print',type:'button',text:r.resubmitAllowed?'Resubmission allowed':'Allow resubmission'});
+ allowBtn.addEventListener('click',()=>toggleResubmission(r,allowBtn));
  return el('div',{class:'eval-card'},
   el('div',{class:'eval-card-head'},
    el('div',null,el('div',{class:'cell-main',text:label+(anon?'':' · '+r.section)}),el('div',{class:'cell-sub',text:(anon?'':r.email+' · ')+fmtDate(r.createdAt)})),
-   el('div',{class:'btn-group'},el('span',{class:'chip ok',text:r.total+' / 20 · '+fmtPct(r.percent)}),el('button',{class:'btn btn-danger btn-sm no-print',type:'button',onclick:()=>deleteEval(r.id),text:'Delete'}))),
+   el('div',{class:'btn-group'},el('span',{class:'chip ok',text:r.total+' / 20 · '+fmtPct(r.percent)}),allowBtn,el('button',{class:'btn btn-danger btn-sm no-print',type:'button',onclick:()=>deleteEval(r.id),text:'Remove evaluation'}))),
+  r.resubmitAllowed?el('div',{class:'review-alert info',style:'margin:10px 0 0'},el('span',{class:'alert-symbol','aria-hidden':'true',text:'↻'}),el('span',null,el('strong',{text:'Resubmission enabled. '}),'The student can submit a replacement for this specific evaluation. The permission closes automatically after the replacement is submitted.')):null,
   el('div',{class:'crit-grid'},CRIT_SHORT.map((n,i)=>el('div',null,el('b',{text:(r.ratings[i]||0)+' / 4'}),n))),
   el('p',{class:'eval-text'},el('span',{text:'Did well: '}),r.strength),
   el('p',{class:'eval-text'},el('span',{text:'Improvement: '}),r.improve));
 }
-async function deleteEval(id){
- const r=A.rows.find(x=>x.id===id);if(!r)return;
- if(!confirm('Permanently delete the evaluation by '+r.evaluator+' for '+r.classmate+'? This cannot be undone.'))return;
- try{await Store.remove(id);await loadAdmin();showToast('Evaluation deleted.')}
- catch(err){showToast('Could not delete. Please try again.')}
+
+async function toggleResubmission(r,button){
+ const next=r.resubmitAllowed!==true;
+ if(next && !confirm('Allow '+r.evaluator+' ('+r.email+') to resubmit the evaluation for '+r.classmate+'? The current evaluation remains active until a replacement is submitted.'))return;
+ if(!next && !confirm('Cancel resubmission permission for this evaluation?'))return;
+ button.disabled=true;
+ try{
+  await Store.patch(r.id,{resubmitAllowed:next,resubmitAllowedAt:next?new Date().toISOString():null});
+  await loadAdmin();
+  showToast(next?'Resubmission allowed for this evaluation.':'Resubmission permission cancelled.');
+ }catch(err){showToast('Could not update resubmission permission. Please try again.');}
+ finally{button.disabled=false;}
 }
 
-/* ---------- Management review queue, approval, and deduction tracking ---------- */
-function renderTeacherReviewQueue(students){
- const host=$('teacherReviewQueue');
- const items=students.filter(s=>s.rc>0&&s.pct<90).sort((a,b)=>((a.pct<60)?0:1)-((b.pct<60)?0:1)||a.pct-b.pct||a.name.localeCompare(b.name));
- if(!items.length){host.replaceChildren(el('div',{class:'empty'},el('strong',{text:'No review items'}),'Students with an average below 90% will appear here.'));return;}
- const list=el('div',{class:'review-queue-list'});
- items.forEach(s=>{
-  const urgent=s.pct<60;
-  const status=s.adjustmentApproved
-    ?el('span',{class:'chip ok',text:urgent?'Review complete':'Approved'})
-    :el('span',{class:'chip warn',text:'Pending approval'});
-  const box=el('div',{class:'review-queue-item',style:'display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap'},
-   el('div',{style:'min-width:220px;flex:1'},el('div',{class:'btn-group',style:'margin-bottom:6px'},el('strong',{text:s.name}),el('span',{class:'chip '+(urgent?'bad':'warn'),text:urgent?'URGENT · Below 60%':'Routine review'}),status),el('div',{class:'sub',text:(s.campus||'Unspecified')+' · '+s.section+' · Average '+fmtPct(s.pct)}),el('div',{class:'sub',text:urgent?'Investigate comments and supporting evidence first. No automatic deduction is recommended.':'Review evidence before approving the suggested score adjustment.'})),
-   el('div',{style:'display:flex;flex-direction:column;gap:10px;min-width:235px'},
-    el('div',{class:'sub',text:'Use the approval checkbox in the Suggested deduction column in the table below.'})));
-  list.append(box);
- });
- host.replaceChildren(list);
+async function deleteEval(id){
+ const r=A.rows.find(x=>x.id===id);if(!r)return;
+ if(!confirm('Remove the evaluation by '+r.evaluator+' for '+r.classmate+' from active results? This cannot be undone.'))return;
+ try{await Store.remove(id);await loadAdmin();showToast('Evaluation removed from active results.')}
+ catch(err){showToast('Could not delete. Please try again.')}
 }
 
 /* ---------- Score review ---------- */
