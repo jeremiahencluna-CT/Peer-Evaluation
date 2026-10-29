@@ -1,3 +1,4 @@
+/* Main stylesheet embedded for single-file preview */
 :root {
   --forest:#103b2d; --forest-deep:#092b21; --green:#176b4b; --green-2:#21865c;
   --mint:#dff5e8; --mint-2:#effaf3; --bg:#f4f8f5; --ink:#172b22;
@@ -1223,3 +1224,10 @@ hr, .divider, .card-divider { border-color: #DCE4DD; }
   .summary-metrics .stat-icon { margin-bottom:8px; }
   .activity-summary { grid-template-columns:1fr; }
 }
+
+
+/* Existing inline styles */
+.total-score-presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.total-score-presets button{border:1px solid #d9e6dc;background:#f3f8f4;color:#124c38;border-radius:999px;padding:9px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.total-score-presets button:hover,.total-score-presets button:focus-visible{background:#e6f1e9;border-color:#b8d3c0;outline:none}
+.total-score-presets button:active{transform:scale(.98)}
