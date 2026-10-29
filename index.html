@@ -179,7 +179,7 @@
       <!-- Management -->
       <section id="viewManagement">
         <section class="welcome">
-          <div><div class="eyebrow">Overview</div><h1>Management</h1><p>Select a campus to review peer evaluations and approve suggested score adjustments. Open a student to read comments and individual ratings.</p></div>
+          <div><div class="eyebrow">Overview</div><h1>Management</h1><p>Choose a campus first, then review the evaluation summary and prioritize students who need attention.</p></div>
           <div class="admin-actions no-print">
             <button class="btn btn-secondary" type="button" id="refreshBtn">↻ Refresh</button>
             <button class="btn btn-secondary" type="button" id="csvBtn">⬇ Export CSV</button>
@@ -187,9 +187,44 @@
           </div>
         </section>
         <div id="modeBanner" class="review-alert warning hidden"><span class="alert-symbol" aria-hidden="true">⚠</span><span><strong>Local test mode.</strong> Submissions are saved only in this browser, so students on other devices will NOT appear here. Connect Firebase (see the CONFIG block at the top of the script) before using this with your class.</span></div>
-        <div class="campus-grid no-print" id="campusGrid" style="margin-top:14px"></div>
-        <div class="stat-grid" id="stats"></div>
-        <section class="card">
+        <section class="campus-selector-panel" aria-labelledby="campusSelectorTitle">
+          <div class="dashboard-section-heading">
+            <div class="dashboard-heading-icon" aria-hidden="true">▦</div>
+            <div><h2 id="campusSelectorTitle">1. Select Campus</h2><p class="sub">Choose a campus to view its evaluation summary.</p></div>
+          </div>
+          <div class="campus-grid no-print" id="campusGrid"></div>
+        </section>
+
+        <section class="evaluation-summary-panel" aria-labelledby="evaluationSummaryTitle">
+          <div class="dashboard-section-heading summary-heading">
+            <div class="dashboard-heading-icon" aria-hidden="true">▤</div>
+            <div><h2 id="evaluationSummaryTitle">2. Evaluation Summary</h2><p class="sub">Overview for <strong id="summaryCampusName">All Campuses</strong></p></div>
+            <div class="summary-updated">Live summary from received evaluations</div>
+          </div>
+          <div class="summary-metrics">
+            <article class="needs-review-card" id="needsReviewCard">
+              <div class="needs-review-icon" aria-hidden="true">!</div>
+              <div class="needs-review-copy"><span class="needs-review-eyebrow">Priority attention</span><h3>Needs Review</h3><strong id="needsReviewCount">0</strong><p id="needsReviewDescription">Evaluations below 60% need teacher review.</p></div>
+              <button class="btn needs-review-button" id="reviewNeedsBtn" type="button">Review evaluations <span aria-hidden="true">→</span></button>
+            </article>
+            <div class="stat-grid" id="stats" aria-label="Evaluation statistics"></div>
+          </div>
+        </section>
+
+        <div class="dashboard-lower-grid">
+          <section class="card campus-breakdown-card">
+            <div class="panel-head"><div><h2>Campus Breakdown</h2><p class="sub">Compare evaluation activity across campuses.</p></div></div>
+            <div class="data-wrap"><table class="data-table campus-breakdown-table"><thead><tr><th>Campus</th><th class="num">Students evaluated</th><th class="num">Evaluations received</th><th class="num">Needs review</th><th class="num">Average rating</th></tr></thead><tbody id="campusBreakdown"><tr><td colspan="5" class="loading">Loading campus summary…</td></tr></tbody></table></div>
+          </section>
+          <section class="card progress-card">
+            <div class="panel-head"><div><h2>Evaluation Activity</h2><p class="sub">A snapshot of recorded evaluation activity.</p></div></div>
+            <div class="activity-summary"><div class="activity-number"><strong id="activityEvaluations">0</strong><span>evaluations received</span></div><div class="activity-number"><strong id="activityStudents">0</strong><span>students with feedback</span></div></div>
+            <div class="activity-track" role="progressbar" aria-label="Evaluations relative to recorded student records" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="activityProgress"><div class="activity-fill" id="activityProgressFill"></div></div>
+            <p class="sub activity-note" id="activityNote">This summary reflects recorded evaluations, not a complete class roster.</p>
+          </section>
+        </div>
+
+        <section class="card received-evaluations-card">
           <div class="panel-head"><div><h2 id="tableTitle">Received evaluations</h2><p class="sub">Pending approvals appear first. Use the checkbox to approve a suggested adjustment or mark an urgent review complete. Scores of 90% or higher need no deduction and are completed automatically.</p></div></div>
           <div class="toolbar no-print">
             <div class="grow"><input type="search" id="adminSearch" placeholder="Search student name…" aria-label="Search student"></div>
@@ -802,6 +837,7 @@ $('csvBtn').addEventListener('click',exportCsv);
 $('csvBtn2').addEventListener('click',exportCsv);
 ['adminSearch','adminSection','adminStatus','adminSort','adminAnon'].forEach(id=>$(id).addEventListener('input',renderAdmin));
 $('clearFilters').addEventListener('click',()=>{$('adminSearch').value='';$('adminSection').value='';$('adminStatus').value='';renderAdmin()});
+$('reviewNeedsBtn').addEventListener('click',()=>{$('adminStatus').value='urgent';renderAdmin();$('adminTable').scrollIntoView({behavior:'smooth',block:'start'});});
 
 async function loadAdmin(manual){
  $('adminTable').replaceChildren(el('div',{class:'loading',text:'Loading evaluations…'}));
@@ -897,12 +933,42 @@ function renderAdmin(){
  const evaluated=all.filter(s=>s.rc>0);
  const overall=scope.length?scope.reduce((a,r)=>a+r.percent,0)/scope.length:null;
  const needs=all.filter(s=>s.review).length;
+ const campusLabel=A.campus==='all'?'All Campuses':A.campus;
+ $('summaryCampusName').textContent=campusLabel;
+ $('needsReviewCount').textContent=String(needs);
+ $('needsReviewDescription').textContent=needs
+  ? needs+' student'+(needs===1?'':'s')+' have an average below '+CONFIG.reviewBelow+'%. Review the feedback before deciding on any adjustment.'
+  : 'No students currently meet the urgent review threshold for this campus.';
+ $('needsReviewCard').classList.toggle('is-clear',needs===0);
  $('stats').replaceChildren(
-  el('div',{class:'stat'},el('span',{text:'Students evaluated'}),el('strong',{text:String(evaluated.length)}),el('small',{text:'with received feedback'})),
-  el('div',{class:'stat'},el('span',{text:'Evaluations received'}),el('strong',{text:String(scope.length)}),el('small',{text:'total peer submissions'})),
-  el('div',{class:'stat'},el('span',{text:'Average peer rating'}),el('strong',{text:overall===null?'—':fmtPct(overall)}),el('small',{text:'across this view'})),
-  el('div',{class:'stat'+(needs?' alert':'')},el('span',{text:'Needs review'}),el('strong',{text:String(needs)}),el('small',{text:'average below '+CONFIG.reviewBelow+'%'}))
+  el('article',{class:'stat stat-students'},el('div',{class:'stat-icon','aria-hidden':'true'},'♙'),el('span',{text:'Students evaluated'}),el('strong',{text:String(evaluated.length)}),el('small',{text:'with received feedback'})),
+  el('article',{class:'stat stat-submissions'},el('div',{class:'stat-icon','aria-hidden':'true'},'▤'),el('span',{text:'Evaluations received'}),el('strong',{text:String(scope.length)}),el('small',{text:'total peer submissions'})),
+  el('article',{class:'stat stat-rating'},el('div',{class:'stat-icon','aria-hidden':'true'},'★'),el('span',{text:'Average peer rating'}),el('strong',{text:overall===null?'—':fmtPct(overall)}),el('small',{text:'across this view'}))
  );
+ // Campus breakdown always shows each campus, while the top metrics follow the selected campus.
+ const campusRows=[['all','All Campuses',A.rows],...campusList().map(c=>[c,c,A.rows.filter(r=>(r.campus||'Unspecified')===c)])];
+ $('campusBreakdown').replaceChildren(...campusRows.map(([key,label,rows])=>{
+  const students=buildStudents(rows),withFeedback=students.filter(s=>s.rc>0),urgent=students.filter(s=>s.review).length;
+  const avg=rows.length?rows.reduce((sum,r)=>sum+r.percent,0)/rows.length:null;
+  const tr=el('tr',{class:(A.campus===key?'selected-campus-row':'')});
+  const nameCell=el('td');
+  nameCell.append(el('button',{class:'campus-table-select',type:'button','aria-pressed':String(A.campus===key),onclick:()=>{A.campus=key;renderAdmin();},text:label}));
+  tr.append(nameCell,
+   el('td',{class:'num',text:String(withFeedback.length)}),
+   el('td',{class:'num',text:String(rows.length)}),
+   el('td',{class:'num '+(urgent?'urgent-number':'clear-number'),text:String(urgent)}),
+   el('td',{class:'num',text:avg===null?'—':fmtPct(avg)})
+  );
+  return tr;
+ }));
+ $('activityEvaluations').textContent=String(scope.length);
+ $('activityStudents').textContent=String(evaluated.length);
+ const activityPct=all.length?Math.round(evaluated.length/all.length*100):0;
+ $('activityProgressFill').style.width=activityPct+'%';
+ $('activityProgress').setAttribute('aria-valuenow',String(activityPct));
+ $('activityNote').textContent=all.length
+  ? activityPct+'% of student records in this view have received feedback. This is based on submitted records, not a complete class roster.'
+  : 'No evaluation records are available for this selection yet.';
  $('tableTitle').textContent='Received evaluations — '+(A.campus==='all'?'All campuses':A.campus);
  $('storedCount').textContent=String(A.rows.length);
 
