@@ -1802,6 +1802,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
     <nav id="studentNav">
       <button class="nav-link active" type="button" data-page="evaluation" data-label="Peer Evaluation" aria-current="page" title="Peer Evaluation"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.2"/><path d="M9 3.5V2.8h6v.7M8.5 8.5h7M8.5 12h3.8M8.5 16h2.2M15 14.4l1.2 1.2 2.3-2.5"/></svg></span><span class="nav-text">Peer Evaluation</span></button>
       <button class="nav-link" type="button" data-page="help" data-label="Help & Guide" title="Help & Guide"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 1 1 4.3 1.7c-1.1 1-1.9 1.4-1.9 3"/><path d="M12 17.2v.1M5.7 5.7 4.6 4.6"/></svg></span><span class="nav-text">Help &amp; Guide</span></button>
+      <button class="nav-link" type="button" id="studentLogout" data-label="Log out" title="Log out"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2H13"/><path d="M10 12h10m-4-4 4 4-4 4"/></svg></span><span class="nav-text">Log out</span></button>
     </nav>
     <div class="nav-label hidden" id="adminLabel">Admin workspace</div>
     <nav id="adminGroup" class="hidden" aria-label="Admin navigation">
@@ -1875,7 +1876,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
         <div class="card-head"><div class="head-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 11a3 3 0 1 0-1-5.8M17 14a5 5 0 0 1 3.5 5"/></svg></div><div><h2>Student Information</h2><p class="sub">Enter your details and identify the groupmate you are evaluating.</p></div></div>
         <p class="form-error student-flow-error hidden" id="studentInfoError" role="alert" tabindex="-1"></p>
         <div class="form-grid">
-          <div class="field"><label class="field-label" for="email">School email address *</label><input id="email" type="email" maxlength="120" placeholder="s*******@dlszobel.edu.ph" autocomplete="email" required><p class="help">Use your official student email: s followed by 7 digits and @dlszobel.edu.ph (e.g., s*******@dlszobel.edu.ph).</p></div>
+          <div class="field"><label class="field-label" for="email">School email address *</label><input id="email" type="email" maxlength="120" placeholder="Sign in to load your school email" autocomplete="email" readonly required><p class="help">Use your official student email: s followed by 7 digits and @dlszobel.edu.ph (e.g., s*******@dlszobel.edu.ph).</p></div>
           <div class="field"><label class="field-label" for="evaluator">Your full name *</label><input id="evaluator" maxlength="80" placeholder="Enter your full name" autocomplete="name" required><p class="identity-lock-notice hidden" id="identityLockNotice" role="status" aria-live="polite"></p><p class="attempts-notice" id="attemptsNotice" role="status"><strong>Submission limit:</strong> You have up to 2 attempts to evaluate your classmates. Each classmate can be evaluated only once.</p></div>
           <div class="field"><label class="field-label" for="campus">Your campus *</label><select id="campus" required><option value="">Select your campus</option></select></div>
           <div class="field"><label class="field-label" for="section">Your section *</label><select id="section" required><option value="">Select your section</option></select></div>
@@ -2108,12 +2109,30 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
   </div>
 </div>
 
+<!-- Student account access -->
+<dialog id="studentAuthDialog" class="narrow" aria-labelledby="studentAuthTitle">
+  <form id="studentAuthForm" autocomplete="on">
+    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true">✦</div><h2 id="studentAuthTitle">Student sign in</h2><p class="sub" id="studentAuthSubtitle">Use your DLSZ student email and your Peer Evaluation password.</p></div></div>
+    <div class="dlg-body">
+      <div id="studentAuthFields">
+        <div class="field"><label class="field-label" for="studentAuthEmail">DLSZ student email</label><input id="studentAuthEmail" type="email" autocomplete="username" placeholder="S1234567@dlszobel.edu.ph" required></div>
+        <div class="field"><label class="field-label" for="studentAuthPassword">Password</label><input id="studentAuthPassword" type="password" autocomplete="current-password" minlength="8" required></div>
+      </div>
+      <p class="form-error" id="studentAuthError" role="alert"></p>
+      <p class="help" id="studentAuthHint">New here? Choose Create account. Your email must be verified before you can submit evaluations.</p>
+      <div id="studentVerifyActions" class="hidden"><p class="review-alert info">A verification email has been sent. Open it, verify your address, then return here.</p><button type="button" class="btn btn-secondary" id="resendVerification">Resend verification email</button><button type="button" class="btn btn-primary" id="checkVerification">I've verified my email</button></div>
+      <div class="btn-group" id="studentAuthButtons" style="justify-content:space-between;flex-wrap:wrap"><button type="button" class="btn btn-secondary" id="studentCreateBtn">Create account</button><button type="submit" class="btn btn-primary" id="studentSignInBtn">Sign in</button></div>
+      <button type="button" class="btn btn-secondary" id="switchAdminLogin" style="width:100%;margin-top:10px">Administrator sign in</button>
+    </div>
+  </form>
+</dialog>
+
 <!-- Admin login -->
 <dialog id="loginDialog" class="narrow" aria-labelledby="loginTitle">
   <form id="loginForm" autocomplete="on">
     <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2 id="loginTitle">Admin sign in</h2><p class="sub">Authorized teacher access only.</p></div><button type="button" class="icon-btn" data-close="loginDialog" aria-label="Close">✕</button></div>
     <div class="dlg-body">
-      <div class="field"><label class="field-label" for="loginUser">Username</label><input id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" enterkeyhint="go" required></div>
+      <div class="field"><label class="field-label" for="loginUser">Admin username</label><input id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="jeremiah.encluna" enterkeyhint="go" required></div>
       <div class="field"><label class="field-label" for="loginPass">Password</label><input id="loginPass" name="password" type="password" autocomplete="current-password" enterkeyhint="go" required></div>
       <p class="form-error" id="loginError" role="alert"></p>
       <div class="btn-group" style="justify-content:flex-end"><button type="button" class="btn btn-secondary" data-close="loginDialog">Cancel</button><button type="submit" class="btn btn-primary" id="loginBtn">Sign in</button></div>
@@ -2154,11 +2173,18 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
    reviewBelow     Average (%) under which a student is flagged "Needs review".
    ===================================================================== */
 const CONFIG = {
-  firebase: null,
-  /* firebase: { apiKey:"...", authDomain:"...", projectId:"...", appId:"..." }, */
-  adminUsername: 'admin',
-  adminEmailDomain: 'peer-eval.app',
-  localAdmin: { username: 'admin', password: 'admin' },
+  firebase: {
+    apiKey: 'AIzaSyDV4ewSSLvaH8Bs5Gcldiz6oTpgIKEJWX',
+    authDomain: 'peer-evaluation-7bbd1.firebaseapp.com',
+    projectId: 'peer-evaluation-7bbd1',
+    storageBucket: 'peer-evaluation-7bbd1.firebasestorage.app',
+    messagingSenderId: '1082517585879',
+    appId: '1:1082517585879:web:06bb07c80f47a6b35b1592',
+    measurementId: 'G-C986MZVYTL'
+  },
+  adminUsername: 'jeremiah.encluna',
+  adminEmailDomain: 'dlszobel.edu.ph',
+  localAdmin: null,
   collection: 'evaluations',
   campuses: ['Day School (Alabang)', 'Day School (Vermosa)', 'BrafeNHS'],
   sections: Array.from({length: 14}, (_, i) => '10' + String.fromCharCode(65 + i)),
@@ -2243,114 +2269,81 @@ updateSectionsForCampus();
    STORAGE  (Firebase when configured, otherwise browser-only test mode)
    ===================================================================== */
 const Store = {
-  mode: (CONFIG.firebase && CONFIG.firebase.apiKey) ? 'cloud' : 'local',
+  mode: 'cloud',
   fb: null,
   adminEmail(){ return (CONFIG.adminUsername+'@'+CONFIG.adminEmailDomain).toLowerCase(); },
+  studentEmailPattern: /^S\d{7}@dlszobel\.edu\.ph$/i,
   makeId(rec){
     const k = norm(rec.email)+'|'+norm(rec.classmate);
     return btoa(unescape(encodeURIComponent(k))).replace(/[+/=]/g, c => ({'+':'-','/':'_','=':''}[c]));
   },
   async init(){
-    if (this.mode!=='cloud' || this.fb) return;
+    if (this.fb) return;
     const base = 'https://www.gstatic.com/firebasejs/10.12.2/';
     const [app, fs, auth] = await Promise.all([import(base+'firebase-app.js'), import(base+'firebase-firestore.js'), import(base+'firebase-auth.js')]);
     const a = app.initializeApp(CONFIG.firebase);
     this.fb = { fs, auth, db: fs.getFirestore(a), au: auth.getAuth(a) };
-    try { await auth.setPersistence(this.fb.au, auth.browserSessionPersistence); } catch(e){}
+    await auth.setPersistence(this.fb.au, auth.browserLocalPersistence);
   },
-  localRead(){ try{ return JSON.parse(localStorage.getItem('pe_evaluations')||'[]'); }catch(e){ return []; } },
-  localWrite(rows){ localStorage.setItem('pe_evaluations', JSON.stringify(rows)); },
+  localRead(){ return []; },
+  localWrite(){ throw new Error('cloud-required'); },
+  async registerStudent(email,password){
+    await this.init(); email=email.trim().toLowerCase();
+    if(!this.studentEmailPattern.test(email)) throw new Error('invalid-student-email');
+    const cred=await this.fb.auth.createUserWithEmailAndPassword(this.fb.au,email,password);
+    await this.fb.auth.sendEmailVerification(cred.user);
+    return cred.user;
+  },
+  async signInStudent(email,password){
+    await this.init(); email=email.trim().toLowerCase();
+    if(!this.studentEmailPattern.test(email)) throw new Error('invalid-student-email');
+    const cred=await this.fb.auth.signInWithEmailAndPassword(this.fb.au,email,password);
+    await this.fb.auth.reload(cred.user);
+    if(!cred.user.emailVerified) throw new Error('email-not-verified');
+    return cred.user;
+  },
+  async resendVerification(){ await this.init(); if(!this.fb.au.currentUser) throw new Error('no-user'); await this.fb.auth.sendEmailVerification(this.fb.au.currentUser); },
+  async refreshVerification(){ await this.init(); const u=this.fb.au.currentUser; if(!u) return false; await this.fb.auth.reload(u); return !!u.emailVerified; },
   async add(rec){
-    const id = this.makeId(rec);
-    if (this.mode==='local'){
-      const rows = this.localRead();
-      const email = norm(rec.email);
-      const sameEvaluator = rows.filter(r => norm(r.email) === email);
-      assertRegisteredIdentity(rows, rec);
-      if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
-      if (rows.some(r => r.id === id)) throw new Error('duplicate');
-      if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
-      rows.push({id, ...rec}); this.localWrite(rows); return;
-    }
-    await this.init();
-    // Apply the same attempt and near-duplicate checks in local and Firebase modes.
-    // This is a client-side safeguard; production Firestore rules should also enforce limits.
-    const existing = await this.list();
-    const email = norm(rec.email);
-    const sameEvaluator = existing.filter(r => norm(r.email) === email);
-    assertRegisteredIdentity(existing, rec);
-    if (sameEvaluator.length >= CONFIG.maxSubmissions) throw new Error('attempt-limit');
-    if (existing.some(r => r.id === id || (norm(r.email) === email && norm(r.classmate) === norm(rec.classmate)))) throw new Error('duplicate');
-    if (sameEvaluator.some(r => norm(r.section) === norm(rec.section) && similarName(r.classmate, rec.classmate) >= 0.88)) throw new Error('duplicate-similar');
-    const {fs, db} = this.fb;
-    try { await fs.setDoc(fs.doc(db, CONFIG.collection, id), rec); }
-    catch(e){ if (e && e.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
+    await this.init(); const user=this.fb.au.currentUser;
+    if(!user || !user.emailVerified || norm(user.email)!==norm(rec.email) || !this.studentEmailPattern.test(user.email||'')) throw new Error('auth-required');
+    const existing=await this.listStudent(); const email=norm(rec.email); const sameEvaluator=existing;
+    assertRegisteredIdentity(existing,rec);
+    if(sameEvaluator.length>=CONFIG.maxSubmissions) throw new Error('attempt-limit');
+    if(existing.some(r=>r.id===this.makeId(rec)||norm(r.classmate)===norm(rec.classmate))) throw new Error('duplicate');
+    if(sameEvaluator.some(r=>norm(r.section)===norm(rec.section)&&similarName(r.classmate,rec.classmate)>=0.88)) throw new Error('duplicate-similar');
+    const {fs,db}=this.fb; const id=this.makeId(rec);
+    try{ await fs.setDoc(fs.doc(db,CONFIG.collection,id),rec); }
+    catch(e){ if(e?.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
+  },
+  async listStudent(){
+    await this.init(); const user=this.fb.au.currentUser;
+    if(!user || !user.emailVerified) throw new Error('auth-required');
+    const {fs,db}=this.fb;
+    const q=fs.query(fs.collection(db,CONFIG.collection),fs.where('email','==',user.email.toLowerCase()));
+    const snap=await fs.getDocs(q); return snap.docs.map(d=>({id:d.id,...d.data()}));
   },
   async list(){
-    if (this.mode==='local') return this.localRead();
-    await this.init();
-    const {fs, db} = this.fb;
-    const snap = await fs.getDocs(fs.query(fs.collection(db, CONFIG.collection), fs.orderBy('createdAt','desc')));
-    return snap.docs.map(d => ({id:d.id, ...d.data()}));
+    await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required');
+    const {fs,db}=this.fb; const snap=await fs.getDocs(fs.query(fs.collection(db,CONFIG.collection),fs.orderBy('createdAt','desc')));
+    return snap.docs.map(d=>({id:d.id,...d.data()}));
   },
-  async patch(id, patch){
-    if (this.mode==='local'){
-      const rows=this.localRead();
-      const index=rows.findIndex(r=>r.id===id);
-      if(index<0) throw new Error('not-found');
-      rows[index]={...rows[index],...patch}; this.localWrite(rows); return;
-    }
-    await this.init();
-    const {fs,db}=this.fb;
-    await fs.setDoc(fs.doc(db,CONFIG.collection,id),patch,{merge:true});
+  async patch(id,patch){ await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required'); const {fs,db}=this.fb; await fs.setDoc(fs.doc(db,CONFIG.collection,id),patch,{merge:true}); },
+  async remove(id){ await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required'); const {fs,db}=this.fb; await fs.deleteDoc(fs.doc(db,CONFIG.collection,id)); },
+  async isAdmin(){ await this.init(); const au=this.fb.au; const u=au.currentUser; if(!u) return false; await this.fb.auth.reload(u).catch(()=>{}); return !!(u.emailVerified && norm(u.email)===this.adminEmail()); },
+  async login(username,password){
+    await this.init(); if(username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase()) throw new Error('bad-credentials');
+    try{ const cred=await this.fb.auth.signInWithEmailAndPassword(this.fb.au,this.adminEmail(),password); await this.fb.auth.reload(cred.user); if(!cred.user.emailVerified){await this.fb.auth.signOut(this.fb.au);throw new Error('email-not-verified');} }
+    catch(e){ if(e.message==='email-not-verified') throw e; if(e?.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
   },
-  async remove(id){
-    if (this.mode==='local'){ this.localWrite(this.localRead().filter(r=>r.id!==id)); return; }
-    await this.init();
-    const {fs, db} = this.fb;
-    await fs.deleteDoc(fs.doc(db, CONFIG.collection, id));
-  },
-  async isAdmin(){
-    if (this.mode==='local') return sessionStorage.getItem('pe_admin')==='1';
-    await this.init();
-    const au = this.fb.au;
-    if (au.authStateReady) await au.authStateReady();
-    return !!(au.currentUser && (au.currentUser.email||'').toLowerCase()===this.adminEmail());
-  },
-  async login(username, password){
-    if (this.mode==='local'){
-      const a = CONFIG.localAdmin;
-      if (username===a.username && password===a.password){ sessionStorage.setItem('pe_admin','1'); return; }
-      throw new Error('bad-credentials');
-    }
-    await this.init();
-    if (username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase()) throw new Error('bad-credentials');
-    try { await this.fb.auth.signInWithEmailAndPassword(this.fb.au, this.adminEmail(), password); }
-    catch(e){ if (e && e.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
-  },
-  async logout(){
-    sessionStorage.removeItem('pe_admin');
-    if (this.mode==='cloud' && this.fb){ try{ await this.fb.auth.signOut(this.fb.au); }catch(e){} }
-  },
-  /* Re-checks the admin password, then deletes every evaluation. */
-  async wipe(username, password){
-    if (this.mode==='local'){
-      const a = CONFIG.localAdmin;
-      if (username!==a.username || password!==a.password) throw new Error('bad-credentials');
-      localStorage.removeItem('pe_evaluations'); return;
-    }
-    await this.init();
-    if (username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase()) throw new Error('bad-credentials');
-    const {fs, auth, db, au} = this.fb;
-    try { await auth.reauthenticateWithCredential(au.currentUser, auth.EmailAuthProvider.credential(this.adminEmail(), password)); }
-    catch(e){ if (e && e.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
-    const snap = await fs.getDocs(fs.collection(db, CONFIG.collection));
-    const docs = snap.docs;
-    for (let i=0;i<docs.length;i+=400){
-      const batch = fs.writeBatch(db);
-      docs.slice(i,i+400).forEach(d => batch.delete(d.ref));
-      await batch.commit();
-    }
+  async logout(){ if(this.fb) await this.fb.auth.signOut(this.fb.au); },
+  async wipe(username,password){
+    await this.init(); if(username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase() || !(await this.isAdmin())) throw new Error('bad-credentials');
+    const {fs,auth,db,au}=this.fb;
+    try{ await auth.reauthenticateWithCredential(au.currentUser,auth.EmailAuthProvider.credential(this.adminEmail(),password)); }
+    catch(e){ if(e?.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
+    const snap=await fs.getDocs(fs.collection(db,CONFIG.collection)); const docs=snap.docs;
+    for(let i=0;i<docs.length;i+=400){const batch=fs.writeBatch(db);docs.slice(i,i+400).forEach(d=>batch.delete(d.ref));await batch.commit();}
   }
 };
 
@@ -2374,10 +2367,10 @@ document.querySelectorAll('.step-navigation').forEach((pill,index)=>{
 });
 $('infoContinue').addEventListener('click',validateInfo);
 $('clearStudentInfo').addEventListener('click',async()=>{
- if(!window.confirm('Clear the student information entered in this form? This will clear the email, your name, campus, section, and classmate name. It will not delete any submitted evaluations.'))return;
+ if(!window.confirm('Clear the information entered in this form? Your signed-in school email will remain connected. Submitted evaluations will not be deleted.'))return;
  clearFlowError('studentInfoError');
- ['email','evaluator','classmate'].forEach(id=>$(id).value='');
- $('evaluator').readOnly=false;$('evaluator').removeAttribute('aria-readonly');$('campus').disabled=false;$('section').disabled=false;$('identityLockNotice').classList.add('hidden');$('identityLockNotice').textContent='';
+ ['evaluator','classmate'].forEach(id=>$(id).value='');
+ $('email').value=Store.fb?.au?.currentUser?.email||''; $('evaluator').readOnly=false;$('evaluator').removeAttribute('aria-readonly');$('campus').disabled=false;$('section').disabled=false;$('identityLockNotice').classList.add('hidden');$('identityLockNotice').textContent='';
  $('campus').value='';updateSectionsForCampus();$('section').value='';
  await updateAttemptsNotice();
  $('email').focus();
@@ -2393,7 +2386,7 @@ async function updateAttemptsNotice(){
     return;
   }
   try{
-    const rows=Store.mode==='local'?Store.localRead():await Store.list();
+    const rows=await Store.listStudent();
     const used=rows.filter(r=>norm(r.email)===norm(email)).length;
     const remaining=Math.max(0,CONFIG.maxSubmissions-used);
     notice.innerHTML='<strong>Attempts remaining: '+remaining+' of '+CONFIG.maxSubmissions+'.</strong> You may submit up to 2 evaluations total, and each classmate can be evaluated only once.';
@@ -2430,7 +2423,7 @@ async function updateEvaluatorIdentityLock(){
     return;
   }
   try{
-    const rows = Store.mode==='local' ? Store.localRead() : await Store.list();
+    const rows = await Store.listStudent();
     if(version !== identityLookupVersion || norm($('email').value) !== norm(email)) return;
     const prior = rows.filter(r => norm(r.email) === norm(email));
     if(prior.length){
@@ -2586,13 +2579,15 @@ function goStep(n){
 }
 async function validateInfo(){
  const email=$('email').value.trim(),name=$('evaluator').value.trim(),campus=$('campus').value,section=$('section').value,classmate=$('classmate').value.trim();
+ const currentUser=Store.fb?.au?.currentUser;
+ if(!currentUser || !currentUser.emailVerified || norm(currentUser.email)!==norm(email)){showFlowError('studentInfoError','Please sign in with your verified DLSZ student account first.','email');return;}
  clearFlowError('studentInfoError');
  if(!/^S\d{7}@dlszobel\.edu\.ph$/i.test(email)){showFlowError('studentInfoError','Use your official school email in the format s followed by 7 digits and @dlszobel.edu.ph.','email');return}
  const missing=[['evaluator',name],['campus',campus],['section',section],['classmate',classmate]].find(([,value])=>!value);
  if(missing){showFlowError('studentInfoError','Complete all required fields to continue.',missing[0]);return}
  if(norm(name)===norm(classmate)){showFlowError('studentInfoError','Choose a classmate other than yourself.','classmate');return}
  try{
-  const rows=Store.mode==='local'?Store.localRead():await Store.list();
+  const rows=await Store.listStudent();
   const prior=rows.filter(r=>norm(r.email)===norm(email));
   if(prior.length){
    const registered=prior[0];
@@ -2686,7 +2681,7 @@ function resetEvaluation(){
 }
 function resetAllStudentData(){
  resetEvaluation();
- ['email','evaluator'].forEach(id=>$(id).value='');
+ $('email').value=Store.fb?.au?.currentUser?.email||''; $('evaluator').value='';
  $('evaluator').readOnly=false;$('evaluator').removeAttribute('aria-readonly');$('campus').disabled=false;$('section').disabled=false;$('identityLockNotice').classList.add('hidden');$('identityLockNotice').textContent='';
  $('campus').value='';updateSectionsForCampus();$('section').value='';$('acceptTerms').checked=false;$('acceptBtn').disabled=true;
  updateAttemptsNotice();
@@ -2722,7 +2717,7 @@ async function submitEvaluation(){
  try{
   // Count the evaluator's prior submissions before saving this one. If this
   // submission uses the final allowed attempt, clear all student-entered data.
-  const rowsBefore=Store.mode==='local'?Store.localRead():await Store.list();
+  const rowsBefore=await Store.listStudent();
   const usedBefore=rowsBefore.filter(r=>norm(r.email)===norm(rec.email)).length;
   await Store.add(rec);
   const finalAttempt=(usedBefore+1)>=CONFIG.maxSubmissions;
@@ -2809,12 +2804,12 @@ async function enterAdmin(){
  // Admins should land directly on Management > Select Campus, never the student welcome splash.
  document.body.classList.add('app-active','sidebar-collapsed');
  setMode(true);setActiveNav(null);adminView('management');
- $('modeBanner').classList.toggle('hidden',Store.mode!=='local');
+ $('modeBanner').classList.add('hidden');
  await loadAdmin();
 }
 function openLogin(){
  $('loginError').textContent='';$('loginForm').reset();
- $('loginDialog').showModal();$('loginUser').focus();
+ if(!$('loginDialog').open)$('loginDialog').showModal();$('loginUser').focus();
 }
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
 ['loginDialog','resetDialog'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target===$(id))$(id).close()}));
@@ -2831,10 +2826,11 @@ $('loginForm').addEventListener('submit',async e=>{
   await enterAdmin();
  }catch(ex){
   if(ex.message==='network'){err.textContent='Cannot reach the server. Check your internet connection.'}
-  else{fails++;if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Too many attempts. Please wait 30 seconds.'}else err.textContent='Incorrect username or password.'}
+  else if(ex.message==='email-not-verified'){err.textContent='Please verify the administrator email address before signing in.'}else{fails++;if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Too many attempts. Please wait 30 seconds.'}else err.textContent='Incorrect username or password.'}
   $('loginPass').value='';$('loginPass').focus();
  }finally{btn.disabled=false;btn.textContent='Sign in'}
 });
+$('studentLogout').addEventListener('click',async()=>{await Store.logout();A.rows=[];A.loaded=false;setMode(false);resetAllStudentData();openStudentAuth();showToast('You have been signed out.');});
 $('logoutNav').addEventListener('click',async()=>{
  await Store.logout();A.rows=[];A.loaded=false;A.open.clear();
  setMode(false);setActiveNav(document.querySelector('#studentNav .nav-link[data-page="evaluation"]'));
@@ -3131,32 +3127,67 @@ $('resetForm').addEventListener('submit',async e=>{
  }finally{btn.disabled=false;btn.textContent='Delete everything'}
 });
 
+/* ---------- Student authentication ---------- */
+let studentAuthMode='signin';
+function openStudentAuth(){
+  $('studentAuthError').textContent=''; $('studentVerifyActions').classList.add('hidden'); $('studentAuthFields').classList.remove('hidden'); $('studentAuthButtons').classList.remove('hidden');
+  if(!$('studentAuthDialog').open) $('studentAuthDialog').showModal(); $('studentAuthEmail').focus();
+}
+function setStudentAuthMode(mode){
+  studentAuthMode=mode; $('studentAuthTitle').textContent=mode==='register'?'Create student account':'Student sign in';
+  $('studentAuthSubtitle').textContent=mode==='register'?'Create a password for your Peer Evaluation account.':'Use your DLSZ student email and Peer Evaluation password.';
+  $('studentSignInBtn').textContent=mode==='register'?'Create account':'Sign in';
+  $('studentCreateBtn').textContent=mode==='register'?'Back to sign in':'Create account';
+  $('studentAuthPassword').autocomplete=mode==='register'?'new-password':'current-password';
+  $('studentAuthHint').textContent=mode==='register'?'Use a password with at least 8 characters. Verify your email before continuing.':'New here? Choose Create account. Your email must be verified before you can submit evaluations.';
+  $('studentAuthError').textContent='';
+}
+$('studentCreateBtn').addEventListener('click',()=>setStudentAuthMode(studentAuthMode==='register'?'signin':'register'));
+$('switchAdminLogin').addEventListener('click',()=>{ $('studentAuthDialog').close(); openLogin(); });
+$('studentAuthForm').addEventListener('submit',async e=>{
+  e.preventDefault(); const email=$('studentAuthEmail').value.trim().toLowerCase(),password=$('studentAuthPassword').value;
+  const err=$('studentAuthError'),btn=$('studentSignInBtn'); err.textContent=''; btn.disabled=true; btn.textContent=studentAuthMode==='register'?'Creating…':'Signing in…';
+  try{
+    if(studentAuthMode==='register'){
+      await Store.registerStudent(email,password);
+      $('studentAuthFields').classList.add('hidden'); $('studentAuthButtons').classList.add('hidden'); $('studentVerifyActions').classList.remove('hidden');
+      $('studentAuthHint').textContent='Verification email sent to '+email+'.';
+    }else{
+      await Store.signInStudent(email,password); $('studentAuthDialog').close(); await activateStudentSession();
+    }
+  }catch(ex){
+    const messages={'invalid-student-email':'Use your official student email: S followed by 7 digits and @dlszobel.edu.ph.','email-not-verified':'Your email is not verified yet. Check your inbox, then use the verification option.','auth/email-already-in-use':'An account already exists. Sign in instead.','auth/weak-password':'Choose a password with at least 8 characters.','auth/invalid-credential':'Incorrect email or password.','auth/user-not-found':'No account found. Create an account first.','auth/too-many-requests':'Too many attempts. Please wait and try again.','auth/network-request-failed':'Cannot reach Firebase. Check your internet connection.'};
+    if(ex.message==='email-not-verified'){$('studentAuthFields').classList.add('hidden');$('studentAuthButtons').classList.add('hidden');$('studentVerifyActions').classList.remove('hidden');}
+    err.textContent=messages[ex.message]||messages[ex.code]||'Unable to continue. Please check your details and try again.';
+  }finally{btn.disabled=false;btn.textContent=studentAuthMode==='register'?'Create account':'Sign in';}
+});
+$('resendVerification').addEventListener('click',async()=>{try{await Store.resendVerification();$('studentAuthError').textContent='A new verification email has been sent.';}catch(e){$('studentAuthError').textContent='Could not send the email. Please try again.';}});
+$('checkVerification').addEventListener('click',async()=>{try{if(await Store.refreshVerification()){$('studentAuthDialog').close();await activateStudentSession();}else $('studentAuthError').textContent='Email not verified yet. Open the link in your inbox, then try again.';}catch(e){$('studentAuthError').textContent='Could not check verification. Please try again.';}});
+async function activateStudentSession(){
+ const user=Store.fb.au.currentUser; if(!user||!user.emailVerified||!Store.studentEmailPattern.test(user.email||'')){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();return;}
+ $('email').value=user.email.toLowerCase(); $('email').readOnly=true; $('pillText').textContent='Signed in · '+user.email; $('profileName').textContent='Grade 10 Student';
+ document.body.classList.add('app-active'); $('studentAuthDialog').close(); updateAttemptsNotice();
+}
+async function initializeAuthentication(){
+ try{
+  await Store.init();
+  Store.fb.auth.onAuthStateChanged(Store.fb.au,async user=>{
+    if(!user){setMode(false);openStudentAuth();return;}
+    await Store.fb.auth.reload(user).catch(()=>{});
+    if(user.emailVerified&&norm(user.email)===Store.adminEmail()){await enterAdmin();return;}
+    if(user.emailVerified&&Store.studentEmailPattern.test(user.email||'')){await activateStudentSession();return;}
+    if(!user.emailVerified){$('studentAuthEmail').value=user.email||'';setStudentAuthMode('signin');$('studentAuthFields').classList.add('hidden');$('studentAuthButtons').classList.add('hidden');$('studentVerifyActions').classList.remove('hidden');$('studentAuthDialog').showModal();return;}
+    await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();
+  });
+ }catch(e){showToast('Could not connect to Firebase. Check your Firebase configuration and internet connection.');openStudentAuth();}
+}
+
 /* ---------- init ---------- */
 document.body.classList.add('step-one');syncSidebarToggle();calculateAdjustment();runCalc();
-if(Store.mode==='local')console.warn('Peer Evaluation: running in LOCAL TEST MODE. Add your Firebase config to CONFIG before deploying.');
+initializeAuthentication();
 
-/* =====================================================================
-   FIRESTORE SECURITY RULES (paste in Firebase Console > Firestore > Rules)
-   Replace admin@peer-eval.app if you changed adminUsername / adminEmailDomain.
-
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /evaluations/{id} {
-         allow create: if request.resource.data.keys().hasOnly(
-             ['evaluator','email','campus','section','classmate','ratings','total','percent','strength','improve','createdAt'])
-           && request.resource.data.ratings.size() == 5
-           && request.resource.data.total >= 5 && request.resource.data.total <= 20
-           && request.resource.data.campus.size() <= 60
-           && request.resource.data.strength.size() <= 1000
-           && request.resource.data.improve.size() <= 1000;
-         allow read, delete: if request.auth != null
-           && request.auth.token.email == 'admin@peer-eval.app';
-         allow update: if false;
-       }
-     }
-   }
-   ===================================================================== */
+/* Firestore rules are supplied separately in firestore.rules. Deploy those
+   rules in Firebase Console before collecting any real student submissions. */
 </script>
 
 <style id="floating-sidebar-and-scroll-loading">
