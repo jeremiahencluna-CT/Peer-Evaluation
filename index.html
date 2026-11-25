@@ -1583,6 +1583,208 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
 
 
 
+<style id="refined-minimal-sidebar">
+/* Final sidebar-only refinement: preserve every existing destination and workflow. */
+:root {
+  --rail-width: 76px;
+  --rail-green: #124c38;
+  --rail-mint: #86efac;
+}
+.sidebar {
+  width: var(--rail-width) !important;
+  min-width: var(--rail-width) !important;
+  background: #fff !important;
+  color: var(--rail-green) !important;
+  border-right: 1px solid #e5eee8 !important;
+  box-shadow: 4px 0 18px rgba(18,76,56,.045) !important;
+  padding: 10px 8px 12px !important;
+  overflow-x: visible !important;
+  overflow-y: auto !important;
+}
+.main { margin-left: var(--rail-width) !important; }
+.sidebar .brand {
+  min-height: 62px !important;
+  justify-content: center !important;
+  padding: 8px 4px 16px !important;
+  margin-bottom: 8px !important;
+  border-bottom: 0 !important;
+}
+.sidebar .brand-mark {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border-radius: 50% !important;
+  background: #e8f8ee !important;
+  color: var(--rail-green) !important;
+  box-shadow: none !important;
+}
+.sidebar .brand-mark img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+.sidebar .brand-copy,
+.sidebar .nav-label,
+.sidebar .nav-text,
+.sidebar .profile-copy,
+.sidebar .sidebar-controls,
+.sidebar .side-toggle { display: none !important; }
+.sidebar nav {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
+.sidebar .nav-link {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: #315f4b !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+.sidebar .nav-link:hover {
+  background: #f0f8f3 !important;
+  color: #124c38 !important;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link[aria-current="page"] {
+  background: var(--rail-mint) !important;
+  color: #124c38 !important;
+  box-shadow: none !important;
+}
+.sidebar .nav-link.active .nav-icon,
+.sidebar .nav-link[aria-current="page"] .nav-icon {
+  color: #124c38 !important;
+}
+.sidebar .nav-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 20px !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+.sidebar .nav-icon svg {
+  display: block !important;
+  width: 19px !important;
+  height: 19px !important;
+  flex: 0 0 19px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.9 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+.sidebar .sidebar-bottom {
+  margin-top: auto !important;
+  padding: 12px 0 4px !important;
+  border-top: 1px solid #edf2ee !important;
+}
+.sidebar .admin-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 0 10px !important;
+  padding: 0 0 10px !important;
+  border-bottom: 1px solid #edf2ee !important;
+}
+.sidebar .profile {
+  justify-content: center !important;
+  padding: 6px 0 !important;
+}
+.sidebar .avatar {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: #e8f8ee !important;
+  color: #124c38 !important;
+}
+/* Icon labels appear on hover/focus without taking permanent sidebar space. */
+.sidebar .nav-link::after {
+  content: attr(data-label);
+  position: absolute;
+  z-index: 100;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translate(-4px, -50%);
+  padding: 7px 10px;
+  border: 1px solid #dce9df;
+  border-radius: 8px;
+  background: #fff;
+  color: #124c38;
+  box-shadow: 0 8px 22px rgba(18,76,56,.12);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.sidebar .nav-link:hover::after,
+.sidebar .nav-link:focus-visible::after { opacity: 1; transform: translate(0, -50%); }
+.sidebar .nav-link.hidden { display: none !important; }
+@media (max-width: 760px) {
+  .sidebar {
+    width: var(--rail-width) !important;
+    min-width: var(--rail-width) !important;
+    height: 100vh !important;
+    min-height: 0 !important;
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    transform: none !important;
+    border-radius: 0 18px 18px 0 !important;
+  }
+  .main { margin-left: var(--rail-width) !important; }
+  .sidebar-overlay { display: none !important; }
+  .sidebar .brand { min-height: 62px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar .nav-link::after { transition: none !important; }
+}
+</style>
+
+
+<style id="sidebar-navigation-spacing-refinement">
+/* Add breathing room between the brand mark and the first navigation icon,
+   and slightly increase the spacing between the two student options. */
+.sidebar #studentNav,
+.sidebar #adminGroup {
+  margin-top: 20px !important;
+  gap: 16px !important;
+}
+.sidebar .brand {
+  margin-bottom: 4px !important;
+}
+@media (max-width: 760px) {
+  .sidebar #studentNav,
+  .sidebar #adminGroup {
+    margin-top: 20px !important;
+    gap: 16px !important;
+  }
+}
+</style>
 </head>
 <body class="step-one sidebar-collapsed">
 <div class="app">
@@ -2721,15 +2923,14 @@ function statusChips(s){
  if(s.dup)out.push(el('span',{class:'chip bad',text:'Duplicate submission'}));
  return out;
 }
-async function saveAdjustmentApproval(s,next,checkbox){
- checkbox.disabled=true;
+async function saveAdjustmentApproval(s,next,button){
+ button.disabled=true;
  try{
   const patch={adjustmentApproved:next,adjustmentApprovedAt:next?new Date().toISOString():null};
   await Promise.all(s.received.map(r=>Store.patch(r.id,patch)));
   A.rows=await Store.list();renderAdmin();
-  showToast(next?(s.pct<60?'Review marked complete. No deduction was applied.':'Adjustment approved.'):'Approval status cleared.');
- }catch(err){checkbox.checked=!next;showToast('Could not save approval status. Please try again.');}
- finally{checkbox.disabled=false;}
+  showToast(next?(s.pct<60?'Review marked complete. No deduction was applied.':'Adjustment approved.'):'Approval undone. The student is pending review again.');
+ }catch(err){button.disabled=false;showToast('Could not save approval status. Please try again.');}
 }
 function dedChip(s){
  if(s.pct===null)return el('span',{class:'chip mute',text:'—'});
@@ -2803,11 +3004,14 @@ function renderAdmin(){
   const deduction= s.pct===null ? null : deductionFor(s.pct);
   const deductionCell= deduction===null ? el('span',{class:'chip mute',text:'—'}) : deduction.review ? el('span',{class:'chip bad',text:'Investigate'}) : deduction.d===0 ? el('span',{class:'chip ok',text:'No deduction'}) : el('span',{class:'deduction-detail',text:'−'+fmtNum(deduction.d)+' pts'});
   const status=statusChips(s);
-  const approvalButton=el('button',{class:'btn btn-sm '+(s.adjustmentApproved?'btn-secondary':'btn-primary')+' approve-student',type:'button',disabled:s.rc===0||s.adjustmentApproved});
-  approvalButton.append(iconSvg('check'),document.createTextNode(s.adjustmentApproved?'Approved':'Mark as Approved'));
-  approvalButton.addEventListener('click',()=>saveAdjustmentApproval(s,true,approvalButton));
+  const approvalButton=el('button',{class:'approve-student'+(s.adjustmentApproved?' is-approved':''),type:'button',disabled:s.rc===0,'aria-label':s.adjustmentApproved?'Undo approval':'Approve student adjustment',title:s.adjustmentApproved?'Click to undo approval':'Approve student adjustment'});
+  const approvalIcon=el('img',{src:s.adjustmentApproved?'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFEklEQVR42u1ZXWwUVRT+zt0tpTR20bSABrBN4EGjWE2QaGIq0UIUTTCtUYyJEDDGRCXGaAg/WkWBFmwJwRDlRZ94VB8MSq0S8UETYhSFxtZsovGnbWptgZJt555zfLgzs11Ld9bObp/2S25mc/fOd+75n7kDlFFGGWWUEQOU78/m75urq+jKByxyv7BNKQBVAKSAlmAnSiByP00iMWYo0Z3Bgs3djd3jM92WzMeZtJfer76upoWSBIVAVSNULgIUICIQTEqtttqRiwDw6KwUUEgzEgpKBlbXrJSia5LlJAJI1RlMeV1eI+elVEkpBAqCQAAClFwcERU3htTfv4tOhYG7CrQmhgIKVUBUoQBOLOmZk8TcNHCfk+krM2sFpqa5UuDm0kN9TxQSpcmosHRxCKhINgVKrYAIVI2TJ/nXmmgHZBNrzmo75cqefQ4gqAT+da5CyJeJAnLAFBJCKv4IeIs0egZO4tmzT+DM0Be5/4Xyohtmfg/4RDD+tYj45u8zOJ4+DFHB0f4DGPP+wYYbWkK5rvwhUq6Jqs2hNXyLFGP8OPodjvbvh6iEoXryr4+yayTX6zHKqGb7AbQoVejXK2l09e2FJ144l6AkttQ/F/IHOeCSOEYfcB5A2IE1pgaDmT+xr3cHLttLOVVua8N2NC5cHfKr+B1ZEGk0E5UDIhKOqWHw5dCn2Ha2BT2DnxQUNiMTw3iz9xWMTo7kzG9athVNtc05czkyJZYHHBmgEFKIT/bV8Cm8m+6EQnA8fRiqwNq6B2bkGedLeKt3B4YyAznzD13figcXt4a8AYSDJJZIrxdQhcKHqpDsw99PgMWG695Ld4GU0FS3fhrHBGfQ8fNu/Daezpm/p7YZjy/ddtUNCrueQ0LxqpCIglnCEbj4yeXPAGpgmWGZ4VkP7/xyEKeHPssJBU88dPa9gfOj58K1lhmralbj6YYXs33mP2OqTIlXRhUqAmF/CCAC3FZzJ15a2QaogccWHltM2kkc6duP04OnIAKwKI71H8K3w1+Hazy2uLFqJbav2A2jyZBv2vDlaTFCSFihJBDkkjWm1uCFFTvRfmEPWDmcP9T7OlgE6ct9OPnHxzl8y6sbsOumdsyj+Xk3JiwgAKIUL4klqEIkYEx355prm/D8ip042NsGmaLEgZ/2hE0qQF3lYrx689uoNtdEhgWLu9coRa7N7wEWsFUInAJXs9q9i9YjYyfQcf61aZsOkKpIYe+qI6idt6igXsJe0KENlCWmB5jBKmDwjNZYt+RhTExOYt+5XdOeHucnqtB2RxeWVdVHWjNUwPreJI7nAfFzQFTckJmtsWHpI7g4MYb2H9qy5KYCHXd14taFjXnvnSbXijuZIBNTARawFecBjS5pjzU8hQqtwrELXag0lXj59j24u66pYMtnPSD+0YSrRvGqkBWwMFi5ICturG/FxvrWKV4U/F+wx+6Ewph4VYhZwJZhxSkhMjdvZNZjqCGQYXCsJGaBZQH7HTSKrJgKIEGghIkXQswK6zE8K7Aic+YBzxNXPpMMjpfEDPYYzBZs7azieTbgSQtK+o2MOU4jA8QIxHOP0ms/v8VVedXin7P4nATAGANR10DVxnilFNGxhFKKYEBq3GmZBscVJTjpD47X1YBgAPcoMRpDAXSTmlajAuMrUOosIHUKGCWQGoiie9YKjFfJZrqSAYs0K3Mq+2Jfog8cCD5wEDiRGEtY2z2+QLagjDLKKKOMUuFfnuBjinkLiIoAAAAASUVORK5CYII=':'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACyUlEQVR42u1ZMW4UQRCsnr3EtmRLRJASO+ALFhwfwARk5leEEPGIM3/gGUQIg2xZ7FQVwczZhwQ+6+Z2om3ptCedbnqrq6p7dhaYY4455pijIeKhH5dfl0cHcfOJ0isxnxiADSAMeII7cSCifE3DcJViWN3i8GL1YnX9v78tHlpzkX99PHpy/CYWAUOwvQXyHsJARCCQTpx9nr//BIC3OwEwtMRgxGJddd9n2TuS+zUjgLBLwczXDxb5wSWtE0MwAoKAABxFRxH71ZDr/Rd1GgnlKvi4AYBhA7JhAJ+ffulizHffXpacFczOADZt7ig0R0xrAttwZeIxKk3bZOmqRUv3FpgUAGqu6gG1AAAQG8bq1tvj79y7ewDrTlCvk3Sff2StOdHsgSohyBVMLwmVnFjXbGcG5LJYqtdOYVUGhK15F4+thmMtI0zfhTYBuMnE3pgHHSXkzWI1M4C7CdyPgTqRH8HAVg9IAkJQqBsASaXw7R6oi8FQGOpgZMkQ1x7YXrRHdKG7TVU/Blj6ZyjaGJAMUrAFoZ+ESJWRKWxlfftuVIIqAAkdJASIJVEy2iUkGo6+DIhCAJD3ICGpdCBC3UxMrRmIRglRYDaEAqCbB0bVEZZgqpEBErRAsB8DmXU/zTYG1j1Zrkbu4GJJUFY5mYjUCIACswoD7uiBrHo0obuOtHsXygJF0OzGAEeWE4qU2roQKTATWQVELwbySDgFIhFsMjGFTIEkMrcvto8ghTwSGAIxpDYJkaUaYxay+nlgHFXa54Jgm4kJjgSZwZz7eeB3RizqICN3fyIzi4w0lnZ6dnk6OYCzy9PSuseypXBueKSUfAUHAgnh8pn8TKjmCSSgbCV+NAwyrMLpPFlITggDzz88mxTAUIuVHAgnyFjtDOD6QBdxcwtKS5Mn92dDE73gwPoFR4DDcDXkvLo+1HvMMcccc8wxVfwBMMu9iRSs5bcAAAAASUVORK5CYII=',alt:'','aria-hidden':'true'});
+  approvalIcon.style.width='28px';approvalIcon.style.height='28px';approvalIcon.style.objectFit='contain';approvalButton.append(approvalIcon);
+  approvalButton.addEventListener('click',()=>saveAdjustmentApproval(s,!s.adjustmentApproved,approvalButton));
   const deleteButton=el('button',{class:'delete-student',type:'button','aria-label':'Delete student record for '+s.name,title:'Delete student record'});
-  deleteButton.append(iconSvg('trash'));
+  const deleteIcon=el('img',{src:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABd0lEQVR4nO2WsU6EQBCG5z1sjYX3AhasYqml5gpNeAOls1KSszC5J7DRxtIYX8prNfGaAwnwG1bRHMJyBJZdL/Mnf8UU/7ezMwsRi8ViFYKgCQShwVP6x+FhBAL+/iF8dwbfxUCe4Wz3oEeAQcND+tx96RMAJkwMUFKLIe1k0iUGEAzQTQwgGKCb1h4g87bRRw2ZAEjuAsRRiPT6tLYmvTpGHC6QPNzYBZDk4eP4yzUQRfiiTgVBQwJk3mgpmHS4QBqMf8MH48qazBuZB5ABL4/+BvzuRPnkf75NTuzogBoikmHbhIfJLVQJ0TI8TL8DEqJ86rk/opXCwzhAfufrABQrFjYAVA5sxWBbCZBWbpuaIW6AoKEBVKtStWJhA8B6PGS3F42rstyJ9D6wowNLEA17voBQhQf/Tiu0yg7vw6RLDCAYoJsgaK4dwKF3fQAOPQ/QgSedAFtw6FVj+Dfs0aY2AAmxQxtw6LHn6zTPT157eBaLRdbpE3eQb6N7yFfqAAAAAElFTkSuQmCC',alt:'', 'aria-hidden':'true'});
+  deleteIcon.style.width='22px';deleteIcon.style.height='22px';deleteIcon.style.objectFit='contain';
+  deleteButton.append(deleteIcon);
   deleteButton.addEventListener('click',()=>deleteStudentRecord(s));
   const actionCell=el('div',{class:'row-actions'},btn,approvalButton,deleteButton);
   body.append(el('tr',null,
@@ -3899,6 +4103,231 @@ input[type="radio"]:focus-visible {
 }
 </style>
 
+
+<style id="peersync-sidebar-visual-refresh">
+/* Sidebar-only visual refresh. Existing navigation items, IDs, routes and JS are unchanged. */
+:root{
+  --sidebar-green:#064e3b;
+  --sidebar-green-2:#15803d;
+  --sidebar-mint:#86efac;
+  --sidebar-soft:#ecfdf5;
+  --sidebar-ink:#23483a;
+}
+.sidebar{
+  width:76px;
+  inset:8px auto 8px 8px;
+  height:auto;
+  min-height:0;
+  padding:12px 8px 10px;
+  border:1px solid #e5eee8;
+  border-radius:24px;
+  background:#fff;
+  color:var(--sidebar-ink);
+  box-shadow:0 8px 28px rgba(6,78,59,.07);
+  overflow:visible;
+}
+.brand{
+  justify-content:center;
+  min-height:54px;
+  padding:2px 0 13px;
+  margin-bottom:13px;
+  border-bottom:0;
+}
+.brand-mark{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  overflow:hidden;
+  border-radius:50%;
+  background:var(--sidebar-green);
+  color:#fff;
+  box-shadow:none;
+}
+.brand-mark img{width:27px!important;height:27px!important;object-fit:contain;filter:brightness(0) invert(1)}
+.brand-copy{display:none}
+.sidebar-controls{
+  min-height:34px;
+  justify-content:center;
+  padding:0 0 7px;
+}
+.side-toggle{
+  width:27px;height:27px;flex:0 0 27px;
+  border:1px solid #dcebe1;
+  border-radius:50%;
+  background:#f3faf5;
+  color:var(--sidebar-green);
+  box-shadow:none;
+}
+.side-toggle svg{width:14px;height:14px}
+.nav-label{
+  display:block;
+  padding:8px 0 7px;
+  color:#5e7167;
+  text-align:center;
+  font-size:9px;
+  line-height:1.2;
+  font-weight:800;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+nav#studentNav,nav#adminGroup{
+  display:grid;
+  gap:7px;
+  padding:0;
+  justify-items:center;
+}
+.nav-link{
+  width:40px;
+  min-height:40px;
+  height:40px;
+  justify-content:center;
+  gap:0;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:#426456;
+  overflow:visible;
+  text-align:center;
+}
+.nav-link:hover{
+  background:#f0faf3;
+  color:var(--sidebar-green);
+}
+.nav-link.active{
+  background:var(--sidebar-mint);
+  color:var(--sidebar-green);
+  box-shadow:none;
+  font-weight:800;
+}
+.nav-link.active::before{display:none}
+.nav-icon{
+  width:20px;
+  flex:0 0 20px;
+  color:inherit;
+  font-size:17px;
+}
+.nav-icon svg{width:19px;height:19px;flex-basis:19px;stroke-width:1.8}
+.nav-text{display:none}
+.sidebar-bottom{
+  margin-top:auto;
+  padding:10px 0 0;
+  border-top:1px solid #edf2ee;
+}
+.admin-nav{
+  display:grid;
+  justify-items:center;
+  gap:7px;
+  margin:0 0 10px;
+  padding:0 0 10px;
+  border-bottom:1px solid #edf2ee;
+}
+.profile{
+  justify-content:center;
+  gap:0;
+  padding:0;
+}
+.avatar{
+  width:34px;height:34px;
+  border-radius:50%;
+  background:#e5f5ea;
+  color:var(--sidebar-green);
+  font-size:11px;
+}
+.profile-copy{display:none}
+
+/* Icon tooltips retain the original data-label navigation names. */
+.sidebar .nav-link[ data-label ]{position:relative}
+.sidebar .nav-link[data-label]::after{
+  content:attr(data-label);
+  position:absolute;
+  left:calc(100% + 10px);
+  top:50%;
+  transform:translate(-4px,-50%);
+  z-index:90;
+  padding:7px 10px;
+  border:1px solid #dcebe1;
+  border-radius:8px;
+  background:#fff;
+  color:#173f30;
+  box-shadow:0 8px 22px rgba(6,78,59,.12);
+  font-size:11px;
+  font-weight:700;
+  line-height:1.2;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .16s ease,transform .16s ease;
+}
+.sidebar .nav-link:hover::after,
+.sidebar .nav-link:focus-visible::after{
+  opacity:1;
+  transform:translate(0,-50%);
+}
+.sidebar .nav-link.hidden::after{display:none}
+.main{margin-left:92px}
+
+/* The existing collapse state remains supported, while keeping the compact icon rail. */
+body.sidebar-collapsed .sidebar{width:76px}
+body.sidebar-collapsed .main{margin-left:92px}
+body.sidebar-collapsed .brand{justify-content:center;padding:2px 0 13px}
+body.sidebar-collapsed .brand-copy,
+body.sidebar-collapsed .nav-label,
+body.sidebar-collapsed .nav-text,
+body.sidebar-collapsed .profile-copy{display:none}
+body.sidebar-collapsed .nav-link{justify-content:center;padding:0}
+body.sidebar-collapsed .profile{justify-content:center}
+body.sidebar-collapsed .sidebar-controls{justify-content:center;padding:0 0 7px}
+body.sidebar-collapsed .nav-link::after{content:attr(data-label)}
+
+/* Keep the original mobile drawer behavior and its full labels. */
+@media(max-width:760px){
+  .sidebar{
+    width:min(290px,86vw);
+    inset:0 auto 0 0;
+    height:100vh;
+    padding:12px 9px 10px;
+    border:0;
+    border-radius:0 22px 22px 0;
+    transform:translateX(-105%);
+    background:#fff;
+    box-shadow:12px 0 35px rgba(0,0,0,.16);
+  }
+  body.mobile-sidebar-open .sidebar{transform:translateX(0)}
+  .brand{justify-content:flex-start;min-height:70px;padding:12px 10px;margin-bottom:8px;border-bottom:1px solid #edf2ee}
+  .brand-copy{display:block}
+  .brand-copy strong{color:var(--sidebar-green);font-size:13px}
+  .brand-copy span{color:#73857a}
+  .sidebar-controls{justify-content:flex-end;padding:5px 8px;min-height:42px}
+  .nav-label{padding:16px 15px 8px;text-align:left;color:#728178}
+  nav#studentNav,nav#adminGroup{padding:0 8px;justify-items:stretch;gap:5px}
+  .nav-link{width:100%;height:auto;min-height:44px;justify-content:flex-start;gap:12px;padding:10px 13px;border-radius:11px}
+  .nav-icon{width:24px;flex:0 0 24px}
+  .nav-text{display:inline;font-size:12px;font-weight:650}
+  .sidebar-bottom{padding:12px 8px}
+  .admin-nav{justify-items:stretch}
+  .profile{justify-content:flex-start;gap:10px;padding:7px 5px}
+  .profile-copy{display:block}
+  body.sidebar-collapsed .brand-copy,
+  body.sidebar-collapsed .nav-label,
+  body.sidebar-collapsed .nav-text,
+  body.sidebar-collapsed .profile-copy{display:block}
+  body.sidebar-collapsed .nav-link{justify-content:flex-start;padding:10px 13px}
+  body.sidebar-collapsed .profile{justify-content:flex-start}
+  body.sidebar-collapsed .sidebar-controls{justify-content:flex-end;padding:5px 8px}
+}
+@media(prefers-reduced-motion:reduce){
+  .sidebar,.sidebar .nav-link,.sidebar .side-toggle{transition:none!important}
+}
+</style>
+
+
+<style id="approval-icon-toggle-style">
+#adminTable .approve-student{display:inline-grid;place-items:center;width:36px;height:36px;padding:3px;border:1px solid #cfe5d3;border-radius:10px;background:#f4faf5;cursor:pointer;transition:background .15s,border-color .15s,opacity .15s}
+#adminTable .approve-student:hover{background:#e8f5ea;border-color:#9bcda5}
+#adminTable .approve-student.is-approved{background:#e5f3e7;border-color:#a9d6b0}
+#adminTable .approve-student:disabled{opacity:.45;cursor:not-allowed}
+#adminTable .approve-student img{display:block;width:28px;height:28px;object-fit:contain}
+</style>
 </body>
 
 <style id="final-rating-radio-layout-fix">
@@ -4115,4 +4544,74 @@ svg{shape-rendering:geometricPrecision}
 .student-flow-error{margin:0 0 16px;padding:11px 13px;border:1px solid #efc2bc;border-radius:10px;background:#fff5f3;color:#8e2118;line-height:1.45}
 .student-flow-error:focus{outline:3px solid #f3b4a9;outline-offset:2px}
 @media(max-width:600px){.student-flow-error{font-size:12px}.stepper{gap:7px}.step small{font-size:9px}.card{border-radius:13px}}
+</style>
+
+<style id="remove-sidebar-toggle-controls">
+/* Keep the sidebar clean: no collapse arrow and no mobile hamburger button. */
+.sidebar-controls,
+.side-toggle,
+.mobile-menu { display: none !important; }
+
+/* Keep navigation directly accessible on small screens without a hamburger. */
+@media (max-width: 760px) {
+  .sidebar {
+    width: 76px !important;
+    min-width: 76px !important;
+    height: 100vh !important;
+    min-height: 0 !important;
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    transform: none !important;
+    overflow: visible !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    border-radius: 0 20px 20px 0 !important;
+  }
+  .sidebar .brand {
+    justify-content: center !important;
+    padding: 16px 6px !important;
+    min-height: 72px !important;
+  }
+  .sidebar .brand-copy,
+  .sidebar .nav-label,
+  .sidebar .nav-text,
+  .sidebar .profile-copy { display: none !important; }
+  .sidebar nav { padding: 0 5px !important; }
+  .sidebar .nav-link {
+    justify-content: center !important;
+    padding: 10px 0 !important;
+    min-height: 44px !important;
+  }
+  .sidebar .nav-icon { width: 24px !important; }
+  .sidebar .sidebar-bottom { padding: 12px 5px !important; }
+  .sidebar .admin-nav { justify-items: center; }
+  .sidebar .profile { justify-content: center !important; padding: 7px 0 !important; }
+  .main { margin-left: 76px !important; }
+  .sidebar-overlay { display: none !important; }
+}
+</style>
+
+<style id="sidebar-no-scroll-tooltip-fix">
+/* Keep the navigation rail fixed and non-scrollable; allow hover labels to extend outside it. */
+.sidebar {
+  overflow: visible !important;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+.sidebar .nav-link[data-label] { position: relative; overflow: visible !important; }
+.sidebar .nav-link[data-label]::after { display: block; }
+.sidebar .nav-link[data-label]:hover::after,
+.sidebar .nav-link[data-label]:focus-visible::after { opacity: 1; }
+@media (max-width: 760px) {
+  .sidebar { overflow: visible !important; }
+}
+</style>
+
+<style id="sidebar-nav-top-spacing-adjustment">
+/* Adjust the first navigation icon downward without changing menu spacing or behavior. */
+.sidebar #studentNav,
+.sidebar #adminGroup {
+  padding-top: 10px !important;
+}
 </style>
