@@ -271,6 +271,9 @@ details.indiv>summary{cursor:pointer;color:var(--green);font-weight:800;font-siz
 .empty{padding:38px 18px;text-align:center;color:var(--muted);font-size:12px}
 .empty strong{display:block;color:var(--forest);font-size:14px;margin-bottom:4px}
 .loading{padding:30px;text-align:center;color:var(--muted)}
+.help-guide-steps{display:grid;gap:12px;padding-left:24px;margin:0;color:#405348;font-size:13px;line-height:1.65}
+.help-guide-steps li{padding-left:4px}
+.help-guide-steps strong{color:var(--forest)}
 .calc-result{padding:16px;background:#f5faf6;border:1px solid var(--line);border-radius:11px;margin-top:14px}
 .calc-result .big{font-size:28px;font-weight:900;color:var(--green);letter-spacing:-.03em}
 .calc-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -281,6 +284,26 @@ details.indiv>summary{cursor:pointer;color:var(--green);font-weight:800;font-siz
 dialog{border:0;border-radius:16px;padding:0;width:min(720px,calc(100vw - 24px));box-shadow:0 24px 70px #0a251a55;color:var(--ink);background:#fff}
 dialog.narrow{width:min(420px,calc(100vw - 24px))}
 dialog::backdrop{background:#081c14a6;backdrop-filter:blur(2px)}
+/* Student authentication is the opening screen, not a floating modal. */
+#studentAuthDialog:not([open]){display:none!important}
+#studentAuthDialog[open]{
+  position:fixed;inset:0;margin:0;width:100vw;height:100vh;height:100dvh;
+  max-width:none;max-height:none;padding:24px;border:0;border-radius:0;
+  display:flex;align-items:center;justify-content:center;overflow:auto;
+  background:linear-gradient(145deg,#edf6ef 0%,#f8fbf8 52%,#e8f2eb 100%);
+  box-shadow:none;
+}
+#studentAuthDialog::backdrop{background:transparent;backdrop-filter:none}
+#studentAuthForm{width:min(100%,460px);max-height:100%;margin:0;border:1px solid #dce8de;border-radius:20px;overflow:auto;background:#fff;box-shadow:0 20px 60px rgba(18,76,56,.16)}
+#studentAuthDialog .dlg-body{max-height:calc(100dvh - 180px)}
+@media(max-width:520px){#studentAuthDialog[open]{padding:12px}#studentAuthForm{border-radius:16px}#studentAuthDialog .dlg-head{padding:16px}#studentAuthDialog .dlg-body{padding:16px;max-height:calc(100dvh - 150px)}}
+/* Admin sign-in uses the same full-page gate so dismissing it cannot expose the student form. */
+#loginDialog:not([open]){display:none!important}
+#loginDialog[open]{position:fixed;inset:0;margin:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;padding:24px;border:0;border-radius:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:linear-gradient(145deg,#edf6ef 0%,#f8fbf8 52%,#e8f2eb 100%);box-shadow:none}
+#loginDialog::backdrop{background:transparent;backdrop-filter:none}
+#loginForm{width:min(100%,460px);max-height:100%;margin:0;border:1px solid #dce8de;border-radius:20px;overflow:auto;background:#fff;box-shadow:0 20px 60px rgba(18,76,56,.16)}
+#loginDialog .dlg-body{max-height:calc(100dvh - 180px)}
+@media(max-width:520px){#loginDialog[open]{padding:12px}#loginForm{border-radius:16px}#loginDialog .dlg-head{padding:16px}#loginDialog .dlg-body{padding:16px;max-height:calc(100dvh - 150px)}}
 .dlg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)}
 .dlg-head h2{margin:0}
 .dlg-body{padding:18px 20px 22px;max-height:min(72vh,680px);overflow:auto}
@@ -1559,6 +1582,8 @@ body.evaluation-scroll-locked .app{position:relative}
    hamburger rail while the evaluation workspace is in view. */
 body.home-scroll-mode:not(.app-active) .sidebar{display:none}
 body.home-scroll-mode:not(.app-active) .main{margin-left:0}
+body.auth-screen .sidebar{display:none!important}
+body.auth-screen .main{margin-left:0!important}
 body.home-scroll-mode.app-active .sidebar{display:flex;width:64px}
 body.home-scroll-mode.app-active .main{margin-left:64px}
 body.home-scroll-mode.app-active .sidebar .brand,
@@ -1786,7 +1811,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
 }
 </style>
 </head>
-<body class="step-one sidebar-collapsed">
+<body class="step-one sidebar-collapsed auth-screen">
 <div class="app">
   <aside class="sidebar" id="sidebar" aria-label="Main navigation">
     <div class="brand">
@@ -1876,7 +1901,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
         <div class="card-head"><div class="head-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 11a3 3 0 1 0-1-5.8M17 14a5 5 0 0 1 3.5 5"/></svg></div><div><h2>Student Information</h2><p class="sub">Enter your details and identify the groupmate you are evaluating.</p></div></div>
         <p class="form-error student-flow-error hidden" id="studentInfoError" role="alert" tabindex="-1"></p>
         <div class="form-grid">
-          <div class="field"><label class="field-label" for="email">School email address *</label><input id="email" type="email" maxlength="120" placeholder="Sign in to load your school email" autocomplete="email" readonly required><p class="help">Use your official student email: s followed by 7 digits and @dlszobel.edu.ph (e.g., s*******@dlszobel.edu.ph).</p></div>
+          <div class="field"><label class="field-label" for="email">Zobel account email *</label><input id="email" type="email" maxlength="120" placeholder="Sign in to load your Zobel account email" autocomplete="email" readonly required><p class="help">Sign in with your Zobel account email to continue.</p></div>
           <div class="field"><label class="field-label" for="evaluator">Your full name *</label><input id="evaluator" maxlength="80" placeholder="Enter your full name" autocomplete="name" required><p class="identity-lock-notice hidden" id="identityLockNotice" role="status" aria-live="polite"></p><p class="attempts-notice" id="attemptsNotice" role="status"><strong>Submission limit:</strong> You have up to 2 attempts to evaluate your classmates. Each classmate can be evaluated only once.</p></div>
           <div class="field"><label class="field-label" for="campus">Your campus *</label><select id="campus" required><option value="">Select your campus</option></select></div>
           <div class="field"><label class="field-label" for="section">Your section *</label><select id="section" required><option value="">Select your section</option></select></div>
@@ -2104,19 +2129,62 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
       </section>
     </div>
 
+    <section id="helpView" class="hidden" aria-labelledby="helpTitle">
+      <section class="welcome"><div><div class="eyebrow">Student guide</div><h1 id="helpTitle">Help &amp; Guide</h1><p>Follow these steps to submit a fair, complete peer evaluation.</p></div></section>
+      <section class="card">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">1</div><div><h2>How to complete an evaluation</h2><p class="sub">Your answers are saved only after you review and submit.</p></div></div>
+        <ol class="help-guide-steps">
+          <li><strong>Read the agreement.</strong> Review the reminders and check the box to confirm that you will evaluate fairly and independently.</li>
+          <li><strong>Enter your information.</strong> Confirm your Zobel account email, name, campus, and section. Choose the classmate you are evaluating.</li>
+          <li><strong>Rate the five criteria.</strong> Select one rating for each criterion based on what you observed during the group work.</li>
+          <li><strong>Write useful feedback.</strong> Describe one specific strength and one respectful area for improvement.</li>
+          <li><strong>Review and submit.</strong> Check the classmate, ratings, and comments, then confirm submission. You may submit up to two evaluations, one per classmate.</li>
+        </ol>
+      </section>
+      <section class="card">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">2</div><div><h2>Rating scale</h2><p class="sub">Use the same scale for each of the five criteria.</p></div></div>
+        <div class="data-wrap"><table class="data-table"><thead><tr><th>Rating</th><th>Level</th><th>How to interpret it</th></tr></thead><tbody>
+          <tr><td>4</td><td>Excellent</td><td>Consistently shows the contribution described by the criterion.</td></tr>
+          <tr><td>3</td><td>Proficient</td><td>Usually shows the contribution described by the criterion.</td></tr>
+          <tr><td>2</td><td>Developing</td><td>Shows some contribution, but it is inconsistent or needs reminders.</td></tr>
+          <tr><td>1</td><td>Beginning</td><td>Shows limited contribution to the criterion.</td></tr>
+        </tbody></table></div>
+        <p class="sub" style="margin-top:12px">Criteria: Task Contribution; Responsibility; Cooperation; Participation and Initiative; Communication and Accountability.</p>
+      </section>
+      <section class="card">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">3</div><div><h2>How the evaluation percentage is calculated</h2><p class="sub">There are five ratings, each worth 1 to 4 points. The highest possible total is 20.</p></div></div>
+        <div class="callout integrity"><div class="callout-title">Formula</div><p><strong>Total of the five ratings ÷ 20 × 100 = evaluation percentage</strong></p></div>
+        <p style="margin:14px 0 6px"><strong>Example:</strong> Ratings of 4, 3, 3, 4, and 2 add up to 16.</p>
+        <p class="sub">16 ÷ 20 × 100 = <strong>80%</strong></p>
+      </section>
+      <section class="card">
+        <div class="card-head"><div class="head-icon" aria-hidden="true">4</div><div><h2>How a suggested score adjustment works</h2><p class="sub">This is a teacher review guide. Peer ratings do not automatically change a classmate’s grade.</p></div></div>
+        <div class="data-wrap"><table class="data-table"><thead><tr><th>Average peer rating</th><th>Suggested adjustment on a 20-point activity</th><th>Next step</th></tr></thead><tbody>
+          <tr><td>90–100%</td><td>0 points</td><td>No deduction suggested</td></tr>
+          <tr><td>80–89.9%</td><td>0.5 point</td><td>Teacher reviews evidence</td></tr>
+          <tr><td>70–79.9%</td><td>1 point</td><td>Teacher reviews evidence</td></tr>
+          <tr><td>60–69.9%</td><td>1.5 points</td><td>Teacher reviews evidence</td></tr>
+          <tr><td>Below 60%</td><td>No automatic deduction</td><td>Investigate the evidence first</td></tr>
+        </tbody></table></div>
+        <p style="margin:14px 0 6px"><strong>Example:</strong> If the original score is 18/20 and the peer average is 80%, the suggested adjustment is 0.5 point: 18 − 0.5 = 17.5/20.</p>
+        <p class="sub">For assignments with a different total, the suggested adjustment scales in proportion to the assignment total. A teacher must review the evidence and approve any official change.</p>
+        <div class="btn-row"><span class="help">Need to start or return to your evaluation?</span><button class="btn btn-primary" type="button" id="helpStartEvaluation">Go to Peer Evaluation</button></div>
+      </section>
+    </section>
+
       <footer style="text-align:center;color:var(--muted);font-size:11px;padding:5px 10px 14px">Peer Evaluation System · Grade 10 Computer Technology · Student-centered, fair, and respectful feedback</footer>
     </main>
   </div>
 </div>
 
 <!-- Student account access -->
-<dialog id="studentAuthDialog" class="narrow" aria-labelledby="studentAuthTitle">
+<dialog id="studentAuthDialog" class="narrow" aria-labelledby="studentAuthTitle" open>
   <form id="studentAuthForm" autocomplete="on">
-    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true">✦</div><h2 id="studentAuthTitle">Student sign in</h2><p class="sub" id="studentAuthSubtitle">Use your DLSZ student email and your Peer Evaluation password.</p></div></div>
+    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true">✦</div><h2 id="studentAuthTitle">Student sign in</h2><p class="sub" id="studentAuthSubtitle">Use your Zobel account email and your Peer Evaluation password.</p></div></div>
     <div class="dlg-body">
       <div id="studentAuthFields">
-        <div class="field"><label class="field-label" for="studentAuthEmail">DLSZ student email</label><input id="studentAuthEmail" type="email" autocomplete="username" placeholder="S1234567@dlszobel.edu.ph" required></div>
-        <div class="field"><label class="field-label" for="studentAuthPassword">Password</label><input id="studentAuthPassword" type="password" autocomplete="current-password" minlength="8" required></div>
+        <div class="field"><label class="field-label" for="studentAuthEmail">Zobel account email</label><input id="studentAuthEmail" type="email" autocomplete="username" placeholder="Your Zobel account email" required></div>
+        <div class="field"><label class="field-label" for="studentAuthPassword">Password</label><input id="studentAuthPassword" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="8" required><p class="help">Use at least 8 characters.</p></div>
       </div>
       <p class="form-error" id="studentAuthError" role="alert"></p>
       <p class="help" id="studentAuthHint">New here? Choose Create account. Your email must be verified before you can submit evaluations.</p>
@@ -2130,12 +2198,12 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
 <!-- Admin login -->
 <dialog id="loginDialog" class="narrow" aria-labelledby="loginTitle">
   <form id="loginForm" autocomplete="on">
-    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2 id="loginTitle">Admin sign in</h2><p class="sub">Authorized teacher access only.</p></div><button type="button" class="icon-btn" data-close="loginDialog" aria-label="Close">✕</button></div>
+    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2 id="loginTitle">Admin sign in</h2><p class="sub">Authorized teacher access only.</p></div><button type="button" class="btn btn-secondary btn-sm" id="backToStudentAuthTop">Back</button></div>
     <div class="dlg-body">
-      <div class="field"><label class="field-label" for="loginUser">Admin username</label><input id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="jeremiah.encluna" enterkeyhint="go" required></div>
-      <div class="field"><label class="field-label" for="loginPass">Password</label><input id="loginPass" name="password" type="password" autocomplete="current-password" enterkeyhint="go" required></div>
+      <div class="field"><label class="field-label" for="loginUser">Admin email</label><input id="loginUser" name="username" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Admin email address" enterkeyhint="go" required></div>
+      <div class="field"><label class="field-label" for="loginPass">Password</label><input id="loginPass" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" enterkeyhint="go" required></div>
       <p class="form-error" id="loginError" role="alert"></p>
-      <div class="btn-group" style="justify-content:flex-end"><button type="button" class="btn btn-secondary" data-close="loginDialog">Cancel</button><button type="submit" class="btn btn-primary" id="loginBtn">Sign in</button></div>
+      <div class="btn-group" style="justify-content:space-between"><button type="button" class="btn btn-secondary" id="backToStudentAuth">Student sign in</button><button type="submit" class="btn btn-primary" id="loginBtn">Sign in</button></div>
     </div>
   </form>
 </dialog>
@@ -2145,7 +2213,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
   <form id="resetForm" autocomplete="off">
     <div class="dlg-head"><div><div class="lock-badge danger" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></div><h2 id="resetTitle" style="color:var(--red)">Confirm data reset</h2><p class="sub">This deletes all evaluations permanently.</p></div><button type="button" class="icon-btn" data-close="resetDialog" aria-label="Close">✕</button></div>
     <div class="dlg-body">
-      <div class="field"><label class="field-label" for="resetUser">Admin username</label><input id="resetUser" autocomplete="off" autocapitalize="none" spellcheck="false" required></div>
+      <div class="field"><label class="field-label" for="resetUser">Admin email</label><input id="resetUser" type="email" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="jeremiah.encluna@dlszobel.edu.ph" required></div>
       <div class="field"><label class="field-label" for="resetPass">Admin password</label><input id="resetPass" type="password" autocomplete="new-password" required></div>
       <div class="field"><label class="field-label" for="resetPhrase">Type RESET DATA to confirm</label><input id="resetPhrase" placeholder="RESET DATA" autocomplete="off" required></div>
       <p class="form-error" id="resetError" role="alert"></p>
@@ -2162,8 +2230,8 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
    firebase        Paste your Firebase web-app config here. While it is
                    null the site runs in LOCAL TEST MODE (data stays in the
                    browser that submitted it, so the teacher will not get it).
-   adminUsername   Username typed on the Admin login. In Firebase mode the
-                   Auth user must be <adminUsername>@<adminEmailDomain>.
+   adminEmail      The exact admin email used in Firebase Authentication and
+                   allowed by the Firestore rules.
    localAdmin      Used ONLY in local test mode. Never use for real data.
    campuses        Campus cards on the dashboard + the student dropdown.
    sections        Section dropdowns (student form + admin filter).
@@ -2182,8 +2250,7 @@ const CONFIG = {
     appId: '1:1082517585879:web:06bb07c80f47a6b35b1592',
     measurementId: 'G-C986MZVYTL'
   },
-  adminUsername: 'jeremiah.encluna',
-  adminEmailDomain: 'dlszobel.edu.ph',
+  adminEmail: 'jeremiah.encluna@dlszobel.edu.ph',
   localAdmin: null,
   collection: 'evaluations',
   campuses: ['Day School (Alabang)', 'Day School (Vermosa)', 'BrafeNHS'],
@@ -2271,8 +2338,9 @@ updateSectionsForCampus();
 const Store = {
   mode: 'cloud',
   fb: null,
-  adminEmail(){ return (CONFIG.adminUsername+'@'+CONFIG.adminEmailDomain).toLowerCase(); },
+  adminEmail(){ return CONFIG.adminEmail.trim().toLowerCase(); },
   studentEmailPattern: /^S\d{7}@dlszobel\.edu\.ph$/i,
+  isAllowedAccountEmail(email){ return this.studentEmailPattern.test(email||'') || norm(email)===this.adminEmail(); },
   makeId(rec){
     const k = norm(rec.email)+'|'+norm(rec.classmate);
     return btoa(unescape(encodeURIComponent(k))).replace(/[+/=]/g, c => ({'+':'-','/':'_','=':''}[c]));
@@ -2289,14 +2357,15 @@ const Store = {
   localWrite(){ throw new Error('cloud-required'); },
   async registerStudent(email,password){
     await this.init(); email=email.trim().toLowerCase();
-    if(!this.studentEmailPattern.test(email)) throw new Error('invalid-student-email');
+    if(!this.isAllowedAccountEmail(email)) throw new Error('invalid-student-email');
     const cred=await this.fb.auth.createUserWithEmailAndPassword(this.fb.au,email,password);
-    await this.fb.auth.sendEmailVerification(cred.user);
+    try { await this.fb.auth.sendEmailVerification(cred.user); }
+    catch(e) { e.accountCreated=true; throw e; }
     return cred.user;
   },
   async signInStudent(email,password){
     await this.init(); email=email.trim().toLowerCase();
-    if(!this.studentEmailPattern.test(email)) throw new Error('invalid-student-email');
+    if(!this.isAllowedAccountEmail(email)) throw new Error('invalid-student-email');
     const cred=await this.fb.auth.signInWithEmailAndPassword(this.fb.au,email,password);
     await this.fb.auth.reload(cred.user);
     if(!cred.user.emailVerified) throw new Error('email-not-verified');
@@ -2331,14 +2400,14 @@ const Store = {
   async patch(id,patch){ await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required'); const {fs,db}=this.fb; await fs.setDoc(fs.doc(db,CONFIG.collection,id),patch,{merge:true}); },
   async remove(id){ await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required'); const {fs,db}=this.fb; await fs.deleteDoc(fs.doc(db,CONFIG.collection,id)); },
   async isAdmin(){ await this.init(); const au=this.fb.au; const u=au.currentUser; if(!u) return false; await this.fb.auth.reload(u).catch(()=>{}); return !!(u.emailVerified && norm(u.email)===this.adminEmail()); },
-  async login(username,password){
-    await this.init(); if(username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase()) throw new Error('bad-credentials');
+  async login(email,password){
+    await this.init(); if(email.trim().toLowerCase()!==this.adminEmail()) throw new Error('bad-credentials');
     try{ const cred=await this.fb.auth.signInWithEmailAndPassword(this.fb.au,this.adminEmail(),password); await this.fb.auth.reload(cred.user); if(!cred.user.emailVerified){await this.fb.auth.signOut(this.fb.au);throw new Error('email-not-verified');} }
     catch(e){ if(e.message==='email-not-verified') throw e; if(e?.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
   },
   async logout(){ if(this.fb) await this.fb.auth.signOut(this.fb.au); },
-  async wipe(username,password){
-    await this.init(); if(username.trim().toLowerCase()!==CONFIG.adminUsername.toLowerCase() || !(await this.isAdmin())) throw new Error('bad-credentials');
+  async wipe(email,password){
+    await this.init(); if(email.trim().toLowerCase()!==this.adminEmail() || !(await this.isAdmin())) throw new Error('bad-credentials');
     const {fs,auth,db,au}=this.fb;
     try{ await auth.reauthenticateWithCredential(au.currentUser,auth.EmailAuthProvider.credential(this.adminEmail(),password)); }
     catch(e){ if(e?.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
@@ -2510,7 +2579,7 @@ function closeMobileSidebar(returnFocus=false){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('mobile-sidebar-open'))closeMobileSidebar(true)});
 function hasEvaluationProgress(){
- return !!document.querySelector('input[name^="c"]:checked')||['email','evaluator','classmate','strength','improve'].some(id=>$(id).value.trim());
+ return !!document.querySelector('input[name^="c"]:checked')||['evaluator','classmate','strength','improve','campus','section'].some(id=>$(id).value.trim());
 }
 function setActiveNav(btn){
  document.querySelectorAll('.nav-link[data-page]').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-current','false')});
@@ -2530,12 +2599,27 @@ document.querySelectorAll('.nav-link[data-page]').forEach(btn=>btn.addEventListe
  }
  if(inAdmin)setMode(false);
  setActiveNav(document.querySelector('#studentNav .nav-link[data-page="'+page+'"]')||btn);closeMobileSidebar();
+ if(page==='help'){
+  helpReturnStep=currentStep;
+  $('studentApp').classList.add('hidden');$('helpView').classList.remove('hidden');
+  $('topTitle').textContent='Help & Guide';$('topSub').textContent='Instructions and evaluation calculations';
+  window.scrollTo({top:0,behavior:'auto'});return;
+ }
  if(page==='evaluation'){showEvaluationFromHome();return}
- showToast('Help & Guide: read the rules, rate observed contributions fairly, and submit respectful feedback.');
 }));
+let helpReturnStep=1;
+function returnFromHelpGuide(){
+ $('helpView').classList.add('hidden');$('studentApp').classList.remove('hidden');
+ setActiveNav(document.querySelector('#studentNav .nav-link[data-page="evaluation"]'));
+ $('topTitle').textContent='Peer Evaluation System';$('topSub').textContent='Evaluate fairly. Reflect. Grow together.';
+ goStep(helpReturnStep);
+}
+$('helpStartEvaluation').addEventListener('click',returnFromHelpGuide);
 // The evaluation form is now the direct student landing page; no welcome or Home screen is shown.
 function showEvaluationFromHome(){
  if(typeof setMode==='function')setMode(false);
+ $('helpView').classList.add('hidden');$('studentApp').classList.remove('hidden');
+ $('topTitle').textContent='Peer Evaluation System';$('topSub').textContent='Evaluate fairly. Reflect. Grow together.';
  setActiveNav(document.querySelector('#studentNav .nav-link[data-page="evaluation"]'));
  goStep(1);
  window.scrollTo({top:0,behavior:'auto'});
@@ -2774,6 +2858,7 @@ function setMode(admin){
  // only after Store.isAdmin() or a successful login has authorized the session.
  document.body.classList.toggle('admin-authenticated',!!admin);
  $('studentApp').classList.toggle('hidden',admin);
+ if(admin)$('helpView').classList.add('hidden');
  $('adminApp').classList.toggle('hidden',!admin);
  $('studentNav').classList.toggle('hidden',admin);$('studentLabel').classList.toggle('hidden',admin);
  $('adminGroup').classList.toggle('hidden',!admin);$('adminLabel').classList.toggle('hidden',!admin);
@@ -2802,17 +2887,28 @@ async function openAdmin(){
 }
 async function enterAdmin(){
  // Admins should land directly on Management > Select Campus, never the student welcome splash.
+ document.body.classList.remove('auth-screen');
  document.body.classList.add('app-active','sidebar-collapsed');
  setMode(true);setActiveNav(null);adminView('management');
  $('modeBanner').classList.add('hidden');
  await loadAdmin();
 }
 function openLogin(){
+ document.body.classList.add('auth-screen');
  $('loginError').textContent='';$('loginForm').reset();
  if(!$('loginDialog').open)$('loginDialog').showModal();$('loginUser').focus();
 }
+function returnFromAdminLogin(){
+ $('loginDialog').close();
+ const user=Store.fb?.au?.currentUser;
+ if(user?.emailVerified && Store.studentEmailPattern.test(user.email||'')){document.body.classList.remove('auth-screen');return}
+ openStudentAuth();
+}
+$('backToStudentAuthTop').addEventListener('click',returnFromAdminLogin);
+$('backToStudentAuth').addEventListener('click',returnFromAdminLogin);
+$('loginDialog').addEventListener('cancel',e=>{e.preventDefault();returnFromAdminLogin()});
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
-['loginDialog','resetDialog'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target===$(id))$(id).close()}));
+['resetDialog'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target===$(id))$(id).close()}));
 
 let fails=0,lockUntil=0;
 $('loginForm').addEventListener('submit',async e=>{
@@ -2834,7 +2930,8 @@ $('studentLogout').addEventListener('click',async()=>{await Store.logout();A.row
 $('logoutNav').addEventListener('click',async()=>{
  await Store.logout();A.rows=[];A.loaded=false;A.open.clear();
  setMode(false);setActiveNav(document.querySelector('#studentNav .nav-link[data-page="evaluation"]'));
- goStep(1);closeMobileSidebar();showToast('You have been signed out.');
+ $('helpView').classList.add('hidden');$('studentApp').classList.remove('hidden');
+ goStep(1);closeMobileSidebar();openStudentAuth();showToast('You have been signed out.');
 });
 $('refreshBtn').addEventListener('click',()=>loadAdmin(true));
 $('printBtn').addEventListener('click',()=>window.print());
@@ -3130,16 +3227,20 @@ $('resetForm').addEventListener('submit',async e=>{
 /* ---------- Student authentication ---------- */
 let studentAuthMode='signin';
 function openStudentAuth(){
+  document.body.classList.add('auth-screen');
   $('studentAuthError').textContent=''; $('studentVerifyActions').classList.add('hidden'); $('studentAuthFields').classList.remove('hidden'); $('studentAuthButtons').classList.remove('hidden');
-  if(!$('studentAuthDialog').open) $('studentAuthDialog').showModal(); $('studentAuthEmail').focus();
+  const dialog=$('studentAuthDialog');
+  if(!dialog.open) dialog.showModal();
+  else if(!dialog.matches(':modal')){dialog.close();dialog.showModal();}
+  $('studentAuthEmail').focus();
 }
 function setStudentAuthMode(mode){
-  studentAuthMode=mode; $('studentAuthTitle').textContent=mode==='register'?'Create student account':'Student sign in';
-  $('studentAuthSubtitle').textContent=mode==='register'?'Create a password for your Peer Evaluation account.':'Use your DLSZ student email and Peer Evaluation password.';
+  studentAuthMode=mode; $('studentAuthTitle').textContent=mode==='register'?'Create account':'Student sign in';
+  $('studentAuthSubtitle').textContent=mode==='register'?'Create a password for your Peer Evaluation account.':'Use your Zobel account email and Peer Evaluation password.';
   $('studentSignInBtn').textContent=mode==='register'?'Create account':'Sign in';
   $('studentCreateBtn').textContent=mode==='register'?'Back to sign in':'Create account';
   $('studentAuthPassword').autocomplete=mode==='register'?'new-password':'current-password';
-  $('studentAuthHint').textContent=mode==='register'?'Use a password with at least 8 characters. Verify your email before continuing.':'New here? Choose Create account. Your email must be verified before you can submit evaluations.';
+  $('studentAuthHint').textContent=mode==='register'?'Use your Zobel account email and a password with at least 8 characters. Verify your email before continuing.':'New here? Choose Create account. Your email must be verified before you can submit evaluations.';
   $('studentAuthError').textContent='';
 }
 $('studentCreateBtn').addEventListener('click',()=>setStudentAuthMode(studentAuthMode==='register'?'signin':'register'));
@@ -3156,21 +3257,36 @@ $('studentAuthForm').addEventListener('submit',async e=>{
       await Store.signInStudent(email,password); $('studentAuthDialog').close(); await activateStudentSession();
     }
   }catch(ex){
-    const messages={'invalid-student-email':'Use your official student email: S followed by 7 digits and @dlszobel.edu.ph.','email-not-verified':'Your email is not verified yet. Check your inbox, then use the verification option.','auth/email-already-in-use':'An account already exists. Sign in instead.','auth/weak-password':'Choose a password with at least 8 characters.','auth/invalid-credential':'Incorrect email or password.','auth/user-not-found':'No account found. Create an account first.','auth/too-many-requests':'Too many attempts. Please wait and try again.','auth/network-request-failed':'Cannot reach Firebase. Check your internet connection.'};
+    const messages={'invalid-student-email':'Use your Zobel account email.','email-not-verified':'Your email is not verified yet. Check your inbox, then use the verification option.','auth/email-already-in-use':'An account already exists. Sign in instead.','auth/weak-password':'Choose a password with at least 8 characters.','auth/invalid-email':'Enter a valid email address.','auth/invalid-credential':'Incorrect email or password.','auth/user-not-found':'No account found. Create an account first.','auth/too-many-requests':'Too many attempts. Please wait and try again.','auth/network-request-failed':'Cannot reach Firebase. Check your internet connection.','auth/operation-not-allowed':'Email and password sign-in is disabled. In Firebase Console, open Authentication → Sign-in method and enable Email/Password.','auth/unauthorized-domain':'This website domain is not authorized. Add its hostname under Firebase Authentication → Settings → Authorized domains.','auth/invalid-api-key':'Firebase rejected the API key. Check the web app config in index.html.','auth/api-key-not-valid-please-pass-a-valid-api-key':'Firebase rejected the Web API key. In Firebase Console, open Project settings → General → Your apps, copy the Web API key for this web app into CONFIG.firebase.apiKey, and check the key restrictions if the key already matches.','auth/app-not-authorized':'This web app is not authorized for the Firebase project. Check the Firebase app config and allowed domains.'};
+    if(ex.accountCreated){
+      $('studentAuthFields').classList.add('hidden'); $('studentAuthButtons').classList.add('hidden'); $('studentVerifyActions').classList.remove('hidden');
+      $('studentAuthHint').textContent='Your account was created, but the verification email could not be sent. Use Resend verification email to try again.';
+    }
     if(ex.message==='email-not-verified'){$('studentAuthFields').classList.add('hidden');$('studentAuthButtons').classList.add('hidden');$('studentVerifyActions').classList.remove('hidden');}
-    err.textContent=messages[ex.message]||messages[ex.code]||'Unable to continue. Please check your details and try again.';
+    const friendlyError=messages[ex.message]||messages[ex.code]||'Unable to continue. Please check your details and try again.';
+    const localDebug=location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';
+    err.textContent=friendlyError+(localDebug&&ex?.code?' Firebase error: '+ex.code+'.':'');
+    if(localDebug) console.error('Student account/sign-in failed:',ex);
   }finally{btn.disabled=false;btn.textContent=studentAuthMode==='register'?'Create account':'Sign in';}
 });
-$('resendVerification').addEventListener('click',async()=>{try{await Store.resendVerification();$('studentAuthError').textContent='A new verification email has been sent.';}catch(e){$('studentAuthError').textContent='Could not send the email. Please try again.';}});
+$('resendVerification').addEventListener('click',async()=>{try{await Store.resendVerification();$('studentAuthError').textContent='A new verification email has been sent.';}catch(e){const messages={'auth/network-request-failed':'Cannot reach Firebase. Check your internet connection.','auth/too-many-requests':'Too many attempts. Please wait before requesting another email.','auth/operation-not-allowed':'Email and password sign-in is disabled in Firebase Authentication.','auth/unauthorized-domain':'This website domain is not authorized in Firebase Authentication.'};$('studentAuthError').textContent=messages[e?.code]||'Could not send the email. Check Firebase Authentication settings and try again.';}});
 $('checkVerification').addEventListener('click',async()=>{try{if(await Store.refreshVerification()){$('studentAuthDialog').close();await activateStudentSession();}else $('studentAuthError').textContent='Email not verified yet. Open the link in your inbox, then try again.';}catch(e){$('studentAuthError').textContent='Could not check verification. Please try again.';}});
 async function activateStudentSession(){
- const user=Store.fb.au.currentUser; if(!user||!user.emailVerified||!Store.studentEmailPattern.test(user.email||'')){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();return;}
+ const user=Store.fb.au.currentUser; if(!user||!user.emailVerified){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();return;}
+ if(norm(user.email)===Store.adminEmail()){await enterAdmin();return;}
+ if(!Store.studentEmailPattern.test(user.email||'')){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();return;}
  $('email').value=user.email.toLowerCase(); $('email').readOnly=true; $('pillText').textContent='Signed in · '+user.email; $('profileName').textContent='Grade 10 Student';
+ document.body.classList.remove('auth-screen');
  document.body.classList.add('app-active'); $('studentAuthDialog').close(); updateAttemptsNotice();
 }
 async function initializeAuthentication(){
  try{
   await Store.init();
+  // Require a fresh sign-in before showing the student terms on each page load.
+  // Firebase's local persistence otherwise skips the sign-in dialog for returning users.
+  await Store.fb.auth.signOut(Store.fb.au);
+  setMode(false);
+  openStudentAuth();
   Store.fb.auth.onAuthStateChanged(Store.fb.au,async user=>{
     if(!user){setMode(false);openStudentAuth();return;}
     await Store.fb.auth.reload(user).catch(()=>{});
