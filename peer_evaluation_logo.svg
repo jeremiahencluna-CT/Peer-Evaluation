@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Peer Evaluation</title>
+  <desc id="desc">A dark green clipboard checklist encircled by a sweeping orbital ring.</desc>
+  <!-- Orbital ring: rear segment -->
+  <path d="M77 326C124 247 255 180 370 190c35 3 62 13 82 27" fill="none" stroke="#006B3C" stroke-width="24" stroke-linecap="round"/>
+  <g fill="none" stroke="#006B3C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Clipboard body -->
+    <path d="M174 118h-20c-18 0-32 14-32 32v204c0 18 14 32 32 32h204c18 0 32-14 32-32V150c0-18-14-32-32-32h-20" stroke-width="22"/>
+    <!-- Top clip -->
+    <path d="M207 116V96c0-18 14-32 32-32h34c18 0 32 14 32 32v20" stroke-width="22"/>
+    <path d="M202 116h108" stroke-width="22"/>
+    <!-- Checklist rows -->
+    <path d="m165 190 15 15 31-35" stroke-width="13"/>
+    <path d="M235 197h100" stroke-width="13"/>
+    <path d="m165 258 15 15 31-35" stroke-width="13"/>
+    <path d="M235 265h100" stroke-width="13"/>
+    <path d="m165 326 15 15 31-35" stroke-width="13"/>
+    <path d="M235 333h100" stroke-width="13"/>
+  </g>
+  <!-- Orbital ring: foreground sweep -->
+  <path d="M435 217c-30 92-166 183-286 193-47 4-81-4-96-22" fill="none" stroke="#006B3C" stroke-width="28" stroke-linecap="round"/>
+</svg>
