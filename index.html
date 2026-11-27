@@ -2360,10 +2360,7 @@ const Store = {
   adminEmail(){ return CONFIG.adminEmail.trim().toLowerCase(); },
   studentEmailPattern: /^S\d{7}@dlszobel\.edu\.ph$/i,
   isAllowedAccountEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(norm(email)); },
-  makeId(rec){
-    const k = norm(rec.email)+'|'+norm(rec.classmate);
-    return btoa(unescape(encodeURIComponent(k))).replace(/[+/=]/g, c => ({'+':'-','/':'_','=':''}[c]));
-  },
+  makeId(rec,slot){ return norm(rec.email)+'__'+String(slot); },
   async init(){
     if (this.fb) return;
     const base = 'https://www.gstatic.com/firebasejs/10.12.2/';
@@ -2398,11 +2395,14 @@ const Store = {
     const existing=await this.listStudent(); const email=norm(rec.email); const sameEvaluator=existing;
     assertRegisteredIdentity(existing,rec);
     if(sameEvaluator.length>=CONFIG.maxSubmissions) throw new Error('attempt-limit');
-    if(existing.some(r=>r.id===this.makeId(rec)||norm(r.classmate)===norm(rec.classmate))) throw new Error('duplicate');
+    if(existing.some(r=>norm(r.classmate)===norm(rec.classmate))) throw new Error('duplicate');
     if(sameEvaluator.some(r=>norm(r.section)===norm(rec.section)&&similarName(r.classmate,rec.classmate)>=0.88)) throw new Error('duplicate-similar');
-    const {fs,db}=this.fb; const id=this.makeId(rec);
+    const slot=[1,2].find(n=>!existing.some(r=>r.id===this.makeId(rec,n)));
+    if(!slot) throw new Error('attempt-limit');
+    const {fs,db}=this.fb,id=this.makeId(rec,slot);
     try{ await fs.setDoc(fs.doc(db,CONFIG.collection,id),rec); }
-    catch(e){ if(e?.code==='permission-denied') throw new Error('duplicate-or-denied'); throw e; }
+    catch(e){ if(e?.code==='permission-denied'||e?.code==='already-exists') throw new Error('duplicate-or-denied'); throw e; }
+    return {savedCount:existing.length+1,finalAttempt:existing.length+1>=CONFIG.maxSubmissions};
   },
   async listStudent(){
     await this.init(); const user=this.fb.au.currentUser;
@@ -2890,12 +2890,9 @@ async function submitEvaluation(){
  const btn=$('submitBtn'),label=btn.textContent;
  btn.disabled=true;btn.textContent='Submitting…';
  try{
-  // Count the evaluator's prior submissions before saving this one. If this
-  // submission uses the final allowed attempt, clear all student-entered data.
-  const rowsBefore=await Store.listStudent();
-  const usedBefore=rowsBefore.filter(r=>norm(r.email)===norm(rec.email)).length;
-  await Store.add(rec);
-  const finalAttempt=(usedBefore+1)>=CONFIG.maxSubmissions;
+  // The backend enforces the limit and reports whether this was the final attempt.
+  const result=await Store.add(rec);
+  const finalAttempt=!!result?.finalAttempt;
   if(finalAttempt)resetAllStudentData();
   showDone(rec.classmate,finalAttempt);
  }catch(err){
