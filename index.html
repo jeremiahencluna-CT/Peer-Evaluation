@@ -1834,7 +1834,8 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
       <button class="nav-link active" type="button" data-aview="management" data-label="Management" title="Management"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M6 6h2M16 6h2M6 16h2"/></svg></span><span class="nav-text">Management</span></button>
       <button class="nav-link" type="button" data-aview="score" data-label="Score Review" title="Score Review"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5h16"/><rect x="5" y="11" width="3" height="6.5" rx=".8"/><rect x="10.5" y="7.5" width="3" height="10" rx=".8"/><rect x="16" y="4" width="3" height="13.5" rx=".8"/><path d="m4.5 8 4-3 3.5 1.5 6-4"/></svg></span><span class="nav-text">Score Review</span></button>
       <button class="nav-link" type="button" data-aview="data" data-label="Data &amp; Reset" title="Data & Reset"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="7" ry="3"/><path d="M5 5.5v6c0 1.7 3.1 3 7 3 1.2 0 2.3-.1 3.3-.4M19 5.5v3.2M5 11.5v6c0 1.7 3.1 3 7 3 1.4 0 2.7-.2 3.8-.5"/><path d="M18.2 14.2a4.2 4.2 0 0 1 2.3 3.8m-.1-2.2.1 2.2-2.2-.3M5.8 20a4.2 4.2 0 0 1-2.3-3.8m.1 2.2-.1-2.2 2.2.3"/></svg></span><span class="nav-text">Data &amp; Reset</span></button>
-      <button class="nav-link" type="button" data-page="evaluation" data-label="Student form" title="Student form"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2H13M13 3.5v4h4"/><path d="M13 3.5v4h4M8 12h3M8 16h2M20 14H12m0 0 3-3m-3 3 3 3"/></svg></span><span class="nav-text">Student form</span></button>
+      <button class="nav-link" type="button" data-aview="admins" data-label="Admin users" title="Admin users"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 11a3 3 0 1 0-1-5.8M17 14a5 5 0 0 1 3.5 5"/></svg></span><span class="nav-text">Admin users</span></button>
+      <button class="nav-link" type="button" data-page="evaluation" data-label="Student Preview" title="Student Preview"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2H13M13 3.5v4h4"/><path d="M13 3.5v4h4M8 12h3M8 16h2M20 14H12m0 0 3-3m-3 3 3 3"/></svg></span><span class="nav-text">Student Preview</span></button>
     </nav>
     <div class="sidebar-bottom">
       <div class="admin-nav">
@@ -1855,6 +1856,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
 
     <!-- ================= STUDENT VIEW ================= -->
     <div id="studentApp">
+      <div id="studentPreviewBanner" class="review-alert info hidden" style="margin-bottom:15px"><span class="alert-symbol" aria-hidden="true">ⓘ</span><span><strong>Student preview.</strong> Explore the student evaluation screens. Submissions are disabled in this preview.</span><button class="btn btn-secondary btn-sm" type="button" id="returnToAdminWorkspace">Back to admin</button></div>
       <section class="welcome evaluation-welcome">
         <div><div class="eyebrow">Computer Technology · Grade 10</div><h1 id="pageTitle">Peer Evaluation</h1><p id="pageDescription">Share thoughtful feedback about your groupmates’ contributions. Your responses support teacher review and help strengthen teamwork.</p></div>
         <div class="page-chip"><strong>4-step process</strong><br>Review your responses before submitting.</div>
@@ -1901,7 +1903,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
         <div class="card-head"><div class="head-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 11a3 3 0 1 0-1-5.8M17 14a5 5 0 0 1 3.5 5"/></svg></div><div><h2>Student Information</h2><p class="sub">Enter your details and identify the groupmate you are evaluating.</p></div></div>
         <p class="form-error student-flow-error hidden" id="studentInfoError" role="alert" tabindex="-1"></p>
         <div class="form-grid">
-          <div class="field"><label class="field-label" for="email">Zobel account email *</label><input id="email" type="email" maxlength="120" placeholder="Sign in to load your Zobel account email" autocomplete="email" readonly required><p class="help">Sign in with your Zobel account email to continue.</p></div>
+          <div class="field"><label class="field-label" for="email">Zobel account email *</label><input id="email" type="email" maxlength="120" placeholder="Sign in to load your Zobel account email" autocomplete="email" readonly required><p class="help" id="studentEmailHelp">Sign in with your Zobel account email to continue.</p></div>
           <div class="field"><label class="field-label" for="evaluator">Your full name *</label><input id="evaluator" maxlength="80" placeholder="Enter your full name" autocomplete="name" required><p class="identity-lock-notice hidden" id="identityLockNotice" role="status" aria-live="polite"></p><p class="attempts-notice" id="attemptsNotice" role="status"><strong>Submission limit:</strong> You have up to 2 attempts to evaluate your classmates. Each classmate can be evaluated only once.</p></div>
           <div class="field"><label class="field-label" for="campus">Your campus *</label><select id="campus" required><option value="">Select your campus</option></select></div>
           <div class="field"><label class="field-label" for="section">Your section *</label><select id="section" required><option value="">Select your section</option></select></div>
@@ -2127,6 +2129,21 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
           <button class="btn btn-danger" type="button" id="openReset">Reset data…</button>
         </section>
       </section>
+
+      <!-- Admin access management -->
+      <section id="viewAdmins" class="hidden">
+        <section class="welcome"><div><div class="eyebrow">Access management</div><h1>Admin users</h1><p>Grant or remove access to the administrator workspace.</p></div></section>
+        <div class="review-alert info" style="margin:0 0 15px"><span class="alert-symbol" aria-hidden="true">ⓘ</span><span>Add the person’s Zobel email below. They must create their own Firebase account and verify their email before they can sign in as an admin. Removing them here revokes website access but does not delete their Firebase Authentication account.</span></div>
+        <section class="card">
+          <div class="panel-head"><div><h2>Add an admin</h2><p class="sub">Only Zobel email addresses can be added.</p></div></div>
+          <form id="adminUsersForm" class="toolbar">
+            <div class="grow"><input id="newAdminEmail" type="email" placeholder="Admin's Zobel email" autocomplete="off" required></div>
+            <button class="btn btn-primary" id="addAdminBtn" type="submit">Add admin</button>
+          </form>
+          <p class="form-error" id="adminUsersError" role="alert"></p>
+          <div class="data-wrap" id="adminUsersTable"><div class="loading">Loading admin users…</div></div>
+        </section>
+      </section>
     </div>
 
     <section id="helpView" class="hidden" aria-labelledby="helpTitle">
@@ -2251,6 +2268,7 @@ const CONFIG = {
     measurementId: 'G-C986MZVYTL'
   },
   adminEmail: 'jeremiah.encluna@dlszobel.edu.ph',
+  adminCollection: 'admins',
   localAdmin: null,
   collection: 'evaluations',
   campuses: ['Day School (Alabang)', 'Day School (Vermosa)', 'BrafeNHS'],
@@ -2266,6 +2284,7 @@ const CONFIG = {
 };
 
 const $ = id => document.getElementById(id);
+let studentPreviewMode=false;
 const CRITERIA = ['Task Contribution','Responsibility','Cooperation','Participation and Initiative','Communication and Accountability'];
 const CRIT_SHORT = ['Task','Responsibility','Cooperation','Participation','Communication'];
 
@@ -2340,7 +2359,7 @@ const Store = {
   fb: null,
   adminEmail(){ return CONFIG.adminEmail.trim().toLowerCase(); },
   studentEmailPattern: /^S\d{7}@dlszobel\.edu\.ph$/i,
-  isAllowedAccountEmail(email){ return this.studentEmailPattern.test(email||'') || norm(email)===this.adminEmail(); },
+  isAllowedAccountEmail(email){ return this.studentEmailPattern.test(email||'') || norm(email).endsWith('@dlszobel.edu.ph'); },
   makeId(rec){
     const k = norm(rec.email)+'|'+norm(rec.classmate);
     return btoa(unescape(encodeURIComponent(k))).replace(/[+/=]/g, c => ({'+':'-','/':'_','=':''}[c]));
@@ -2399,11 +2418,46 @@ const Store = {
   },
   async patch(id,patch){ await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required'); const {fs,db}=this.fb; await fs.setDoc(fs.doc(db,CONFIG.collection,id),patch,{merge:true}); },
   async remove(id){ await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required'); const {fs,db}=this.fb; await fs.deleteDoc(fs.doc(db,CONFIG.collection,id)); },
-  async isAdmin(){ await this.init(); const au=this.fb.au; const u=au.currentUser; if(!u) return false; await this.fb.auth.reload(u).catch(()=>{}); return !!(u.emailVerified && norm(u.email)===this.adminEmail()); },
+  async isAdmin(){
+    await this.init(); const au=this.fb.au; const u=au.currentUser;
+    if(!u) return false;
+    await this.fb.auth.reload(u).catch(()=>{});
+    if(!u.emailVerified) return false;
+    if(norm(u.email)===this.adminEmail()) return true;
+    const {fs,db}=this.fb;
+    const role=await fs.getDoc(fs.doc(db,CONFIG.adminCollection,norm(u.email)));
+    return role.exists() && norm(role.data().email)===norm(u.email);
+  },
+  async listAdmins(){
+    await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required');
+    const {fs,db}=this.fb; const snap=await fs.getDocs(fs.collection(db,CONFIG.adminCollection));
+    return snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.email.localeCompare(b.email));
+  },
+  async addAdmin(email){
+    await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required');
+    email=norm(email);
+    if(!/^[^\s@]+@dlszobel\.edu\.ph$/.test(email)) throw new Error('invalid-admin-email');
+    if(email===this.adminEmail()) throw new Error('admin-already-listed');
+    const {fs,db,au}=this.fb;
+    const listed=await fs.getDocs(fs.collection(db,CONFIG.adminCollection));
+    if(listed.docs.some(d=>norm(d.id)===email)) throw new Error('admin-already-listed');
+    await fs.setDoc(fs.doc(db,CONFIG.adminCollection,email),{email,createdAt:new Date().toISOString(),createdBy:au.currentUser.email});
+  },
+  async removeAdmin(email){
+    await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required');
+    email=norm(email);
+    if(email===this.adminEmail() || email===norm(this.fb.au.currentUser?.email)) throw new Error('cannot-remove-admin');
+    const {fs,db}=this.fb; await fs.deleteDoc(fs.doc(db,CONFIG.adminCollection,email));
+  },
   async login(email,password){
-    await this.init(); if(email.trim().toLowerCase()!==this.adminEmail()) throw new Error('bad-credentials');
-    try{ const cred=await this.fb.auth.signInWithEmailAndPassword(this.fb.au,this.adminEmail(),password); await this.fb.auth.reload(cred.user); if(!cred.user.emailVerified){await this.fb.auth.signOut(this.fb.au);throw new Error('email-not-verified');} }
-    catch(e){ if(e.message==='email-not-verified') throw e; if(e?.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
+    await this.init(); email=email.trim().toLowerCase();
+    try{
+      const cred=await this.fb.auth.signInWithEmailAndPassword(this.fb.au,email,password);
+      await this.fb.auth.reload(cred.user);
+      if(!cred.user.emailVerified){await this.fb.auth.signOut(this.fb.au);throw new Error('email-not-verified');}
+      if(!(await this.isAdmin())){await this.fb.auth.signOut(this.fb.au);throw new Error('admin-required');}
+    }
+    catch(e){ if(e.message==='email-not-verified'||e.message==='admin-required') throw e; if(e?.code==='auth/network-request-failed') throw new Error('network'); throw new Error('bad-credentials'); }
   },
   async logout(){ if(this.fb) await this.fb.auth.signOut(this.fb.au); },
   async wipe(email,password){
@@ -2421,7 +2475,7 @@ const Store = {
    ===================================================================== */
 const accept = $('acceptTerms');
 accept.addEventListener('change',()=> $('acceptBtn').disabled = !accept.checked);
-$('acceptBtn').addEventListener('click',()=>goStep(2));
+ $('acceptBtn').addEventListener('click',()=>goStep(2));
 document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>goStep(Number(btn.dataset.back))));
 let currentStep = 1;
 document.querySelectorAll('.step-navigation').forEach((pill,index)=>{
@@ -2436,10 +2490,10 @@ document.querySelectorAll('.step-navigation').forEach((pill,index)=>{
 });
 $('infoContinue').addEventListener('click',validateInfo);
 $('clearStudentInfo').addEventListener('click',async()=>{
- if(!window.confirm('Clear the information entered in this form? Your signed-in school email will remain connected. Submitted evaluations will not be deleted.'))return;
+ if(!window.confirm(studentPreviewMode?'Clear the sample details in this preview? No student information or submissions are affected.':'Clear the information entered in this form? Your signed-in school email will remain connected. Submitted evaluations will not be deleted.'))return;
  clearFlowError('studentInfoError');
  ['evaluator','classmate'].forEach(id=>$(id).value='');
- $('email').value=Store.fb?.au?.currentUser?.email||''; $('evaluator').readOnly=false;$('evaluator').removeAttribute('aria-readonly');$('campus').disabled=false;$('section').disabled=false;$('identityLockNotice').classList.add('hidden');$('identityLockNotice').textContent='';
+ $('email').value=studentPreviewMode?'preview@example.test':(Store.fb?.au?.currentUser?.email||''); $('evaluator').readOnly=false;$('evaluator').removeAttribute('aria-readonly');$('campus').disabled=false;$('section').disabled=false;$('identityLockNotice').classList.add('hidden');$('identityLockNotice').textContent='';
  $('campus').value='';updateSectionsForCampus();$('section').value='';
  await updateAttemptsNotice();
  $('email').focus();
@@ -2448,6 +2502,7 @@ $('clearStudentInfo').addEventListener('click',async()=>{
 async function updateAttemptsNotice(){
   const notice=$('attemptsNotice');
   if(!notice)return;
+  if(studentPreviewMode){notice.textContent='Preview only — no student submissions are checked or saved.';notice.classList.remove('attempts-exhausted');return;}
   const email=$('email').value.trim().toLowerCase();
   if(!email){
     notice.innerHTML='<strong>You have 2 evaluation attempts.</strong> Each classmate can be evaluated only once. Enter your school email to check how many attempts remain.';
@@ -2585,9 +2640,37 @@ function setActiveNav(btn){
  document.querySelectorAll('.nav-link[data-page]').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-current','false')});
  if(btn){btn.classList.add('active');btn.setAttribute('aria-current','page')}
 }
+function openStudentPreview(){
+ studentPreviewMode=true;document.body.classList.add('student-preview-mode');
+ $('adminApp').classList.add('hidden');$('studentApp').classList.remove('hidden');$('helpView').classList.add('hidden');
+ $('studentPreviewBanner').classList.remove('hidden');
+ $('studentNav').classList.remove('hidden');$('studentLabel').classList.remove('hidden');
+ $('studentNav').querySelector('[data-page="evaluation"]').classList.remove('hidden');
+ $('studentNav').querySelector('[data-page="help"]').classList.remove('hidden');
+ $('studentLogout').classList.add('hidden');$('logoutNav').classList.add('hidden');$('adminGroup').classList.add('hidden');$('adminLabel').classList.add('hidden');
+ // Do not carry the selected admin tab (for example Admin users) into the preview.
+ document.querySelectorAll('#adminGroup .nav-link').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-current','false')});
+ $('topTitle').textContent='Student Preview';$('topSub').textContent='Preview of the student evaluation flow';
+ $('pillText').textContent='Student preview';$('profileName').textContent='Student preview';
+ resetAllStudentData();$('email').value='';$('email').readOnly=true;
+ // Use fictional details so admins can see review screens without student data.
+ $('email').value='preview@example.test';$('evaluator').value='Preview Student';$('campus').value='Day School (Alabang)';
+ $('studentEmailHelp').textContent='Preview mode uses sample details. Student sign-in is bypassed here.';
+ updateSectionsForCampus();$('section').value='10A';$('classmate').value='Sample Classmate';
+ setActiveNav(null);
+ goStep(1);window.scrollTo({top:0,behavior:'auto'});
+}
+function returnToAdminWorkspace(){
+ if(!studentPreviewMode)return;
+ studentPreviewMode=false;document.body.classList.remove('student-preview-mode');
+ $('studentEmailHelp').textContent='Sign in with your Zobel account email to continue.';
+ $('studentPreviewBanner').classList.add('hidden');setMode(true);adminView(A.view);
+}
+$('returnToAdminWorkspace').addEventListener('click',returnToAdminWorkspace);
 document.querySelectorAll('.nav-link[data-page]').forEach(btn=>btn.addEventListener('click',async()=>{
  const page=btn.dataset.page;
  const inAdmin=!$('adminApp').classList.contains('hidden');
+ if(page==='evaluation' && document.body.classList.contains('admin-authenticated')){if(!studentPreviewMode)openStudentPreview();else{ $('helpView').classList.add('hidden');$('studentApp').classList.remove('hidden');goStep(1);}return;}
  const leaveMsg='You have evaluation information in progress. Leave this step? Your entries remain while the page is open, but have not been submitted.';
  if(page==='admin'){
   if(inAdmin){closeMobileSidebar();return}
@@ -2664,6 +2747,13 @@ function goStep(n){
 async function validateInfo(){
  const email=$('email').value.trim(),name=$('evaluator').value.trim(),campus=$('campus').value,section=$('section').value,classmate=$('classmate').value.trim();
  const currentUser=Store.fb?.au?.currentUser;
+ if(studentPreviewMode){
+  clearFlowError('studentInfoError');
+  const missing=[['evaluator',name],['campus',campus],['section',section],['classmate',classmate]].find(([,value])=>!value);
+  if(missing){showFlowError('studentInfoError','Complete the sample details to continue.',missing[0]);return;}
+  if(norm(name)===norm(classmate)){showFlowError('studentInfoError','Choose a sample classmate different from the sample student.','classmate');return;}
+  goStep(3);return;
+ }
  if(!currentUser || !currentUser.emailVerified || norm(currentUser.email)!==norm(email)){showFlowError('studentInfoError','Please sign in with your verified DLSZ student account first.','email');return;}
  clearFlowError('studentInfoError');
  if(!/^S\d{7}@dlszobel\.edu\.ph$/i.test(email)){showFlowError('studentInfoError','Use your official school email in the format s followed by 7 digits and @dlszobel.edu.ph.','email');return}
@@ -2787,6 +2877,7 @@ function showDone(name, finalAttempt=false){
  window.scrollTo({top:0,behavior:'smooth'});
 }
 async function submitEvaluation(){
+ if(studentPreviewMode){showToast('Student preview only. No evaluation was submitted.');return}
  if(!$('confirmReview').checked){$('reviewSubmitHint').textContent='Please confirm that you reviewed the details above before submitting.';$('confirmReview').focus();return}
  const ratings=getRatings();
  if(ratings.some(v=>v===null))return;
@@ -2851,16 +2942,20 @@ function calculateAdjustment(){
    ADMIN
    ===================================================================== */
 const A = { rows:[], loaded:false, campus:'all', open:new Set(), view:'management' };
-const ADMIN_TITLES = { management:['Management','Teacher workspace · Confidential'], score:['Score Review','Review suggested adjustments'], data:['Data & Reset','Back up or clear evaluations'] };
+const ADMIN_TITLES = { management:['Management','Teacher workspace · Confidential'], score:['Score Review','Review suggested adjustments'], data:['Data & Reset','Back up or clear evaluations'], admins:['Admin users','Grant or remove administrator access'] };
 
 function setMode(admin){
  // This class is the single UI gate for all admin-only areas. It is added
  // only after Store.isAdmin() or a successful login has authorized the session.
  document.body.classList.toggle('admin-authenticated',!!admin);
+ if(admin){studentPreviewMode=false;document.body.classList.remove('student-preview-mode');$('studentPreviewBanner').classList.add('hidden');}
  $('studentApp').classList.toggle('hidden',admin);
  if(admin)$('helpView').classList.add('hidden');
  $('adminApp').classList.toggle('hidden',!admin);
  $('studentNav').classList.toggle('hidden',admin);$('studentLabel').classList.toggle('hidden',admin);
+ $('studentNav').querySelector('[data-page="evaluation"]').classList.toggle('hidden',admin);
+ $('studentNav').querySelector('[data-page="help"]').classList.toggle('hidden',admin);
+ $('studentLogout').classList.toggle('hidden',admin);
  $('adminGroup').classList.toggle('hidden',!admin);$('adminLabel').classList.toggle('hidden',!admin);
  $('adminNav').classList.toggle('hidden',admin);$('logoutNav').classList.toggle('hidden',!admin);
  $('pillText').textContent=admin?'Admin session':'Student evaluation workspace';
@@ -2872,12 +2967,58 @@ function setMode(admin){
 }
 function adminView(v){
  A.view=v;
- ['management','score','data'].forEach(k=>$('view'+k[0].toUpperCase()+k.slice(1)).classList.toggle('hidden',k!==v));
+ ['management','score','data','admins'].forEach(k=>$('view'+k[0].toUpperCase()+k.slice(1)).classList.toggle('hidden',k!==v));
  document.querySelectorAll('[data-aview]').forEach(b=>{const on=b.dataset.aview===v;b.classList.toggle('active',on);b.setAttribute('aria-current',on?'page':'false')});
  $('topTitle').textContent=ADMIN_TITLES[v][0];$('topSub').textContent=ADMIN_TITLES[v][1];
+ if(v==='admins')loadAdminUsers();
  window.scrollTo({top:0});
 }
-document.querySelectorAll('[data-aview]').forEach(b=>b.addEventListener('click',()=>{adminView(b.dataset.aview);closeMobileSidebar()}));
+document.querySelectorAll('[data-aview]').forEach(b=>b.addEventListener('click',()=>{
+ if(studentPreviewMode)return;
+ adminView(b.dataset.aview);closeMobileSidebar();
+}));
+
+async function loadAdminUsers(){
+ const holder=$('adminUsersTable');
+ holder.replaceChildren(el('div',{class:'loading',text:'Loading admin users…'}));
+ try{
+  const admins=await Store.listAdmins(),self=norm(Store.fb.au.currentUser?.email);
+  const records=[{email:Store.adminEmail(),owner:true},...admins.filter(a=>norm(a.email)!==Store.adminEmail())];
+  const table=el('table',{class:'data-table'});
+  table.append(el('thead',null,el('tr',null,el('th',{text:'Email'}),el('th',{text:'Access'}),el('th',{class:'actions',text:'Action'}))));
+  const body=el('tbody');
+  records.forEach(admin=>{
+   const remove=admin.owner||norm(admin.email)===self
+    ?el('span',{class:'sub',text:admin.owner?'Primary admin': 'Current account'})
+    :el('button',{class:'btn btn-danger btn-sm',type:'button','data-remove-admin':admin.email,text:'Remove'});
+   body.append(el('tr',null,el('td',{text:admin.email}),el('td',{text:admin.owner?'Primary admin':'Administrator'}),el('td',{class:'actions'},remove)));
+  });
+  table.append(body);holder.replaceChildren(table);
+ }catch(err){
+  holder.replaceChildren(el('div',{class:'empty error-empty'},el('strong',{text:'Could not load admin users'}),'Publish the updated firestore.rules file to Firebase, then refresh this page.'));
+ }
+}
+$('adminUsersForm').addEventListener('submit',async e=>{
+ e.preventDefault();const email=$('newAdminEmail').value.trim().toLowerCase(),err=$('adminUsersError'),btn=$('addAdminBtn');
+ err.textContent='';btn.disabled=true;btn.textContent='Adding…';
+ try{
+  await Store.addAdmin(email);$('adminUsersForm').reset();await loadAdminUsers();
+  showToast('Admin access added for '+email+'. They must create and verify their own account.');
+ }catch(ex){
+  if(ex.message==='invalid-admin-email')err.textContent='Enter a valid Zobel email address.';
+  else if(ex.message==='admin-already-listed')err.textContent='That email already has admin access.';
+  else if(ex?.code==='permission-denied')err.textContent='Firebase denied this change. Deploy the updated firestore.rules file, then try again.';
+  else err.textContent='Could not add admin access. Check the connection and Firestore rules.';
+ }finally{btn.disabled=false;btn.textContent='Add admin';}
+});
+$('adminUsersTable').addEventListener('click',async e=>{
+ const btn=e.target.closest('[data-remove-admin]');if(!btn)return;
+ const email=btn.dataset.removeAdmin;
+ if(!confirm('Remove admin access for '+email+'? Their Firebase account will not be deleted.'))return;
+ btn.disabled=true;
+ try{await Store.removeAdmin(email);await loadAdminUsers();showToast('Admin access removed for '+email+'.');}
+ catch(ex){$('adminUsersError').textContent=ex.message==='cannot-remove-admin'?'You cannot remove your own admin access.':ex?.code==='permission-denied'?'Firebase denied this change. Deploy the updated firestore.rules file, then try again.':'Could not remove admin access. Check the connection and Firestore rules.';btn.disabled=false;}
+});
 
 async function openAdmin(){
  try{
@@ -2922,7 +3063,9 @@ $('loginForm').addEventListener('submit',async e=>{
   await enterAdmin();
  }catch(ex){
   if(ex.message==='network'){err.textContent='Cannot reach the server. Check your internet connection.'}
-  else if(ex.message==='email-not-verified'){err.textContent='Please verify the administrator email address before signing in.'}else{fails++;if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Too many attempts. Please wait 30 seconds.'}else err.textContent='Incorrect username or password.'}
+  else if(ex.message==='email-not-verified'){err.textContent='Please verify the administrator email address before signing in.'}
+  else if(ex.message==='admin-required'){err.textContent='This account does not have admin access. Ask an administrator to add it first.'}
+  else{fails++;if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Too many attempts. Please wait 30 seconds.'}else err.textContent='Incorrect username or password.'}
   $('loginPass').value='';$('loginPass').focus();
  }finally{btn.disabled=false;btn.textContent='Sign in'}
 });
@@ -3273,8 +3416,8 @@ $('resendVerification').addEventListener('click',async()=>{try{await Store.resen
 $('checkVerification').addEventListener('click',async()=>{try{if(await Store.refreshVerification()){$('studentAuthDialog').close();await activateStudentSession();}else $('studentAuthError').textContent='Email not verified yet. Open the link in your inbox, then try again.';}catch(e){$('studentAuthError').textContent='Could not check verification. Please try again.';}});
 async function activateStudentSession(){
  const user=Store.fb.au.currentUser; if(!user||!user.emailVerified){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();return;}
- if(norm(user.email)===Store.adminEmail()){await enterAdmin();return;}
- if(!Store.studentEmailPattern.test(user.email||'')){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();return;}
+ if(await Store.isAdmin()){await enterAdmin();return;}
+ if(!Store.studentEmailPattern.test(user.email||'')){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();$('studentAuthError').textContent='This Zobel account is not enabled for the student or admin workspace. Ask an administrator for access.';return;}
  $('email').value=user.email.toLowerCase(); $('email').readOnly=true; $('pillText').textContent='Signed in · '+user.email; $('profileName').textContent='Grade 10 Student';
  document.body.classList.remove('auth-screen');
  document.body.classList.add('app-active'); $('studentAuthDialog').close(); updateAttemptsNotice();
@@ -3290,10 +3433,10 @@ async function initializeAuthentication(){
   Store.fb.auth.onAuthStateChanged(Store.fb.au,async user=>{
     if(!user){setMode(false);openStudentAuth();return;}
     await Store.fb.auth.reload(user).catch(()=>{});
-    if(user.emailVerified&&norm(user.email)===Store.adminEmail()){await enterAdmin();return;}
+    if(user.emailVerified&&await Store.isAdmin()){await enterAdmin();return;}
     if(user.emailVerified&&Store.studentEmailPattern.test(user.email||'')){await activateStudentSession();return;}
     if(!user.emailVerified){$('studentAuthEmail').value=user.email||'';setStudentAuthMode('signin');$('studentAuthFields').classList.add('hidden');$('studentAuthButtons').classList.add('hidden');$('studentVerifyActions').classList.remove('hidden');$('studentAuthDialog').showModal();return;}
-    await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();
+    await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();$('studentAuthError').textContent='This Zobel account is not enabled for the student or admin workspace. Ask an administrator for access.';
   });
  }catch(e){showToast('Could not connect to Firebase. Check your Firebase configuration and internet connection.');openStudentAuth();}
 }
@@ -3531,6 +3674,15 @@ body.admin-authenticated #adminLabel:not(.hidden),
 body.admin-authenticated #logoutNav:not(.hidden){
   visibility:visible;
 }
+body.admin-authenticated:not(.student-preview-mode) #studentNav [data-page="evaluation"],
+body.admin-authenticated:not(.student-preview-mode) #studentNav [data-page="help"],
+body.admin-authenticated #studentLogout{display:none!important}
+body.student-preview-mode #studentNav [data-page="help"],
+body.student-preview-mode #studentNav [data-page="evaluation"]{display:none!important}
+body.student-preview-mode .sidebar #adminGroup,
+body.student-preview-mode .sidebar #adminLabel,
+body.student-preview-mode .sidebar #logoutNav,
+body.student-preview-mode .sidebar .admin-nav{display:none!important;visibility:hidden!important;pointer-events:none!important}
 </style>
 
 
@@ -4150,7 +4302,7 @@ input[type="radio"]:focus-visible {
 .review-confirm-required input{width:19px;height:19px;flex:0 0 19px;accent-color:#124c38;}
 .review-confirm-required>span:nth-child(2){flex:1;font-size:13px;line-height:1.5;color:#33443a;}
 .review-confirm-required>span strong{color:#202b25;}
-.required-flag{font-size:9px;letter-spacing:.08em;font-weight:850;color:#a34b37;white-space:nowrap;}
+.required-flag{display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border:1px solid #a71912;border-radius:6px;background:#b42318!important;color:#fff!important;font-size:10px;line-height:1.2;letter-spacing:.08em;font-weight:900;white-space:nowrap;}
 .review-submit-hint{margin:7px 0 0 31px;color:var(--muted,#647168);font-size:11px;}
 .review-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:16px;margin-top:14px;border-top:1px solid #e1e8e2;}
 .review-actions .btn{min-width:145px;}
