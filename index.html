@@ -1584,6 +1584,7 @@ body.home-scroll-mode:not(.app-active) .sidebar{display:none}
 body.home-scroll-mode:not(.app-active) .main{margin-left:0}
 body.auth-screen .sidebar{display:none!important}
 body.auth-screen .main{margin-left:0!important}
+body.auth-screen .app{visibility:hidden!important}
 body.home-scroll-mode.app-active .sidebar{display:flex;width:64px}
 body.home-scroll-mode.app-active .main{margin-left:64px}
 body.home-scroll-mode.app-active .sidebar .brand,
@@ -2195,7 +2196,7 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
 </div>
 
 <!-- Student account access -->
-<dialog id="studentAuthDialog" class="narrow" aria-labelledby="studentAuthTitle" open>
+<dialog id="studentAuthDialog" class="narrow" aria-labelledby="studentAuthTitle">
   <form id="studentAuthForm" autocomplete="on">
     <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true">✦</div><h2 id="studentAuthTitle">Student sign in</h2><p class="sub" id="studentAuthSubtitle">Use your account email and Peer Evaluation password.</p></div></div>
     <div class="dlg-body">
@@ -3424,11 +3425,8 @@ async function activateStudentSession(){
 async function initializeAuthentication(){
  try{
   await Store.init();
-  // Require a fresh sign-in before showing the student terms on each page load.
-  // Firebase's local persistence otherwise skips the sign-in dialog for returning users.
-  await Store.fb.auth.signOut(Store.fb.au);
+  // Restore the Firebase local session on reload. Explicit logout still clears it.
   setMode(false);
-  openStudentAuth();
   Store.fb.auth.onAuthStateChanged(Store.fb.au,async user=>{
     if(!user){setMode(false);openStudentAuth();return;}
     await Store.fb.auth.reload(user).catch(()=>{});
