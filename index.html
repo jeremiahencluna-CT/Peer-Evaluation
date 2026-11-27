@@ -3431,10 +3431,20 @@ async function initializeAuthentication(){
   Store.fb.auth.onAuthStateChanged(Store.fb.au,async user=>{
     if(!user){setMode(false);openStudentAuth();return;}
     await Store.fb.auth.reload(user).catch(()=>{});
-    if(user.emailVerified&&await Store.isAdmin()){await enterAdmin();return;}
+    if(user.emailVerified){
+      let adminAccess=false;
+      try{adminAccess=await Store.isAdmin();}
+      catch(error){
+        if(localDebug)console.error('Could not verify the admin role:',error);
+        openStudentAuth();
+        $('studentAuthError').textContent='You are signed in, but Firebase could not verify your admin access. Check that your email is listed in Admin Users and that the latest Firestore rules are published.';
+        return;
+      }
+      if(adminAccess){await enterAdmin();return;}
+    }
     if(user.emailVerified&&Store.studentEmailPattern.test(user.email||'')){await activateStudentSession();return;}
     if(!user.emailVerified){$('studentAuthEmail').value=user.email||'';setStudentAuthMode('signin');$('studentAuthFields').classList.add('hidden');$('studentAuthButtons').classList.add('hidden');$('studentVerifyActions').classList.remove('hidden');$('studentAuthDialog').showModal();return;}
-    await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();$('studentAuthError').textContent='This account is not enabled for the student or admin workspace. Ask an administrator for access.';
+    openStudentAuth();$('studentAuthError').textContent='You are signed in, but this email does not currently have student or admin access. Ask the primary admin to add this exact email in Admin Users.';
   });
  }catch(e){showToast('Could not connect to Firebase. Check your Firebase configuration and internet connection.');openStudentAuth();}
 }
