@@ -2197,14 +2197,14 @@ body.home-scroll-mode.app-active .sidebar .side-toggle svg{width:21px;height:21p
 <!-- Student account access -->
 <dialog id="studentAuthDialog" class="narrow" aria-labelledby="studentAuthTitle" open>
   <form id="studentAuthForm" autocomplete="on">
-    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true">✦</div><h2 id="studentAuthTitle">Student sign in</h2><p class="sub" id="studentAuthSubtitle">Use your Zobel account email and your Peer Evaluation password.</p></div></div>
+    <div class="dlg-head"><div><div class="lock-badge" aria-hidden="true">✦</div><h2 id="studentAuthTitle">Student sign in</h2><p class="sub" id="studentAuthSubtitle">Use your account email and Peer Evaluation password.</p></div></div>
     <div class="dlg-body">
       <div id="studentAuthFields">
-        <div class="field"><label class="field-label" for="studentAuthEmail">Zobel account email</label><input id="studentAuthEmail" type="email" autocomplete="username" placeholder="Your Zobel account email" required></div>
+        <div class="field"><label class="field-label" for="studentAuthEmail">Email address</label><input id="studentAuthEmail" type="email" autocomplete="username" placeholder="Enter your email address" required></div>
         <div class="field"><label class="field-label" for="studentAuthPassword">Password</label><input id="studentAuthPassword" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="8" required><p class="help">Use at least 8 characters.</p></div>
       </div>
       <p class="form-error" id="studentAuthError" role="alert"></p>
-      <p class="help" id="studentAuthHint">New here? Choose Create account. Your email must be verified before you can submit evaluations.</p>
+      <p class="help" id="studentAuthHint">New here? Create an account with your email. Student evaluations require a Zobel student account; admin access must be granted separately.</p>
       <div id="studentVerifyActions" class="hidden"><p class="review-alert info">A verification email has been sent. Open it, verify your address, then return here.</p><button type="button" class="btn btn-secondary" id="resendVerification">Resend verification email</button><button type="button" class="btn btn-primary" id="checkVerification">I've verified my email</button></div>
       <div class="btn-group" id="studentAuthButtons" style="justify-content:space-between;flex-wrap:wrap"><button type="button" class="btn btn-secondary" id="studentCreateBtn">Create account</button><button type="submit" class="btn btn-primary" id="studentSignInBtn">Sign in</button></div>
       <button type="button" class="btn btn-secondary" id="switchAdminLogin" style="width:100%;margin-top:10px">Administrator sign in</button>
@@ -2359,7 +2359,7 @@ const Store = {
   fb: null,
   adminEmail(){ return CONFIG.adminEmail.trim().toLowerCase(); },
   studentEmailPattern: /^S\d{7}@dlszobel\.edu\.ph$/i,
-  isAllowedAccountEmail(email){ return this.studentEmailPattern.test(email||'') || norm(email).endsWith('@dlszobel.edu.ph'); },
+  isAllowedAccountEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(norm(email)); },
   makeId(rec){
     const k = norm(rec.email)+'|'+norm(rec.classmate);
     return btoa(unescape(encodeURIComponent(k))).replace(/[+/=]/g, c => ({'+':'-','/':'_','=':''}[c]));
@@ -2436,7 +2436,7 @@ const Store = {
   async addAdmin(email){
     await this.init(); if(!(await this.isAdmin())) throw new Error('admin-required');
     email=norm(email);
-    if(!/^[^\s@]+@dlszobel\.edu\.ph$/.test(email)) throw new Error('invalid-admin-email');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('invalid-admin-email');
     if(email===this.adminEmail()) throw new Error('admin-already-listed');
     const {fs,db,au}=this.fb;
     const listed=await fs.getDocs(fs.collection(db,CONFIG.adminCollection));
@@ -3005,7 +3005,7 @@ $('adminUsersForm').addEventListener('submit',async e=>{
   await Store.addAdmin(email);$('adminUsersForm').reset();await loadAdminUsers();
   showToast('Admin access added for '+email+'. They must create and verify their own account.');
  }catch(ex){
-  if(ex.message==='invalid-admin-email')err.textContent='Enter a valid Zobel email address.';
+  if(ex.message==='invalid-admin-email')err.textContent='Enter a valid email address.';
   else if(ex.message==='admin-already-listed')err.textContent='That email already has admin access.';
   else if(ex?.code==='permission-denied')err.textContent='Firebase denied this change. Deploy the updated firestore.rules file, then try again.';
   else err.textContent='Could not add admin access. Check the connection and Firestore rules.';
@@ -3379,11 +3379,13 @@ function openStudentAuth(){
 }
 function setStudentAuthMode(mode){
   studentAuthMode=mode; $('studentAuthTitle').textContent=mode==='register'?'Create account':'Student sign in';
-  $('studentAuthSubtitle').textContent=mode==='register'?'Create a password for your Peer Evaluation account.':'Use your Zobel account email and Peer Evaluation password.';
+  $('studentAuthSubtitle').textContent=mode==='register'?'Create a password for your Peer Evaluation account.':'Use your account email and Peer Evaluation password.';
+  $('studentAuthEmail').previousElementSibling.textContent='Email address';
+  $('studentAuthEmail').placeholder='Enter your email address';
   $('studentSignInBtn').textContent=mode==='register'?'Create account':'Sign in';
   $('studentCreateBtn').textContent=mode==='register'?'Back to sign in':'Create account';
   $('studentAuthPassword').autocomplete=mode==='register'?'new-password':'current-password';
-  $('studentAuthHint').textContent=mode==='register'?'Use your Zobel account email and a password with at least 8 characters. Verify your email before continuing.':'New here? Choose Create account. Your email must be verified before you can submit evaluations.';
+  $('studentAuthHint').textContent=mode==='register'?'Students should use their Zobel account. Invited admins should use the email added by an administrator. Use at least 8 characters and verify your email.':'New here? Create an account with your email. Student evaluations require a Zobel student account; admin access must be granted separately.';
   $('studentAuthError').textContent='';
 }
 $('studentCreateBtn').addEventListener('click',()=>setStudentAuthMode(studentAuthMode==='register'?'signin':'register'));
@@ -3400,7 +3402,7 @@ $('studentAuthForm').addEventListener('submit',async e=>{
       await Store.signInStudent(email,password); $('studentAuthDialog').close(); await activateStudentSession();
     }
   }catch(ex){
-    const messages={'invalid-student-email':'Use your Zobel account email.','email-not-verified':'Your email is not verified yet. Check your inbox, then use the verification option.','auth/email-already-in-use':'An account already exists. Sign in instead.','auth/weak-password':'Choose a password with at least 8 characters.','auth/invalid-email':'Enter a valid email address.','auth/invalid-credential':'Incorrect email or password.','auth/user-not-found':'No account found. Create an account first.','auth/too-many-requests':'Too many attempts. Please wait and try again.','auth/network-request-failed':'Cannot reach Firebase. Check your internet connection.','auth/operation-not-allowed':'Email and password sign-in is disabled. In Firebase Console, open Authentication → Sign-in method and enable Email/Password.','auth/unauthorized-domain':'This website domain is not authorized. Add its hostname under Firebase Authentication → Settings → Authorized domains.','auth/invalid-api-key':'Firebase rejected the API key. Check the web app config in index.html.','auth/api-key-not-valid-please-pass-a-valid-api-key':'Firebase rejected the Web API key. In Firebase Console, open Project settings → General → Your apps, copy the Web API key for this web app into CONFIG.firebase.apiKey, and check the key restrictions if the key already matches.','auth/app-not-authorized':'This web app is not authorized for the Firebase project. Check the Firebase app config and allowed domains.'};
+    const messages={'invalid-student-email':'Enter a valid email address.','email-not-verified':'Your email is not verified yet. Check your inbox, then use the verification option.','auth/email-already-in-use':'An account already exists. Sign in instead.','auth/weak-password':'Choose a password with at least 8 characters.','auth/invalid-email':'Enter a valid email address.','auth/invalid-credential':'Incorrect email or password.','auth/user-not-found':'No account found. Create an account first.','auth/too-many-requests':'Too many attempts. Please wait and try again.','auth/network-request-failed':'Cannot reach Firebase. Check your internet connection.','auth/operation-not-allowed':'Email and password sign-in is disabled. In Firebase Console, open Authentication → Sign-in method and enable Email/Password.','auth/unauthorized-domain':'This website domain is not authorized. Add its hostname under Firebase Authentication → Settings → Authorized domains.','auth/invalid-api-key':'Firebase rejected the API key. Check the web app config in index.html.','auth/api-key-not-valid-please-pass-a-valid-api-key':'Firebase rejected the Web API key. In Firebase Console, open Project settings → General → Your apps, copy the Web API key for this web app into CONFIG.firebase.apiKey, and check the key restrictions if the key already matches.','auth/app-not-authorized':'This web app is not authorized for the Firebase project. Check the Firebase app config and allowed domains.'};
     if(ex.accountCreated){
       $('studentAuthFields').classList.add('hidden'); $('studentAuthButtons').classList.add('hidden'); $('studentVerifyActions').classList.remove('hidden');
       $('studentAuthHint').textContent='Your account was created, but the verification email could not be sent. Use Resend verification email to try again.';
@@ -3417,7 +3419,7 @@ $('checkVerification').addEventListener('click',async()=>{try{if(await Store.ref
 async function activateStudentSession(){
  const user=Store.fb.au.currentUser; if(!user||!user.emailVerified){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();return;}
  if(await Store.isAdmin()){await enterAdmin();return;}
- if(!Store.studentEmailPattern.test(user.email||'')){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();$('studentAuthError').textContent='This Zobel account is not enabled for the student or admin workspace. Ask an administrator for access.';return;}
+ if(!Store.studentEmailPattern.test(user.email||'')){await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();$('studentAuthError').textContent='This account is not enabled for the student or admin workspace. Ask an administrator for access.';return;}
  $('email').value=user.email.toLowerCase(); $('email').readOnly=true; $('pillText').textContent='Signed in · '+user.email; $('profileName').textContent='Grade 10 Student';
  document.body.classList.remove('auth-screen');
  document.body.classList.add('app-active'); $('studentAuthDialog').close(); updateAttemptsNotice();
@@ -3436,7 +3438,7 @@ async function initializeAuthentication(){
     if(user.emailVerified&&await Store.isAdmin()){await enterAdmin();return;}
     if(user.emailVerified&&Store.studentEmailPattern.test(user.email||'')){await activateStudentSession();return;}
     if(!user.emailVerified){$('studentAuthEmail').value=user.email||'';setStudentAuthMode('signin');$('studentAuthFields').classList.add('hidden');$('studentAuthButtons').classList.add('hidden');$('studentVerifyActions').classList.remove('hidden');$('studentAuthDialog').showModal();return;}
-    await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();$('studentAuthError').textContent='This Zobel account is not enabled for the student or admin workspace. Ask an administrator for access.';
+    await Store.fb.auth.signOut(Store.fb.au);openStudentAuth();$('studentAuthError').textContent='This account is not enabled for the student or admin workspace. Ask an administrator for access.';
   });
  }catch(e){showToast('Could not connect to Firebase. Check your Firebase configuration and internet connection.');openStudentAuth();}
 }
